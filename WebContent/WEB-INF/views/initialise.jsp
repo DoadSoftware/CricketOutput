@@ -57,16 +57,6 @@
 			      </select>
 			    </div>
 			  </div>
-			  <div id="Tournament_div" class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
-			    <label for="Tournament" class="col-sm-4 col-form-label text-left">Tournament 
-			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>
-			    <div class="col-sm-6 col-md-6">
-		             <input type="text" id="Tournament" name="Tournament" 
-		             		class="form-control form-control-sm floatlabel" value="Vivo IPL 2021"></input>
-		              <label id="Tournament-validation" style="color:red; display: none;"></label> 
-			    </div>
-			  </div>
-			  
 			  <div id="vizIPAddress_div" class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
 			    <label for="vizIPAddress" class="col-sm-4 col-form-label text-left">Viz IP Address 
 			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>

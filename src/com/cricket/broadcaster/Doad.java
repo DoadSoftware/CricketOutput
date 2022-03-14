@@ -100,16 +100,23 @@ public class Doad extends Scene {
 			status = "ERROR: Bowlingcard's inning is null";
 		} else {
 			
-			print_writer.println("-1 RENDERER*TREE*$Main$All$TopPart$HeaderGrp$BallHeader$HeaderTextAll$LanguageGrp$Language1$BattingTeamName*FUNCTION*controlDatapool*input SET " + bowlingcard.getHeader_text() + "\0");
-			print_writer.println("-1 RENDERER*TREE*$Main$All$TopPart$HeaderGrp$BallHeader$HeaderTextAll$LanguageGrp$Language1$BowlingTeamName*FUNCTION*controlDatapool*input SET " + bowlingcard.getSub_header_text() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$All$TopPart$HeaderGrp$BallHeader$HeaderTextAll$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + bowlingcard.getHeader_text() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$All$TopPart$HeaderGrp$BallHeader$HeaderTextAll$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + bowlingcard.getSub_header_text() + "\0");
 					
 			int row_id = 0; 	
 			for (BowlingCard boc : bowlingcard.getInning().getBowlingCard()) {
 				
 				row_id = row_id + 1;
 				
-				print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BatOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerName*GEOM*TEXT SET " +boc.getPlayer().getSurname() +"\0");
-				print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BatOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerRuns*GEOM*TEXT SET " +boc.getWickets()+'-'+String.valueOf(boc.getRuns())  +"\0");
+				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataAllGrp*FUNCTION*Omo*vis_con SET "+bowlingcard.getInning().getBowlingCard().size()+"\0");
+				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerName*GEOM*TEXT SET " +boc.getPlayer().getSurname() +"\0");
+				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerRuns*GEOM*TEXT SET " +boc.getWickets()+'-'+String.valueOf(boc.getRuns())  +"\0");
+				
+				
+				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$OverValue*GEOM*TEXT SET " +boc.getOvers() +"\0");
+				//print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$MaidensValue*GEOM*TEXT SET " +boc +"\0");
+				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$ExtraValue*GEOM*TEXT SET " +(boc.getWides()+boc.getNoBalls()) +"\0");
+				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$EconomyValue*GEOM*TEXT SET " +(boc.getRuns()/boc.getOvers())+"\0");
 				
 			} 
 				print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataGrp$BottomInfoPosition$BottomInfoBand$ExtrasGrp$LanguageGrp$Language1$ExtrasValue*GEOM*TEXT SET " + bowlingcard.getInning().getTotalExtras() + "\0");
