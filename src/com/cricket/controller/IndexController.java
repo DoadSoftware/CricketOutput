@@ -35,7 +35,6 @@ import com.cricket.model.BowlingCard;
 import com.cricket.model.Inning;
 import com.cricket.model.Match;
 import com.cricket.model.Player;
-import com.cricket.containers.Scene;
 import com.cricket.service.CricketService;
 import com.cricket.util.CricketUtil;
 
@@ -91,9 +90,9 @@ public class IndexController
 		session_selected_match = selectedMatch; session_viz_ip_address = vizIPAddresss; session_selected_broadcaster = select_broadcaster;
 		session_viz_port_number = Integer.parseInt(vizPortNumber); session_viz_scene = vizScene; 
 		
-		session_socket = new Socket(vizIPAddresss, session_viz_port_number);
-		new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
-		session_which_graphics_onscreen = "";
+		//session_socket = new Socket(vizIPAddresss, session_viz_port_number);
+		//new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
+		//session_which_graphics_onscreen = "";
 
 		session_match = populateMatchVariables((Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_selected_match)));

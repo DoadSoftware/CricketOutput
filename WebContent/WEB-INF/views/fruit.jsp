@@ -40,6 +40,5 @@
     </div>
   </div>
 </div>
-<input type="hidden" name="match_file_timestamp" id="match_file_timestamp" value="${session_match.match_file_timestamp}"/>
 </body>
 </html>
