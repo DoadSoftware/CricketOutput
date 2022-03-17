@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.cricket.broadcaster.Doad;
 import com.cricket.containers.BowlingCardFF;
+import com.cricket.containers.Scene;
 import com.cricket.containers.ScorecardFF;
 import com.cricket.functions.Functions;
 import com.cricket.model.BattingCard;
@@ -90,9 +91,9 @@ public class IndexController
 		session_selected_match = selectedMatch; session_viz_ip_address = vizIPAddresss; session_selected_broadcaster = select_broadcaster;
 		session_viz_port_number = Integer.parseInt(vizPortNumber); session_viz_scene = vizScene; 
 		
-		//session_socket = new Socket(vizIPAddresss, session_viz_port_number);
-		//new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
-		//session_which_graphics_onscreen = "";
+		session_socket = new Socket(vizIPAddresss, session_viz_port_number);
+		new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
+		session_which_graphics_onscreen = "";
 
 		session_match = populateMatchVariables((Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_selected_match)));

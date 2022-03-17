@@ -1,6 +1,7 @@
 package com.cricket.broadcaster;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cricket.containers.BowlingCardFF;
@@ -100,10 +101,12 @@ public class Doad extends Scene {
 			status = "ERROR: Bowlingcard's inning is null";
 		} else {
 			
-			print_writer.println("-1 RENDERER*TREE*$Main$All$TopPart$HeaderGrp$BallHeader$HeaderTextAll$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + bowlingcard.getHeader_text() + "\0");
-			print_writer.println("-1 RENDERER*TREE*$Main$All$TopPart$HeaderGrp$BallHeader$HeaderTextAll$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + bowlingcard.getSub_header_text() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Langauage1*GEOM*TEXT SET");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$BallHeader$MatchId$LanguageGrp$Langauage1*GEOM*TEXT SET");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$BallHeader$HeaderTextAll$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + bowlingcard.getHeader_text() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$BallHeader$HeaderTextAll$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + bowlingcard.getSub_header_text() + "\0");
 			
-			System.out.println(bowlingcard.getHeader_text() +'-'+bowlingcard.getSub_header_text());					
+			//System.out.println(bowlingcard.getHeader_text() +'-'+bowlingcard.getSub_header_text());					
 			int row_id = 0; 	
 			for (BowlingCard boc : bowlingcard.getInning().getBowlingCard()) {
 				
@@ -115,11 +118,16 @@ public class Doad extends Scene {
 				
 				
 				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$OverValue*GEOM*TEXT SET " +boc.getOvers() +"\0");
-				//print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$MaidensValue*GEOM*TEXT SET " +boc +"\0");
+				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$MaidensValue*GEOM*TEXT SET " +boc.getDots() +"\0");
 				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$ExtraValue*GEOM*TEXT SET " +(boc.getWides()+boc.getNoBalls()) +"\0");
 				print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataGrp$DataAllGrp$Row"+row_id+"$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$EconomyValue*GEOM*TEXT SET " +(boc.getRuns()/boc.getOvers())+"\0");
 				
 			} 
+				if(bowlingcard.getInning().getFallsOfWickets() != null) 
+				{
+					System.out.println(bowlingcard.getInning().getFallsOfWickets().toString());
+				}
+			
 				print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$BottomInfoPosition$ExtrasGrp$LanguageGrp$Language1$ExtrasValue*GEOM*TEXT SET " + bowlingcard.getInning().getTotalExtras() + "\0");
 				print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$BottomInfoPosition$OversGrp$LanguageGrp$Language1$OversValue*GEOM*TEXT SET " + bowlingcard.getInning().getTotalOvers() + "\0");
 				print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$BottomInfoPosition$TotalGrp$TotalScore*GEOM*TEXT SET " + bowlingcard.getInning().getTotalRuns()+"-"+String.valueOf(bowlingcard.getInning().getTotalWickets()) + "\0");

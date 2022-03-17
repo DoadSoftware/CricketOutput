@@ -148,18 +148,18 @@ function addItemsToList(whatToProcess, dataToProcess)
 		if(dataToProcess) {
 			dataToProcess.inning.forEach(function(inn,index,arr) {
 				if(inn.isCurrentInning.toUpperCase() == 'YES') {
+					header_text = document.createElement('h6');
 					
-					/*if(inn.battingTeamId == match.homeTeamId){
-						header_text = document.createElement('h6')
-						header_text.innnHTML = match.homeTeam;
-						document.getElementById('fruit_captions_div').appendChild(header_text);
+					if(inn.battingTeamId ==dataToProcess.homeTeamId){
+						
+						header_text.innerHTML = dataToProcess.homeTeam.fullname;
+						
 					}
-					else if(inn.battingTeamId == match.awayTeamId)
+					else if(inn.battingTeamId == dataToProcess.awayTeamId)
 					{
-						header_text = document.createElement('h6')
-						header_text.innnHTML = match.awayTeam;
-						document.getElementById('fruit_captions_div').appendChild(header_text);
-					}*/
+						header_text.innerHTML = dataToProcess.awayTeam.fullname;
+					}
+					document.getElementById('fruit_captions_div').appendChild(header_text);
 						
 					header_text = document.createElement('h6');
 					header_text.innerHTML = 'Total ' + inn.totalRuns+'-'+inn.totalWickets+'('+inn.totalOvers+'.'+inn.totalBalls+')';
