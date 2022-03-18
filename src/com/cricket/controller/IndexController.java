@@ -27,10 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.cricket.broadcaster.Doad;
-import com.cricket.containers.BowlingCardFF;
 import com.cricket.containers.Scene;
-import com.cricket.containers.ScorecardFF;
-import com.cricket.functions.Functions;
 import com.cricket.model.BattingCard;
 import com.cricket.model.BowlingCard;
 import com.cricket.model.Inning;
@@ -152,32 +149,16 @@ public class IndexController
 			case CricketUtil.DOAD:
 				switch (whatToProcess.toUpperCase()) {
 				case "POPULATE-SCORECARD": 
-					ScorecardFF scorecard = Functions.scorecardToProcess(session_selected_broadcaster, valueToProcess, session_match);
-					if(scorecard != null) {
-						scorecard.setStatus(new Doad().populateScorecard(new PrintWriter(session_socket.getOutputStream(), true), scorecard,session_viz_scene));
-						return JSONObject.fromObject(scorecard).toString();
-					}
-					break;
+					return JSONObject.fromObject(new Doad().populateScorecard(new PrintWriter(session_socket.getOutputStream(), true), 
+							Integer.valueOf(valueToProcess), session_match,session_viz_scene)).toString();
 				case "POPULATE-BOWLINGCARD":
-					BowlingCardFF bowlingFF = Functions.bowlingcardToProcess(session_selected_broadcaster, valueToProcess, session_match);
-					if(bowlingFF != null) {
-						bowlingFF.setStatus(new Doad().populateBowlingcard(new PrintWriter(session_socket.getOutputStream(), true), bowlingFF,session_viz_scene));
-						return JSONObject.fromObject(bowlingFF).toString();
-					}
-					break;
+					return JSONObject.fromObject(new Doad().populateBowlingcard(new PrintWriter(session_socket.getOutputStream(), true), 
+							Integer.valueOf(valueToProcess), session_match,session_viz_scene)).toString();
 				}
 			}
 			return JSONObject.fromObject(null).toString();
 		case "POPULATE-SELECT-PLAYER": 
 			return JSONObject.fromObject(session_match).toString();
-		case "POPULATE-ANIMATE-BUG":
-			switch (session_selected_broadcaster.toUpperCase()) {
-			case CricketUtil.DOAD:
-				new Doad().populateBugs(new PrintWriter(session_socket.getOutputStream(), true), 
-						new Functions().bugToProcess(session_selected_broadcaster, valueToProcess, session_match));
-				break;
-			}
-			return JSONObject.fromObject(null).toString();
 		default:
 			return JSONObject.fromObject(null).toString();
 		}
@@ -246,14 +227,7 @@ public class IndexController
 				bc.setHowOutFielder(cricketService.getPlayer(CricketUtil.PLAYER, String.valueOf(bc.getHowOutFielderId())));
 				break;
 			}
-			List<String> how_out = Functions.processHowOut(bc);
-			if(how_out.size() > 0) {
-				bc.setHowOutText(how_out.get(0));
-				if(how_out.size() >= 2) {
-					bc.setHowOut(bc.getHowOutText() + " " + how_out.get(1));
-				}
-			}
-				
+
 		}
 		return bc;
 	}
