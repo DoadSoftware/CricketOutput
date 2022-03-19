@@ -148,12 +148,11 @@ function addItemsToList(whatToProcess, dataToProcess)
 		if(dataToProcess) {
 			dataToProcess.inning.forEach(function(inn,index,arr) {
 				if(inn.isCurrentInning.toUpperCase() == 'YES') {
-					header_text = document.createElement('h6');
 					
-					if(inn.battingTeamId ==dataToProcess.homeTeamId){
-						
-						header_text.innerHTML = dataToProcess.homeTeam.fullname;
-						
+					header_text = document.createElement('h6');
+					if(inn.battingTeamId ==dataToProcess.homeTeamId)
+					{	
+						header_text.innerHTML = dataToProcess.homeTeam.fullname;	
 					}
 					else if(inn.battingTeamId == dataToProcess.awayTeamId)
 					{

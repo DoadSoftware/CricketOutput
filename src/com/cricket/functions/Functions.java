@@ -2,6 +2,7 @@ package com.cricket.functions;
 
 import com.cricket.model.Inning;
 import com.cricket.util.CricketUtil;
+import com.cricket.model.BowlingCard;
 
 public class Functions 
 {
@@ -30,5 +31,10 @@ public class Functions
 		}
 		
 		return return_pp_txt;
+	}
+	public String bowlerExtras(BowlingCard boc) {
+		
+		return String.valueOf(boc.getWides()) + String.valueOf(boc.getNoBalls());
+		
 	}
 }
