@@ -42,10 +42,6 @@
 			  		name="scorecard_graphic_btn" id="scorecard_graphic_btn" onclick="processUserSelection(this)"> Scorecard </button>
 			    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="bowlingcard_graphic_btn" id="bowlingcard_graphic_btn" onclick="processUserSelection(this)"> Bowlingcard </button>
-<!-- 			    <button style="background-color:#2E008B;color:#FEFEFE;display:none;" class="btn btn-sm" type="button"
-			  		name="bug_graphic_btn" id="bug_graphic_btn" onclick="processUserSelection(this)" > Bug </button> -->
-			  	<br>
-			  	<a href="fruit"> Fruit Machine</a>
 			  </div>
 	       </div>
 	    </div>

@@ -10,7 +10,6 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -90,6 +89,7 @@ public class IndexController
 		
 		session_socket = new Socket(vizIPAddresss, session_viz_port_number);
 		new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
+		
 		session_which_graphics_onscreen = "";
 
 		session_match = populateMatchVariables((Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
@@ -105,20 +105,6 @@ public class IndexController
 		return "output";
 	}
 
-	@RequestMapping(value = {"/fruit"}, method={RequestMethod.GET,RequestMethod.POST}) 
-	public String fruitPage(ModelMap model,
-			@ModelAttribute("session_selected_match") String session_selected_match,
-			@ModelAttribute("session_match") Match session_match,
-			@ModelAttribute("session_selected_broadcaster") String session_selected_broadcaster)
-	{
-		session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
-		model.addAttribute("session_match", session_match);
-		model.addAttribute("session_selected_match", session_selected_match);
-		model.addAttribute("session_selected_broadcaster", session_selected_broadcaster);
-		
-		return "fruit";
-	}
-	
 	@RequestMapping(value = {"/processCricketProcedures"}, method={RequestMethod.GET,RequestMethod.POST})    
 	public @ResponseBody String processCricketProcedures(
 			@ModelAttribute("session_match") Match session_match,
