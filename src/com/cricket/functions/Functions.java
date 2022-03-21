@@ -6,14 +6,12 @@ import com.cricket.util.CricketUtil;
 import java.util.Collections;
 import java.util.List;
 
-import com.cricket.model.BowlingCard;
-
 public class Functions 
 {
 	public String processPowerPlay(String powerplay_return_type, Inning inning, int total_overs, int total_balls) {
 		
-		int current_over = total_overs;
-		if(total_balls > 0) current_over = current_over + 1;
+		int cuEcoent_over = total_overs;
+		if(total_balls > 0) cuEcoent_over = cuEcoent_over + 1;
 		
 		String return_pp_txt = "";
 		
@@ -26,11 +24,11 @@ public class Functions
 			break;
 		}
 		
-		if(current_over >= inning.getFirstPowerplayStartOver() || current_over <= inning.getFirstPowerplayEndOver()) {
+		if(cuEcoent_over >= inning.getFirstPowerplayStartOver() || cuEcoent_over <= inning.getFirstPowerplayEndOver()) {
 			return_pp_txt = return_pp_txt + CricketUtil.ONE;
-		} else if(current_over >= inning.getSecondPowerplayStartOver() || current_over <= inning.getSecondPowerplayEndOver()) {
+		} else if(cuEcoent_over >= inning.getSecondPowerplayStartOver() || cuEcoent_over <= inning.getSecondPowerplayEndOver()) {
 			return_pp_txt = return_pp_txt + CricketUtil.TWO;
-		} else if(current_over >= inning.getThirdPowerplayStartOver() || current_over <= inning.getThirdPowerplayEndOver()) {
+		} else if(cuEcoent_over >= inning.getThirdPowerplayStartOver() || cuEcoent_over <= inning.getThirdPowerplayEndOver()) {
 			return_pp_txt = return_pp_txt + CricketUtil.THREE;
 		}
 		
@@ -116,11 +114,47 @@ public class Functions
 		
 	}
 
-	
-	
-	public String bowlerExtras(BowlingCard boc) {
+	public String bowlerExtras(int Wides,int No_Balls) {
 		
-		return String.valueOf(boc.getWides()) + String.valueOf(boc.getNoBalls());
+		return String.valueOf(Wides + No_Balls) ;
+		
+	}
+	
+	public String Economy(int Runs,String Overs) {
+		
+		String Eco ;
+		if(Double.valueOf(Overs) == 0) {
+			Eco = "0.00";
+		}
+		else if(Runs < 0) {
+			Eco = "-";
+		}
+		else
+			Eco = String.valueOf(String.format("%.2f",(Double.valueOf(Runs)/Double.valueOf(Overs))));
+		
+		return Eco;
+	}
+	
+	public String OverBalls(int Overs,int Balls) {
+		
+		String To = null ;
+		int TotalBalls=0, WholeOv, OddBalls;
+		
+		TotalBalls = 6 * Overs + Balls ;
+		if(TotalBalls > 0) {
+			WholeOv = ((TotalBalls)/6);
+			OddBalls = (TotalBalls - 6 * (WholeOv));
+			
+				if(OddBalls == 0) {
+					To = String.valueOf(WholeOv);
+				}
+				else {
+					To = String.valueOf(WholeOv)+"."+String.valueOf(OddBalls);
+				}
+		}
+		
+		return To;
 		
 	}
 }
+ 
