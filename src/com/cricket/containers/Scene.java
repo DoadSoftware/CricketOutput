@@ -14,7 +14,7 @@ public class Scene {
 		super();
 		this.scene_path = scene_path;
 	}
-
+	
 	public String getScene_path() {
 		return scene_path;
 	}

@@ -147,16 +147,19 @@ public class IndexController
 		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case CricketUtil.DOAD:
+				Doad this_doad = new Doad();
 				switch (whatToProcess.toUpperCase()) {
 				case "POPULATE-SCORECARD": 
-					return JSONObject.fromObject(new Doad().populateScorecard(new PrintWriter(session_socket.getOutputStream(), true), 
-							Integer.valueOf(valueToProcess), session_match,session_viz_scene)).toString();
+					this_doad.populateScorecard(new PrintWriter(session_socket.getOutputStream(), true), 
+						Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+					break;
 				case "POPULATE-BOWLINGCARD":
-					return JSONObject.fromObject(new Doad().populateBowlingcard(new PrintWriter(session_socket.getOutputStream(), true), 
-							Integer.valueOf(valueToProcess), session_match,session_viz_scene)).toString();
+					this_doad.populateBowlingcard(new PrintWriter(session_socket.getOutputStream(), true), 
+						Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+					break;
 				}
+				return JSONObject.fromObject(this_doad).toString();
 			}
-			return JSONObject.fromObject(null).toString();
 		case "POPULATE-SELECT-PLAYER": 
 			return JSONObject.fromObject(session_match).toString();
 		default:
