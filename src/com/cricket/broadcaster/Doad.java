@@ -52,9 +52,11 @@ public class Doad extends Scene{
 					if (inn.getBattingTeamId() == match.getHomeTeamId()) {
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
+						System.out.println(match.getHomeTeam().getFullname()+" vs "+match.getAwayTeam().getFullname());
 					} else {
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
+						System.out.println(match.getAwayTeam().getFullname()+" vs "+match.getHomeTeam().getFullname());
 					}
 					for (BattingCard bc : inn.getBattingCard()) {
 						
@@ -85,8 +87,17 @@ public class Doad extends Scene{
 							print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$LeftText$LanguageGrp$Language1$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() + "\0");
 							print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$LeftText$LanguageGrp$Language1$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
 							print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$LeftText$LanguageGrp$Language1$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
-							print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$RightText$LanguageGrp$Language1$WicketPlayerName*GEOM*TEXT SET " + bc.getHowOutPartOne() + "\0");
-							print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$RightText$LanguageGrp$Language1$BallPlayerName*GEOM*TEXT SET " + bc.getHowOutPartTwo() + "\0");
+							
+							if(bc.getStatus().equalsIgnoreCase(CricketUtil.OUT)) {
+								print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$RightText$LanguageGrp$Language1$WicketPlayerName*GEOM*TEXT SET " + bc.getHowOutPartOne() + "\0");
+								print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$RightText$LanguageGrp$Language1$BallPlayerName*GEOM*TEXT SET " + bc.getHowOutPartTwo() + "\0");
+							}
+							else {
+								print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$RightText$LanguageGrp$Language1$WicketPlayerName*GEOM*TEXT SET " + bc.getStatus() + "\0");
+								print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$RightText$LanguageGrp$Language1$BallPlayerName*GEOM*TEXT SET " + " " + "\0");
+								
+							}
+								
 
 						}
 					}
@@ -113,7 +124,7 @@ public class Doad extends Scene{
 		} else {
 
 			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Langauage1*GEOM*TEXT SET " + match.getTournament() + "\0");
-			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$BallHeader$MatchId$LanguageGrp$Langauage1*GEOM*TEXT SET " + match.getMatchIdent() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$BallHeader$MatchId$LanguageGrp$Langauage1*FUNCTION*ControlDatapool*input SET " + match.getMatchIdent() + "\0");
 			
 			int row_id = 0; 
 			for(Inning inn : match.getInning()) {
@@ -138,15 +149,15 @@ public class Doad extends Scene{
 						print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$Row" + row_id + "$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$OverValue*GEOM*TEXT SET " + CricketFunctions.OverBalls(boc.getOvers(),boc.getBalls()) +"\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$Row" + row_id + "$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$MaidensValue*GEOM*TEXT SET " + boc.getDots() +"\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$Row" + row_id + "$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$ExtraValue*GEOM*TEXT SET " + String.valueOf(boc.getWides() + boc.getNoBalls()) +"\0");
-						print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$Row" + row_id + "$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$EconomyValue*GEOM*TEXT SET " + CricketFunctions.GenerateRunRate(boc.getRuns(),boc.getOvers(),boc.getBalls(),2) + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$Row" + row_id + "$RowAnim$BallOmo$Dehighlight$RightText$LanguageGrp$Value$EconomyValue*GEOM*TEXT SET " + boc.getEconomyRate() + "\0");
 						
 					}
 					
-					if(inn.getBattingCard().size()<=8) {
+					if(inn.getBowlingCard().size()<=8) {
 						if(inn.getFallsOfWickets() != null & inn.getFallsOfWickets().size() > 0) {
 							for(FallOfWicket fow : inn.getFallsOfWickets()) {
-								if(inn.getTotalWickets() < 10) {
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow2$RowAnim$FowValues1$FowValue1*GEOM*TEXT SET "+fow.getFowNumber()+"\0");
+								if(inn.getTotalWickets() <= 5) {
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow2$RowAnim$FowValues1$FowValue1*GEOM*TEXT SET "+fow.getFowNumber()+"-"+fow.getFowRuns()+"\0");
 								}
 							}
 						}
