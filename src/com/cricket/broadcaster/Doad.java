@@ -154,11 +154,19 @@ public class Doad extends Scene{
 					}
 					
 					if(inn.getBowlingCard().size()<=8) {
-						if(inn.getFallsOfWickets() != null & inn.getFallsOfWickets().size() > 0) {
+						if(inn.getFallsOfWickets() != null || inn.getFallsOfWickets().size() >= 0) {
 							for(FallOfWicket fow : inn.getFallsOfWickets()) {
-								if(inn.getTotalWickets() <= 5) {
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow2$RowAnim$FowValues1$FowValue1*GEOM*TEXT SET "+fow.getFowNumber()+"-"+fow.getFowRuns()+"\0");
-								}
+								if(inn.getTotalWickets()>=0 && inn.getTotalWickets() <= 10) {
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow2$RowAnim$FowValues1$FowValue"+fow.getFowNumber()+"*GEOM*TEXT SET "+fow.getFowNumber()+"-"+fow.getFowRuns()+"\0");
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow3$RowAnim$FowValues2$FowValue"+fow.getFowNumber()+"*GEOM*TEXT SET "+fow.getFowNumber()+"-"+fow.getFowRuns()+"\0");
+									
+									for(int value=11; inn.getTotalWickets() < value;value--) {
+										if(value < 6) {
+											print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow2$RowAnim$FowValues1$FowValue"+value+"*GEOM*TEXT SET "+" "+"\0");
+										}
+										print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow3$RowAnim$FowValues2$FowValue"+value+"*GEOM*TEXT SET "+" "+"\0");
+									}	
+								}		
 							}
 						}
 					}
