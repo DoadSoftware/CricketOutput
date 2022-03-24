@@ -23,7 +23,7 @@ function reloadPage(whichPage)
 function processUserSelection(whichInput)
 {	
 	switch ($(whichInput).attr('name')) {
-	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn':
+	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -32,9 +32,12 @@ function processUserSelection(whichInput)
 		case 'bowlingcard_graphic_btn':
 			addItemsToList('BOWLINGCARD-OPTIONS',null);
 			break;
+		case 'partnership_graphic_btn':
+			addItemsToList('PARTNERSHIP-OPTIONS',null);
+			break;
 		}
 		break;
-	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn':
+	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -42,6 +45,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_bowlingcard_btn':
 			processCricketProcedures('POPULATE-BOWLINGCARD');
+			break;
+		case 'populate_partnership_btn':
+			processCricketProcedures('POPULATE-PARTNERSHIP');
 			break;
 		}
 		break;
@@ -78,7 +84,7 @@ function processCricketProcedures(whatToProcess)
 	case 'READ-MATCH-AND-POPULATE':
 		valueToProcess = $('#match_file_timestamp').val();
 		break;
-	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD':
+	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
 			valueToProcess = $('#selectInning').find(":selected").val();
@@ -94,7 +100,7 @@ function processCricketProcedures(whatToProcess)
         dataType : 'json',
         success : function(data) {
         	switch(whatToProcess) {
-			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD':
+			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP':
 				if (data.status.toUpperCase() == 'SUCCESS') {
 		        	switch(whatToProcess) {
 					case 'POPULATE-SCORECARD': 
@@ -104,6 +110,10 @@ function processCricketProcedures(whatToProcess)
 					case 'POPULATE-BOWLINGCARD':
 						$('#populate_bowlingcard_btn').hide();
 						$('#animate_in_bowlingcard_btn').show();
+						break;
+					case 'POPULATE-PARTNERSHIP':
+						$('#populate_partnership_btn').hide();
+						$('#animate_in_partnership_btn').show();
 						break;
 					}
 				} else {
@@ -123,7 +133,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	var select,option,header_text,div,table,tbody,row,max_cols;
 	
 	switch (whatToProcess) {
-	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS':
+	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
@@ -171,6 +181,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.name = 'populate_bowlingcard_btn';
 			    option.value = 'Populate Bowlingcard';
 				break;
+			case'PARTNERSHIP-OPTIONS':
+			    option.name = 'populate_partnership_btn';
+			    option.value = 'Populate Partnership';
+				break;
 			}
 		    option.id = option.name;
 		    option.setAttribute('onclick',"processUserSelection(this)");
@@ -188,6 +202,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case'BOWLINGCARD-OPTIONS':
 			    option.name = 'animate_in_bowlingcard_btn';
 			    option.value = 'Animate In Bowlingcard';
+				break;
+			case'PARTNERSHIP-OPTIONS':
+			    option.name = 'animate_partnership_btn';
+			    option.value = 'Animate In Partnership';
 				break;
 			}
 		    option.id = option.name;

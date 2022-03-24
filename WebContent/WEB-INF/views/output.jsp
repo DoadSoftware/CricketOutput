@@ -35,13 +35,13 @@
 			    <label class="col-sm-4 col-form-label text-left">IP Address: ${session_viz_ip_address} </label>
 			    <label class="col-sm-4 col-form-label text-left">Port Number: ${session_viz_port_number} </label>
 			    <label class="col-sm-4 col-form-label text-left">Broadcaster: ${session_selected_broadcaster} </label>
-			    <!--  <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
-			  		name="scorecard_graphic_btn" id="scorecard_graphic_btn" onclick="None"> Scorecard </button> -->
 			  		
 			    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
-			  		name="scorecard_graphic_btn" id="scorecard_graphic_btn" onclick="processUserSelection(this)"> Scorecard </button>
+			  		name="scorecard_graphic_btn" id="scorecard_graphic_btn" onclick="processUserSelection(this)"> ScoreCard </button>
 			    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
-			  		name="bowlingcard_graphic_btn" id="bowlingcard_graphic_btn" onclick="processUserSelection(this)"> Bowlingcard </button>
+			  		name="bowlingcard_graphic_btn" id="bowlingcard_graphic_btn" onclick="processUserSelection(this)"> BowlingCard </button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="partnership_graphic_btn" id="partnership_graphic_btn" onclick="processUserSelection(this)"> Partnership </button>
 			  </div>
 	       </div>
 	    </div>

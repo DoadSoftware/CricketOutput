@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.cricket.model.BattingCard;
 import com.cricket.model.BowlingCard;
+import com.cricket.model.Partnership;
 import com.cricket.model.Inning;
 import com.cricket.model.Match;
 import com.cricket.model.FallOfWicket;
@@ -52,11 +53,9 @@ public class Doad extends Scene{
 					if (inn.getBattingTeamId() == match.getHomeTeamId()) {
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
-						System.out.println(match.getHomeTeam().getFullname()+" vs "+match.getAwayTeam().getFullname());
 					} else {
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
-						System.out.println(match.getAwayTeam().getFullname()+" vs "+match.getHomeTeam().getFullname());
 					}
 					for (BattingCard bc : inn.getBattingCard()) {
 						
@@ -102,7 +101,7 @@ public class Doad extends Scene{
 						}
 					}
 					print_writer.println("-1 RENDERER*TREE*$Main$BattingData$DataAll$BottomInfoPosition$BottomInfoBand$ExtrasGrp$LanguageGrp$Language1$ExtrasValue*GEOM*TEXT SET " + inn.getTotalExtras() + "\0");
-					print_writer.println("-1 RENDERER*TREE*$Main$BattingData$DataAll$BottomInfoPosition$BottomInfoBand$OversGrp$LanguageGrp$Language1$OversValue*GEOM*TEXT SET " + inn.getTotalOvers() + "\0");
+					print_writer.println("-1 RENDERER*TREE*$Main$BattingData$DataAll$BottomInfoPosition$BottomInfoBand$OversGrp$LanguageGrp$Language1$OversValue*GEOM*TEXT SET " + CricketFunctions.OverBalls(inn.getTotalOvers(),inn.getTotalBalls()) + "\0");
 					if(inn.getTotalWickets() >= 10) {
 						print_writer.println("-1 RENDERER*TREE*$Main$BattingData$DataAll$BottomInfoPosition$BottomInfoBand$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "\0");
 					} else {
@@ -154,25 +153,50 @@ public class Doad extends Scene{
 					}
 					
 					if(inn.getBowlingCard().size()<=8) {
-						if(inn.getFallsOfWickets() != null || inn.getFallsOfWickets().size() >= 0) {
+						if(inn.getFallsOfWickets() != null || inn.getFallsOfWickets().size() > 0) {
 							for(FallOfWicket fow : inn.getFallsOfWickets()) {
 								if(inn.getTotalWickets()>=0 && inn.getTotalWickets() <= 10) {
 									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow2$RowAnim$FowValues1$FowValue"+fow.getFowNumber()+"*GEOM*TEXT SET "+fow.getFowNumber()+"-"+fow.getFowRuns()+"\0");
 									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow3$RowAnim$FowValues2$FowValue"+fow.getFowNumber()+"*GEOM*TEXT SET "+fow.getFowNumber()+"-"+fow.getFowRuns()+"\0");
 									
-									for(int value=11; inn.getTotalWickets() < value;value--) {
+									for(int value=10; inn.getTotalWickets() < value;value--) {
 										if(value < 6) {
 											print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow2$RowAnim$FowValues1$FowValue"+value+"*GEOM*TEXT SET "+" "+"\0");
 										}
-										print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow3$RowAnim$FowValues2$FowValue"+value+"*GEOM*TEXT SET "+" "+"\0");
+										else {
+											print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$DataAll$FowGrp$Fow3$RowAnim$FowValues2$FowValue"+value+"*GEOM*TEXT SET "+" "+"\0");
+										}
+										
 									}	
 								}		
 							}
 						}
 					}
 					print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$BottomInfoPosition$ExtrasGrp$LanguageGrp$Language1$ExtrasValue*GEOM*TEXT SET " + inn.getTotalExtras() + "\0");
-					print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$BottomInfoPosition$OversGrp$LanguageGrp$Language1$OversValue*GEOM*TEXT SET " + inn.getTotalOvers() + "\0");
+					print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$BottomInfoPosition$OversGrp$LanguageGrp$Language1$OversValue*GEOM*TEXT SET " + CricketFunctions.OverBalls(inn.getTotalOvers(),inn.getTotalBalls()) + "\0");
 					print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$BowlingData$DataAll$BottomInfoPosition$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "-" + String.valueOf(inn.getTotalWickets()) + "\0");
+				}
+			}
+			this.status = "SUCCESS";
+		}
+	}
+	
+	public void populatePartnership(PrintWriter print_writer, int whichInning, Match match, String viz_scene_path) 
+	{
+		if (match == null) {
+			this.status = "ERROR: Match is null";
+		} else if (match.getInning() == null) {
+			this.status = "ERROR: Partnership's inning is null";
+		} else {
+			
+			int row_id = 0; 
+			for(Inning inn : match.getInning()) {
+				if (inn.getInningNumber() == whichInning) {
+					
+					
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$ExtrasGrp$LanguageGrp$Language1$ExtrasValue*GEOM*TEXT SET " + inn.getTotalExtras() + "\0");
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$OversGrp$LanguageGrp$Language1$OversValue*GEOM*TEXT SET " + CricketFunctions.OverBalls(inn.getTotalOvers(),inn.getTotalBalls()) + "\0");
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "-" + String.valueOf(inn.getTotalWickets()) + "\0");
 				}
 			}
 			this.status = "SUCCESS";
