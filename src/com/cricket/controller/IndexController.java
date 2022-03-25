@@ -125,7 +125,7 @@ public class IndexController
 			} else {
 				return JSONObject.fromObject(null).toString();
 			}
-		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD":
+		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case CricketUtil.DOAD:
 				Doad this_doad = new Doad();

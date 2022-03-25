@@ -204,7 +204,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.value = 'Animate In Bowlingcard';
 				break;
 			case'PARTNERSHIP-OPTIONS':
-			    option.name = 'animate_partnership_btn';
+			    option.name = 'animate_in_partnership_btn';
 			    option.value = 'Animate In Partnership';
 				break;
 			}
