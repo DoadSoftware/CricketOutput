@@ -130,11 +130,11 @@ public class Doad extends Scene{
 				if (inn.getInningNumber() == whichInning) {
 
 					if (inn.getBowlingTeamId() == match.getHomeTeamId()) {
-						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
-						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BallHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BallHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
 					} else {
-						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
-						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BatHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BallHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$BallHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
 					}
 
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BowlingData$DataAll$DataAllGrp*FUNCTION*Omo*vis_con SET " + inn.getBowlingCard().size()+"\0");
@@ -188,12 +188,36 @@ public class Doad extends Scene{
 		} else if (match.getInning() == null) {
 			this.status = "ERROR: Partnership's inning is null";
 		} else {
+
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Langauage1*GEOM*TEXT SET " + match.getTournament() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$PartHeader$MatchId$LanguageGrp$Langauage1*FUNCTION*ControlDatapool*input SET " + match.getMatchIdent() + "\0");
 			
 			int row_id = 0; 
 			for(Inning inn : match.getInning()) {
 				if (inn.getInningNumber() == whichInning) {
-					
-					
+
+					if (inn.getBattingTeamId() == match.getHomeTeamId()) {
+						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$PartHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$PartHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
+					} else {
+						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$PartHeader$LanguageGrp$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$PartHeader$LanguageGrp$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
+					}
+
+
+					for (Partnership ps : inn.getPartnerships()) {
+						
+						row_id = row_id + 1;
+						
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id + "$RowAnim$PartOmo*FUNCTION*Omo*vis_con SET 4 " + " \0");
+						
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id + "$RowAnim$PartOmo$Highlight$LeftPlayeNameAll$LeftPlayeName*GEOM*TEXT SET " + ps.getFirstBatterNo() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id + "$RowAnim$PartOmo$Highlight$RightPlayeNameAll$RightPlayeName*GEOM*TEXT SET " + ps.getSecondBatterNo() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id + "$RowAnim$PartOmo$Highlight$ScoreGrp$PlayerRuns*GEOM*TEXT SET " + ps.getTotalRuns() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id + "$RowAnim$PartOmo$Highlight$ScoreGrp$PlayerBalls*GEOM*TEXT SET " + ps.getTotalBalls() + "\0");
+						
+						
+					}
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$ExtrasGrp$LanguageGrp$Language1$ExtrasValue*GEOM*TEXT SET " + inn.getTotalExtras() + "\0");
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$OversGrp$LanguageGrp$Language1$OversValue*GEOM*TEXT SET " + CricketFunctions.OverBalls(inn.getTotalOvers(),inn.getTotalBalls()) + "\0");
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "-" + String.valueOf(inn.getTotalWickets()) + "\0");
@@ -202,6 +226,5 @@ public class Doad extends Scene{
 			this.status = "SUCCESS";
 		}
 	}
-
 }
 
