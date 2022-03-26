@@ -190,7 +190,7 @@ public class Doad extends Scene{
 		} else {
 			
 			int row_id = 0, omo_num = 0;
-			String cont_name= "";
+			String cont_name= "",Left_Batsman = "",Right_Batsman="";
 
 			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Langauage1*GEOM*TEXT SET " + match.getTournament() + "\0");
 			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$PartHeader$MatchId$LanguageGrp$Langauage1*FUNCTION*ControlDatapool*input SET " + match.getMatchIdent() + "\0");
@@ -209,17 +209,36 @@ public class Doad extends Scene{
 
 
 					for (Partnership ps : inn.getPartnerships()) {
-						for (BattingCard bc : inn.getBattingCard()) {
+						
 						row_id = row_id + 1;
 						
-						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo*FUNCTION*Omo*vis_con SET 4 " + " \0");
-						
-						
-						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + ps.getPartnershipNumber() + "$RowAnim$PartOmo$Highlight$LeftPlayeNameAll$LeftPlayeName*GEOM*TEXT SET " + ps.getFirstBatterNo() + "\0");
-						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + ps.getPartnershipNumber() + "$RowAnim$PartOmo$Highlight$RightPlayeNameAll$RightPlayeName*GEOM*TEXT SET " + ps.getSecondBatterNo() + "\0");
-						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + ps.getPartnershipNumber() + "$RowAnim$PartOmo$Highlight$ScoreGrp$PlayerRuns*GEOM*TEXT SET " + ps.getTotalRuns() + "\0");
-						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + ps.getPartnershipNumber() + "$RowAnim$PartOmo$Highlight$ScoreGrp$PlayerBalls*GEOM*TEXT SET " + ps.getTotalBalls() + "\0");
+						for (BattingCard bc : inn.getBattingCard()) {
+							if(bc.getPlayerId() == ps.getFirstBatterNo()) {
+								Left_Batsman = bc.getPlayer().getSurname();
+							}
+							else if(bc.getPlayerId() == ps.getSecondBatterNo()) {
+								Right_Batsman = bc.getPlayer().getSurname();
+							}
 						}
+						
+						if(ps.getPartnershipNumber()<=inn.getTotalWickets()) {
+							omo_num = 4;
+							cont_name = "Highlight";
+						}
+						else if(ps.getPartnershipNumber() > inn.getTotalWickets()) {
+							omo_num = 3;
+							cont_name = "Dehighlight";
+						}
+						
+						
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo*FUNCTION*Omo*vis_con SET "+omo_num+ " \0");
+						
+						
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$RowAnim$PartOmo$"+cont_name+"$LeftPlayeNameAll$LeftPlayeName*GEOM*TEXT SET " + Left_Batsman + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$RowAnim$PartOmo$"+cont_name+"$RightPlayeNameAll$RightPlayeName*GEOM*TEXT SET " + Right_Batsman + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$RowAnim$PartOmo$"+cont_name+"$ScoreGrp$PlayerRuns*GEOM*TEXT SET " + ps.getTotalRuns() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$RowAnim$PartOmo$"+cont_name+"$ScoreGrp$PlayerBalls*GEOM*TEXT SET " + ps.getTotalBalls() + "\0");
+							
 					}
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$ExtrasGrp$LanguageGrp$Language1$ExtrasValue*GEOM*TEXT SET " + inn.getTotalExtras() + "\0");
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$OversGrp$LanguageGrp$Language1$OversValue*GEOM*TEXT SET " + CricketFunctions.OverBalls(inn.getTotalOvers(),inn.getTotalBalls()) + "\0");
