@@ -35,6 +35,11 @@
 			    <label class="col-sm-4 col-form-label text-left">IP Address: ${session_viz_ip_address} </label>
 			    <label class="col-sm-4 col-form-label text-left">Port Number: ${session_viz_port_number} </label>
 			    <label class="col-sm-4 col-form-label text-left">Broadcaster: ${session_selected_broadcaster} </label>
+			    <label class="col-sm-4 col-form-label text-left">Total Runs: ${session_selected_match} </label>
+			    <label class="col-sm-4 col-form-label text-left">Total Overs: ${session_selected_broadcaster} </label>
+			    <label class="col-sm-4 col-form-label text-left">Current BatsMan-1: ${session_selected_broadcaster} </label>
+			    <label class="col-sm-4 col-form-label text-left">Current BatsMan-2: ${session_selected_broadcaster} </label>
+			    <label class="col-sm-4 col-form-label text-left">Current Bowler: ${session_selected_broadcaster} </label>
 			  		
 			    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="scorecard_graphic_btn" id="scorecard_graphic_btn" onclick="processUserSelection(this)"> ScoreCard </button>
