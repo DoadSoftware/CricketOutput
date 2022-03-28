@@ -229,7 +229,9 @@ public class Doad extends Scene{
 							omo_num = 3;
 							cont_name = "Dehighlight";
 						}
-						
+						else if(row_id > inn.getTotalWickets()){
+							omo_num = 1;
+						}
 						
 						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo*FUNCTION*Omo*vis_con SET "+omo_num+ " \0");
 						
@@ -245,6 +247,26 @@ public class Doad extends Scene{
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "-" + String.valueOf(inn.getTotalWickets()) + "\0");
 				}
 			}
+			this.status = "SUCCESS";
+		}
+	}
+	
+	public void populateMatchsummary(PrintWriter print_writer, int whichInning, Match match, String viz_scene_path) 
+	{
+		if (match == null) {
+			this.status = "ERROR: Match is null";
+		} else if (match.getInning() == null) {
+			this.status = "ERROR: Partnership's inning is null";
+		} else {
+			
+			int row_id = 0, omo_num = 0;
+			String cont_name= "",Left_Batsman = "",Right_Batsman="";
+
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Langauage1*GEOM*TEXT SET " + match.getTournament() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$PartHeader$MatchId$LanguageGrp$Langauage1*FUNCTION*ControlDatapool*input SET " + match.getMatchIdent() + "\0");
+			
+ 
+			
 			this.status = "SUCCESS";
 		}
 	}

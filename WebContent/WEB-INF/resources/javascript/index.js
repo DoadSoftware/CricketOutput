@@ -23,7 +23,7 @@ function reloadPage(whichPage)
 function processUserSelection(whichInput)
 {	
 	switch ($(whichInput).attr('name')) {
-	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn':
+	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -35,9 +35,12 @@ function processUserSelection(whichInput)
 		case 'partnership_graphic_btn':
 			addItemsToList('PARTNERSHIP-OPTIONS',null);
 			break;
+		case 'matchsummary_graphic_btn':
+			addItemsToList('MATCHSUMMARY-OPTIONS',null);
+			break;
 		}
 		break;
-	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn':
+	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -48,6 +51,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_partnership_btn':
 			processCricketProcedures('POPULATE-PARTNERSHIP');
+			break;
+		case 'populate_matchsummary_btn':
+			processCricketProcedures('POPULATE-MATCHSUMMARY');
 			break;
 		}
 		break;
@@ -84,7 +90,7 @@ function processCricketProcedures(whatToProcess)
 	case 'READ-MATCH-AND-POPULATE':
 		valueToProcess = $('#match_file_timestamp').val();
 		break;
-	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP':
+	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
 			valueToProcess = $('#selectInning').find(":selected").val();
@@ -100,7 +106,7 @@ function processCricketProcedures(whatToProcess)
         dataType : 'json',
         success : function(data) {
         	switch(whatToProcess) {
-			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP':
+			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY':
 				if (data.status.toUpperCase() == 'SUCCESS') {
 		        	switch(whatToProcess) {
 					case 'POPULATE-SCORECARD': 
@@ -114,6 +120,10 @@ function processCricketProcedures(whatToProcess)
 					case 'POPULATE-PARTNERSHIP':
 						$('#populate_partnership_btn').hide();
 						$('#animate_in_partnership_btn').show();
+						break;
+					case 'POPULATE-MATCHSUMMARY':
+						$('#populate_matchsummary_btn').hide();
+						$('#animate_in_matchsummary_btn').show();
 						break;
 					}
 				} else {
@@ -133,7 +143,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	var select,option,header_text,div,table,tbody,row,max_cols;
 	
 	switch (whatToProcess) {
-	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS':
+	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
@@ -185,6 +195,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.name = 'populate_partnership_btn';
 			    option.value = 'Populate Partnership';
 				break;
+			case'MATCHSUMMARY-OPTIONS':
+			    option.name = 'populate_matchsummary_btn';
+			    option.value = 'Populate Matchsummary';
+				break;
 			}
 		    option.id = option.name;
 		    option.setAttribute('onclick',"processUserSelection(this)");
@@ -206,6 +220,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case'PARTNERSHIP-OPTIONS':
 			    option.name = 'animate_in_partnership_btn';
 			    option.value = 'Animate In Partnership';
+				break;
+			case'MATCHSUMMARY-OPTIONS':
+			    option.name = 'animate_in_matchsummary_btn';
+			    option.value = 'Animate In Matchsummary';
 				break;
 			}
 		    option.id = option.name;

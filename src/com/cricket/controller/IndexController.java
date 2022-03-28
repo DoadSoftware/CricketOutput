@@ -125,7 +125,7 @@ public class IndexController
 			} else {
 				return JSONObject.fromObject(null).toString();
 			}
-		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP":
+		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case CricketUtil.DOAD:
 				Doad this_doad = new Doad();
@@ -140,6 +140,9 @@ public class IndexController
 					break;
 				case "POPULATE-PARTNERSHIP":
 					this_doad.populatePartnership(new PrintWriter(session_socket.getOutputStream(), true), 
+							Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+				case "POPULATE-MATCHSUMMARY":
+					this_doad.populateMatchsummary(new PrintWriter(session_socket.getOutputStream(), true), 
 							Integer.valueOf(valueToProcess), session_match, session_viz_scene);
 				}
 				return JSONObject.fromObject(this_doad).toString();

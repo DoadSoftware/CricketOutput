@@ -2,7 +2,7 @@ package com.cricket.containers;
 
 import com.cricket.model.Inning;
 
-public class Scorecard {
+public class MatchsummaryFF {
 	
 	private String status;
 	private Inning inning;
@@ -25,11 +25,11 @@ public class Scorecard {
 		this.sub_header_text = sub_header_text;
 	}
 	
-	public Scorecard() {
+	public MatchsummaryFF() {
 		super();
 	}
 	
-	public Scorecard(Inning inning) {
+	public MatchsummaryFF(Inning inning) {
 		super();
 		this.inning = inning;
 	}

@@ -42,6 +42,8 @@
 			  		name="bowlingcard_graphic_btn" id="bowlingcard_graphic_btn" onclick="processUserSelection(this)"> BowlingCard </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="partnership_graphic_btn" id="partnership_graphic_btn" onclick="processUserSelection(this)"> Partnership </button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="matchsummary_graphic_btn" id="matchsummary_graphic_btn" onclick="processUserSelection(this)"> Match Summary </button>
 			  </div>
 	       </div>
 	    </div>
