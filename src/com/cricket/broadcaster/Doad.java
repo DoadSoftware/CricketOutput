@@ -2,6 +2,8 @@ package com.cricket.broadcaster;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import com.cricket.model.BattingCard;
 import com.cricket.model.BowlingCard;
@@ -273,18 +275,20 @@ public class Doad extends Scene{
 			this.status = "ERROR: Partnership's inning is null";
 		} else {
 			
-			int row_id = 0, omo_num = 0;
-			String cont_name= "",Left_Batsman = "",Right_Batsman="";
+			int row_id = 0,a;
+			String Highest1="",Highest2="";
 
 			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Langauage1*GEOM*TEXT SET " + match.getTournament() + "\0");
 			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$PartHeader$MatchId$LanguageGrp$Langauage1*FUNCTION*ControlDatapool*input SET " + match.getMatchIdent() + "\0");
 			
 			for(Inning inn : match.getInning()) {
-				if (inn.getInningNumber() == whichInning) {
-					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll*FUNCTION*Omo*vis_con SET "+whichInning+ " \0");
+				if (inn.getInningNumber() == whichInning && whichInning == 1) {
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll*FUNCTION*Omo*vis_con SET 1 \0");
 					
 					for (BattingCard bc : inn.getBattingCard()) {
-						
+						List<Integer> Run_List=Arrays.asList(bc.getRuns());  
+						Collections.sort(Run_List);
+						System.out.println(Run_List);
 					}
 					for (BowlingCard boc : inn.getBowlingCard()) {
 						
@@ -296,7 +300,16 @@ public class Doad extends Scene{
 						print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$1Innings$Row1$RowAnim$TeamTextAll1$TeamLanguageGrp$TeamName1*GEOM*TEXT SET " + match.getAwayTeam().getFullname() + "\0");
 					}
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$1Innings$Row1$RowAnim$TeamTextAll1$InningsLanguageGrp$Innings1*GEOM*TEXT SET " + CricketFunctions.OverBalls(inn.getTotalOvers(),inn.getTotalBalls()) + "\0");
-					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$1Innings$Row1$RowAnim$TeamTextAll1$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "-" + String.valueOf(inn.getTotalWickets()) + "\0");
+					
+					if(inn.getTotalWickets() >= 10) {
+						print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$1Innings$Row1$RowAnim$TeamTextAll1$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "\0");
+						
+					}
+					else {
+						print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$1Innings$Row1$RowAnim$TeamTextAll1$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "-" + String.valueOf(inn.getTotalWickets()) + "\0");
+						
+					}
+					
 					
 				}
 				
