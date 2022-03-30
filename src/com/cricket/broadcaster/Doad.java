@@ -248,9 +248,13 @@ public class Doad extends Scene{
 					
 					for (BattingCard bc : inn.getBattingCard()) {
 						row_id = row_id + 1;
-						if(bc.getStatus().equalsIgnoreCase(CricketUtil.STILL_TO_BAT)) {
-							print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo*FUNCTION*Omo*vis_con SET 2"+ " \0");
-							print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo$StillToBatPlayerGrp$LeftPlayeNameAll$LeftPlayeName*GEOM*TEXT SET"+bc.getPlayer().getSurname()+" \0");
+						if(row_id <= 11) {
+							if(bc.getStatus().equalsIgnoreCase(CricketUtil.STILL_TO_BAT)) {
+								print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo*FUNCTION*Omo*vis_con SET 2"+ " \0");
+								print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo$StiilToBatPlayerGrp$LeftPlayeNameAll$LeftPlayeName*GEOM*TEXT SET "+bc.getPlayer().getSurname()+" \0");
+								System.out.println(bc.getStatus()+"-"+bc.getPlayer().getSurname());
+							}
+							
 						}
 					}
 					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$PartnershipData$BottomInfoPosition$ExtrasGrp$LanguageGrp$Language1$ExtrasValue*GEOM*TEXT SET " + inn.getTotalExtras() + "\0");
@@ -286,9 +290,6 @@ public class Doad extends Scene{
 					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll*FUNCTION*Omo*vis_con SET 1 \0");
 					
 					for (BattingCard bc : inn.getBattingCard()) {
-						List<Integer> Run_List=Arrays.asList(bc.getRuns());  
-						Collections.sort(Run_List);
-						System.out.println(Run_List);
 					}
 					for (BowlingCard boc : inn.getBowlingCard()) {
 						
