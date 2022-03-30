@@ -88,7 +88,7 @@ function processCricketProcedures(whatToProcess)
 	
 	switch(whatToProcess) {
 	case 'READ-MATCH-AND-POPULATE':
-		valueToProcess = $('#match_file_timestamp').val();
+		valueToProcess = $('#matchFileTimeStamp').val();
 		break;
 	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
@@ -106,7 +106,12 @@ function processCricketProcedures(whatToProcess)
         dataType : 'json',
         success : function(data) {
         	switch(whatToProcess) {
+			case 'READ-MATCH-AND-POPULATE':
+				addItemsToList(whatToProcess,data);
+				$('#matchFileTimeStamp').val(session_match.matchFileTimeStamp);
+				break;
 			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY':
+			//$('#matchFileTimeStamp').val(session_match.matchFileTimeStamp);
 				if (data.status.toUpperCase() == 'SUCCESS') {
 		        	switch(whatToProcess) {
 					case 'POPULATE-SCORECARD': 

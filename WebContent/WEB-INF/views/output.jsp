@@ -35,8 +35,8 @@
 			    <label class="col-sm-4 col-form-label text-left">IP Address: ${session_viz_ip_address} </label>
 			    <label class="col-sm-4 col-form-label text-left">Port Number: ${session_viz_port_number} </label>
 			    <label class="col-sm-4 col-form-label text-left">Broadcaster: ${session_selected_broadcaster} </label>
-			    <label class="col-sm-4 col-form-label text-left">Total Runs: ${session_selected_match} </label>
-			    <label class="col-sm-4 col-form-label text-left">Total Overs: ${session_selected_broadcaster} </label>
+			    <label class="col-sm-4 col-form-label text-left">Total Runs: ${session_match_inn.totalRuns} </label>
+			    <label class="col-sm-4 col-form-label text-left">Total Overs: ${session_match.maxOvers} </label>
 			    <label class="col-sm-4 col-form-label text-left">Current BatsMan-1: ${session_selected_broadcaster} </label>
 			    <label class="col-sm-4 col-form-label text-left">Current BatsMan-2: ${session_selected_broadcaster} </label>
 			    <label class="col-sm-4 col-form-label text-left">Current Bowler: ${session_selected_broadcaster} </label>
@@ -58,6 +58,7 @@
 </div>
 <input type="hidden" name="selected_broadcaster" id="selected_broadcaster" value="${session_selected_broadcaster}"/>
 <input type="hidden" name="selected_match_max_overs" id="selected_match_max_overs" value="${session_match.maxOvers}"/>
+<input type="hidden" id="matchFileTimeStamp" name="matchFileTimeStamp" value="${session_match.matchFileTimeStamp}"></input>
 </form:form>
 </body>
 </html>

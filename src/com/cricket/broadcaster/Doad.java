@@ -98,7 +98,7 @@ public class Doad extends Scene{
 								print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$RowAnim$BatOmo$" + cont_name + "$RightText$LanguageGrp$Language1$BallPlayerName*GEOM*TEXT SET " + " " + "\0");
 								
 							}
-								
+						
 
 						}
 					}
@@ -247,12 +247,16 @@ public class Doad extends Scene{
 					}
 					
 					for (BattingCard bc : inn.getBattingCard()) {
-						row_id = row_id + 1;
 						if(row_id <= 11) {
-							if(bc.getStatus().equalsIgnoreCase(CricketUtil.STILL_TO_BAT)) {
+							if(row_id == (inn.getTotalWickets()+1)) {
+								row_id = row_id + 1;
+								print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo*FUNCTION*Omo*vis_con SET 1"+ " \0");
+							}
+							else if(bc.getStatus().equalsIgnoreCase(CricketUtil.STILL_TO_BAT)) {
+								row_id = row_id + 1;
 								print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo*FUNCTION*Omo*vis_con SET 2"+ " \0");
 								print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$RowAnim$PartOmo$StiilToBatPlayerGrp$LeftPlayeNameAll$LeftPlayeName*GEOM*TEXT SET "+bc.getPlayer().getSurname()+" \0");
-								System.out.println(bc.getStatus()+"-"+bc.getPlayer().getSurname());
+
 							}
 							
 						}
