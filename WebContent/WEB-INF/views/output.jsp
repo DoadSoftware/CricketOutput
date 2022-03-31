@@ -30,17 +30,42 @@
           <div class="card-body">
 			  <div id="select_graphic_options_div" style="display:none;">
 			  </div>
+			  
 			  <div id="captions_div" class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
 			    <label class="col-sm-4 col-form-label text-left">Match: ${session_selected_match} </label>
 			    <label class="col-sm-4 col-form-label text-left">IP Address: ${session_viz_ip_address} </label>
 			    <label class="col-sm-4 col-form-label text-left">Port Number: ${session_viz_port_number} </label>
 			    <label class="col-sm-4 col-form-label text-left">Broadcaster: ${session_selected_broadcaster} </label>
-			    <label class="col-sm-4 col-form-label text-left">Total Runs: ${session_match_inn.totalRuns} </label>
-			    <label class="col-sm-4 col-form-label text-left">Total Overs: ${session_match.maxOvers} </label>
-			    <label class="col-sm-4 col-form-label text-left">Current BatsMan-1: ${session_selected_broadcaster} </label>
-			    <label class="col-sm-4 col-form-label text-left">Current BatsMan-2: ${session_selected_broadcaster} </label>
-			    <label class="col-sm-4 col-form-label text-left">Current Bowler: ${session_selected_broadcaster} </label>
-			  		
+			    <label class="col-sm-4 col-form-label text-left">Home Team: ${session_match.homeTeam.fullname} </label>
+			    <label class="col-sm-4 col-form-label text-left">Away Team: ${session_match.awayTeam.fullname} </label>
+			   
+  				<c:forEach var="inning" items="${session_match.inning}">
+  					<label class="col-sm-4 col-form-label text-left">Current Inning:${inning.inningNumber}</label>
+  					<label class="col-sm-4 col-form-label text-left">Total Runs:${inning.totalRuns} </label>
+  					<label class="col-sm-4 col-form-label text-left">Total Overs:${inning.totalOvers} </label>
+  					
+  					<c:forEach var="battingcard" items="${inning.battingCard}">
+  						<c:if test="${(battingcard.onStrike == 'YES')}">
+							<label class="col-sm-4 col-form-label text-left">Batsman-OnStriker: ${battingcard.player.surname} </label>
+						</c:if>
+						<c:if test="${(battingcard.onStrike == 'NO')}">
+							<label class="col-sm-4 col-form-label text-left">Batsman-NonStriker: ${battingcard.player.surname} </label>
+						</c:if>
+  					</c:forEach>
+  					
+  					<c:forEach var="bowlingcard" items="${inning.bowlingCard}">
+						<c:choose>
+							<c:when test="${(bowlingcard.status == 'CURRENTBOWLER')}">
+								<label class="col-sm-4 col-form-label text-left">Current Bowler:${bowlingcard.player.surname}</label>
+							</c:when>
+							<c:otherwise>
+								<c:if test="${(bowlingcard.status == 'LASTBOWLER')}">
+									<label class="col-sm-4 col-form-label text-left">Current Bowler:${bowlingcard.player.surname}</label>
+								</c:if>
+							</c:otherwise>
+							</c:choose>	
+  					</c:forEach>
+				</c:forEach>
 			    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="scorecard_graphic_btn" id="scorecard_graphic_btn" onclick="processUserSelection(this)"> ScoreCard </button>
 			    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
