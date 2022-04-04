@@ -138,7 +138,7 @@ public class Doad extends Scene{
 
 					for (BowlingCard boc : inn.getBowlingCard()) {
 						row_id = row_id + 1;
-						
+					
 						print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$Row" + row_id + "$Dehighlight$LeftText$Language1$PlayerName*GEOM*TEXT SET " + boc.getPlayer().getSurname() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$Row" + row_id + "$Dehighlight$LeftText$Language1$PlayerRuns*GEOM*TEXT SET " + boc.getWickets() + slashOrDash + String.valueOf(boc.getRuns())  + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$Row" + row_id + "$Dehighlight$RightText$Value$OverValue*GEOM*TEXT SET " + CricketFunctions.OverBalls(boc.getOvers(),boc.getBalls()) +"\0");
@@ -154,6 +154,14 @@ public class Doad extends Scene{
 								if(inn.getTotalWickets()>=0 && inn.getTotalWickets() <= 10) {
 									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow2$FowValues1$FowValue"+fow.getFowNumber()+"*GEOM*TEXT SET "+fow.getFowNumber()+slashOrDash+fow.getFowRuns()+"\0");
 									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow3$FowValues2$FowValue"+fow.getFowNumber()+"*GEOM*TEXT SET "+fow.getFowNumber()+slashOrDash+fow.getFowRuns()+"\0");
+									
+									//remove the best over from the bowling card for now
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$group*Active SET 0"+" "+"\0");
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$BestHead$Language1*GEOM*TEXT SET "+" "+"\0");
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$BestValue*GEOM*TEXT SET "+" "+"\0");
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$BestOver$Language1*GEOM*TEXT SET "+" "+"\0");
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$PlayerFirstName$Language1*GEOM*TEXT SET "+" "+"\0");
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$PlayerLastName$Language1*GEOM*TEXT SET "+" "+"\0");
 									
 									for(int value=10; inn.getTotalWickets() < value;value--) {
 										if(value < 6) {
@@ -220,14 +228,23 @@ public class Doad extends Scene{
 							}
 						}
 						
-						if(ps.getPartnershipNumber()<inn.getPartnerships().size()) {
-							omo_num = 4;
-							cont_name = "Highlight";
+						if(inn.getPartnerships().size() >= 10) {
+							if(ps.getPartnershipNumber()<=inn.getPartnerships().size()) {
+								omo_num = 4;
+								cont_name = "Highlight";
+							}
 						}
-						else if(ps.getPartnershipNumber() >= inn.getPartnerships().size()) {
-							omo_num = 3;
-							cont_name = "Dehighlight";
+						else {
+							if(ps.getPartnershipNumber()<inn.getPartnerships().size()) {
+								omo_num = 4;
+								cont_name = "Highlight";
+							}
+							else if(ps.getPartnershipNumber() >= inn.getPartnerships().size()) {
+								omo_num = 3;
+								cont_name = "Dehighlight";
+							}
 						}
+						
 						
 						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$PartOmo*FUNCTION*Omo*vis_con SET "+String.valueOf(omo_num)+ " \0");
 						
@@ -237,7 +254,8 @@ public class Doad extends Scene{
 						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$"+cont_name+"$ScoreGrp$PlayerBalls*GEOM*TEXT SET " + ps.getTotalBalls() + "\0");		
 					}
 					if(inn.getPartnerships().size() >= 10) {
-						//hide 11 strap in partnership
+						row_id = row_id + 1; 
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$PartOmo*FUNCTION*Omo*vis_con SET 0"+ " \0");
 					}
 					else {
 						for (BattingCard bc : inn.getBattingCard()) {
