@@ -18,6 +18,7 @@ import com.cricket.util.CricketUtil;
 @SuppressWarnings("unused")
 public class Doad extends Scene{
 
+	private static final String BottomLine = null;
 	private String status;
 	
 	public Doad() {
@@ -294,114 +295,271 @@ public class Doad extends Scene{
 		} else if (match.getInning() == null) {
 			this.status = "ERROR: Match Summary's inning is null";
 		} else {
-			
+			int total_inn = 0;
 			for(Inning inn : match.getInning()) {
 				if(inn.getInningStatus() != null) {
-					int row_id = 0; String teamname = ""; int total_runs = 0; String overs_text = "";
-					
-					for(int i = 1; i <= whichInning; i++) {
+					total_inn = total_inn + 1;
+				}
+			}
+			if(whichInning > total_inn) {
+				whichInning = total_inn;
+			}
+			int row_id = 0; String teamname = ""; int total_runs = 0; String overs_text = "";
+			for(Inning inn : match.getInning()) {
+				if(inn.getInningNumber() <= whichInning) {
+					if(whichInning == 1) {
 						//System.out.println(i);
-						if(i == 1) {
-							row_id = 0;
-							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll*FUNCTION*Omo*vis_con SET 1 \0");
-						}
-						else {
-							row_id = 5;
-							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll*FUNCTION*Omo*vis_con SET 2	 \0");
-						}
-						row_id = row_id + 1;
-						
-						if(match.getInning().get(i-1).getBattingTeamId() == match.getHomeTeamId()) {
-							
-							teamname = match.getHomeTeam().getFullname();
-							overs_text = CricketFunctions.OverBalls(match.getInning().get(i-1).getTotalOvers(),match.getInning().get(i-1).getTotalBalls());
-							total_runs = match.getInning().get(i-1).getTotalRuns();
-							
-						}
-						else {
-							
-							teamname = match.getAwayTeam().getFullname();
-							overs_text = CricketFunctions.OverBalls(match.getInning().get(i-1).getTotalOvers(),match.getInning().get(i-1).getTotalBalls());
-							total_runs = match.getInning().get(i-1).getTotalRuns();
-							
-						}
-						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$TeamName1*GEOM*TEXT SET " + teamname + "\0");
-						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$Innings1*GEOM*TEXT SET " + "Over " + overs_text + "\0");
-						if(inn.getTotalWickets() >= 10) {
-							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$TotalGrp$TotalScore*GEOM*TEXT SET " + total_runs + "\0");
-						}
-						else {
-							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$TotalGrp$TotalScore*GEOM*TEXT SET " + total_runs + slashOrDash + String.valueOf(inn.getTotalWickets()) + "\0");	
-						}
-						
-						Collections.sort(inn.getBattingCard(),new CricketFunctions.BatsmenScoreComparator());
-						for(BattingCard bc : match.getInning().get(i-1).getBattingCard()) {
-							row_id = row_id + 1;
-							if(bc.getStatus().equalsIgnoreCase(CricketUtil.NOT_OUT)) {
-								print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() +"*"+ "\0");
-							}
-							else {
-								print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() + "\0");
-							}
-							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
-							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
-							
-							if(i == 1 && row_id >= 5) {
-								break;
-							}
-							else if(i == 2 && row_id >= 10) {
-								break;
-							}
+						row_id = 0;
+						print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$SummaryData$DataAll*FUNCTION*Omo*vis_con SET" + whichInning + "\0");
 					}
-					if(i == 1) {
+					else {
+						row_id = 5;
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll*FUNCTION*Omo*vis_con SET 2 \0");
+					}
+					row_id = row_id + 1;
+					//Toss
+					if(match.getTossWinningTeam() == inn.getBattingTeamId()) {
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll$" + whichInning + "Innings$Row" + row_id + "$Toss*FUNCTION*Omo*vis_con SET 1 \0");
+					}
+					else {
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll$" + whichInning + "Innings$Row" + row_id + "$Toss*FUNCTION*Omo*vis_con SET 0 \0");
+					}
+					overs_text = CricketFunctions.OverBalls(inn.getTotalOvers(),inn.getTotalBalls());
+					total_runs = inn.getTotalRuns();
+					
+					if(inn.getBattingTeamId() == match.getHomeTeamId()) {
+						
+						teamname = match.getHomeTeam().getFullname();	
+					}
+					else {
+						
+						teamname = match.getAwayTeam().getFullname();
+					}
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$TeamName1*GEOM*TEXT SET " + teamname + "\0");
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$Innings1*GEOM*TEXT SET " + "Over " + overs_text + "\0");
+					if(inn.getTotalWickets() >= 10) {
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$TotalGrp$TotalScore*GEOM*TEXT SET " + total_runs + "\0");
+					}
+					else {
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$TotalGrp$TotalScore*GEOM*TEXT SET " + total_runs + slashOrDash + String.valueOf(inn.getTotalWickets()) + "\0");	
+					}
+					
+					Collections.sort(inn.getBattingCard(),new CricketFunctions.BatsmenScoreComparator());
+					for(BattingCard bc : inn.getBattingCard()) {
+						row_id = row_id + 1;
+						if(bc.getStatus().equalsIgnoreCase(CricketUtil.NOT_OUT)) {
+							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() +"*"+ "\0");
+						}
+						else {
+							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() + "\0");
+						}
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
+						
+						if(whichInning == 1 && row_id >= 5) {
+							break;
+						}
+						else if(whichInning == 2 && row_id >= 10) {
+							break;
+						}
+					}
+					if(whichInning == 1) {
 						row_id = 1;
 					}
 					else {
 						row_id = 6;
 					}
 					Collections.sort(inn.getBowlingCard(),new CricketFunctions.BowlerFiguresComparator());
-					for(BowlingCard boc : match.getInning().get(i-1).getBowlingCard()) {
+					for(BowlingCard boc : inn.getBowlingCard()) {
 						row_id = row_id + 1;
 						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$RightPlayer$RightText$LanguageGrp$PlayerName*GEOM*TEXT SET " + boc.getPlayer().getSurname() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$RightPlayer$RightText$PlayerFigures*GEOM*TEXT SET " + boc.getWickets() + slashOrDash + boc.getRuns() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$RightPlayer$RightText$PlayerBalls*GEOM*TEXT SET " + boc.getOvers() + "\0");
 						
-						if(i == 1 && row_id >= 5) {
+						if(whichInning== 1 && row_id >= 5) {
 							break;
 						}
-						else if(i == 2 && row_id >= 10) {
+						else if(whichInning == 2 && row_id >= 10) {
 							break;
 						}
 					}
+					
 				}
+			//print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll*FUNCTION*Omo*vis_con SET " + whichInning + "\0");
+			//System.out.println(whichInning);
+			/*for(int i = 1; i <= whichInning ; i++) {
+				//System.out.println(whichInning);
+				if(i == 1) {
+					System.out.println(i);
+					row_id = 0;
+					print_writer.println("-1 RENDERER*TREE*$Main$All$AllDataGrp$SummaryData$DataAll*FUNCTION*Omo*vis_con SET 1 \0");
+				}
+				else {
+					row_id = 5;
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll*FUNCTION*Omo*vis_con SET 2 \0");
+				}
+				row_id = row_id + 1;
+				//Toss
+				if(match.getTossWinningTeam() == match.getInning().get(i-1).getBattingTeamId()) {
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll$" + whichInning + "Innings$Row" + row_id + "$Toss*FUNCTION*Omo*vis_con SET 1 \0");
+				}
+				else {
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$DataAll$" + whichInning + "Innings$Row" + row_id + "$Toss*FUNCTION*Omo*vis_con SET 0 \0");
+				}
+				overs_text = CricketFunctions.OverBalls(match.getInning().get(i-1).getTotalOvers(),match.getInning().get(i-1).getTotalBalls());
+				total_runs = match.getInning().get(i-1).getTotalRuns();
+				
+				if(match.getInning().get(i-1).getBattingTeamId() == match.getHomeTeamId()) {
+					
+					teamname = match.getHomeTeam().getFullname();	
+				}
+				else {
+					
+					teamname = match.getAwayTeam().getFullname();
+				}
+				print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$TeamName1*GEOM*TEXT SET " + teamname + "\0");
+				print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$Innings1*GEOM*TEXT SET " + "Over " + overs_text + "\0");
+				if(match.getInning().get(i-1).getTotalWickets() >= 10) {
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$TotalGrp$TotalScore*GEOM*TEXT SET " + total_runs + "\0");
+				}
+				else {
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$TotalGrp$TotalScore*GEOM*TEXT SET " + total_runs + slashOrDash + String.valueOf(match.getInning().get(i-1).getTotalWickets()) + "\0");	
+				}
+				
+				Collections.sort(match.getInning().get(i-1).getBattingCard(),new CricketFunctions.BatsmenScoreComparator());
+				for(BattingCard bc : match.getInning().get(i-1).getBattingCard()) {
+					row_id = row_id + 1;
+					if(bc.getStatus().equalsIgnoreCase(CricketUtil.NOT_OUT)) {
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() +"*"+ "\0");
+					}
+					else {
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() + "\0");
+					}
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
+					
+					if(i == 1 && row_id >= 5) {
+						break;
+					}
+					else if(i == 2 && row_id >= 10) {
+						break;
+					}
+				}
+				if(i == 1) {
+					row_id = 1;
+				}
+				else {
+					row_id = 6;
+				}
+				Collections.sort(match.getInning().get(i-1).getBowlingCard(),new CricketFunctions.BowlerFiguresComparator());
+				for(BowlingCard boc : match.getInning().get(i-1).getBowlingCard()) {
+					row_id = row_id + 1;
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$RightPlayer$RightText$LanguageGrp$PlayerName*GEOM*TEXT SET " + boc.getPlayer().getSurname() + "\0");
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$RightPlayer$RightText$PlayerFigures*GEOM*TEXT SET " + boc.getWickets() + slashOrDash + boc.getRuns() + "\0");
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$RightPlayer$RightText$PlayerBalls*GEOM*TEXT SET " + boc.getOvers() + "\0");
+					
+					if(i == 1 && row_id >= 5) {
+						break;
+					}
+					else if(i == 2 && row_id >= 10) {
+						break;
+					}
 				}
 			}
+		}*/
 		this.status = "SUCCESS";
-	
 	}
-	
+		}
 }
-	public static String TossResult(Match match) {
-		String Toss_Result = "",teamname="";
-		if(match.getTossWinningTeam() == match.getHomeTeamId()) {
-			teamname = match.getHomeTeam().getFullname();
-			if(match.getTossWinningDecision()==CricketUtil.BAT) {
-				Toss_Result=(teamname+"WON THE TOSS AND CHOSE TO BAT");
+	public static String TossResult(Match match,int Inning,String TossType,String DecisionType) {
+		String teamname="",Decision="";
+		for(Inning inn : match.getInning()) {
+			if(match.getTossWinningTeam() == inn.getBattingTeamId()) {
+				teamname = match.getHomeTeam().getFullname();
+				if(match.getTossWinningDecision()==CricketUtil.BAT) {
+					Decision = "BAT";
+				}
+				else {
+					Decision = "FIELD";
+				}
 			}
 			else {
-				Toss_Result = (teamname+"WON THE TOSS AND CHOSE TO FIELD");
+				teamname = match.getAwayTeam().getFullname();
+				if(match.getTossWinningDecision()==CricketUtil.BAT) {
+					Decision = "BAT";
+				}
+				else {
+					Decision = "FIELD";
+				}
 			}
 		}
-		else {
-			teamname = match.getAwayTeam().getFullname();
-			if(match.getTossWinningDecision()==CricketUtil.BAT) {
-				Toss_Result=(teamname+"WON THE TOSS AND CHOSE TO BAT");
-			}
-			else {
-				Toss_Result = (teamname+"WON THE TOSS AND CHOSE TO FIELD");
-			}
-			
-		}
-		return Toss_Result;
+		return teamname+" " + "WON THE TOSS AND CHOOSE TO " + Decision;
 	}
+	
+	public static String generateMatchSummaryStatus(int whichInning,Match match,int TargetOvers, int RequiredRuns, int RequiredBalls,int TargetRuns) {
+		int WicketsLeft = 0;
+		String MoreTxt = "",NeedTxtToUse = "",TeamNameToUse = "",BottomLineText = "";
+		
+		TargetRuns = match.getInning().get(0).getTotalRuns() + 1;
+		if(match.getTargetRuns() > 0) {
+			TargetRuns = match.getTargetRuns();
+		}
+		TargetOvers = match.getMaxOvers();
+		if(match.getTargetOvers() > 0) {
+			TargetOvers = match.getTargetOvers();
+		}
+		RequiredRuns = TargetRuns - match.getInning().get(1).getTotalRuns();
+		if(RequiredRuns <= 0) {
+			RequiredRuns = 0;
+		}
+		RequiredBalls = (TargetOvers * 6) - match.getInning().get(1).getTotalOvers();
+		if(RequiredBalls <= 0) {
+			RequiredBalls = 0;
+		}
+		//return String.valueOf(RequiredRuns);
+		if (RequiredRuns > 0 && RequiredBalls > 0 && WicketsLeft > 0)
+		  {
+			 if (whichInning == 2)
+			 {
+				if (match.getInning().get(1).getTotalRuns() > 0)
+				{
+				   MoreTxt = " more";
+				   NeedTxtToUse = " need ";
+				   TeamNameToUse = match.getInning().get(1).getBatting_team().getShortname(); 
+				   BottomLineText = TeamNameToUse + " " + NeedTxtToUse + " " + RequiredRuns + MoreTxt + " run" + " to win from ";
+				}
+			 }
+			 else {
+				 BottomLineText = "Current RunRate "+ match.getInning().get(1).getRunRate();
+			 }
+			
+			 if (RequiredBalls >= 150)
+			 {
+				BottomLineText = BottomLineText + CricketFunctions.OverBalls(match.getInning().get(1).getTotalOvers(),match.getInning().get(1).getTotalBalls()) + " over";
+				  
+			}
+			 else {
+					  BottomLineText = BottomLineText + RequiredBalls + " ball";
+			}
+			return BottomLineText;
+		 }
+		  else
+		  {
+			 if (RequiredRuns <= 0)
+			 {
+				TeamNameToUse = match.getInning().get(1).getBatting_team().getShortname();
+				BottomLineText = TeamNameToUse + " win by " + WicketsLeft + " wicket";
+			}
+			 else // (Runs required still greater than one)
+			 {
+				 TeamNameToUse = match.getInning().get(1).getBowling_team().getShortname();
+				 BottomLineText = TeamNameToUse + " win by " + (RequiredRuns - 1) + " run";
+			 }
+	
+			return BottomLineText;
+		 }
+		
+	}
+
+	
 }
