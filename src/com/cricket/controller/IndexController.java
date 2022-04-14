@@ -143,10 +143,14 @@ public class IndexController
 				case "POPULATE-PARTNERSHIP":
 					this_doad.populatePartnership(new PrintWriter(session_socket.getOutputStream(), true), 
 							Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+					break;
 				case "POPULATE-MATCHSUMMARY":
+					System.out.println("valTOProcess=" + valueToProcess);
 					this_doad.populateMatchsummary(new PrintWriter(session_socket.getOutputStream(), true), 
 							Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+					break;
 				}
+				
 				return JSONObject.fromObject(this_doad).toString();
 			}
 		case "POPULATE-SELECT-PLAYER": 
