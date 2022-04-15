@@ -34,12 +34,14 @@ import net.sf.json.JSONObject;
 
 @Controller
 @SessionAttributes(value={"session_match","session_selected_match","session_viz_ip_address","session_viz_port_number",
-		"session_viz_scene","session_socket","session_selected_broadcaster", "session_which_graphics_onscreen"})
+		"session_socket","session_selected_broadcaster", "session_which_graphics_onscreen"})
 public class IndexController 
 {
 	@Autowired
 	CricketService cricketService;
 
+	String viz_scene_path;
+	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String initialisePage(ModelMap model)  
 	{
@@ -65,7 +67,6 @@ public class IndexController
 	public String outputPage(ModelMap model,
 			@ModelAttribute("session_viz_ip_address") String session_viz_ip_address,
 			@ModelAttribute("session_viz_port_number") int session_viz_port_number,
-			@ModelAttribute("session_viz_scene") String session_viz_scene,
 			@ModelAttribute("session_selected_match") String session_selected_match,
 			@ModelAttribute("session_socket") Socket session_socket,
 			@ModelAttribute("session_which_graphics_onscreen") String session_which_graphics_onscreen,
@@ -80,7 +81,7 @@ public class IndexController
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
 	{
 		session_selected_match = selectedMatch; session_viz_ip_address = vizIPAddresss; session_selected_broadcaster = select_broadcaster;
-		session_viz_port_number = Integer.parseInt(vizPortNumber); session_viz_scene = vizScene; 
+		session_viz_port_number = Integer.parseInt(vizPortNumber); viz_scene_path = vizScene; 
 		
 		session_socket = new Socket(vizIPAddresss, session_viz_port_number);
 		new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
@@ -106,7 +107,6 @@ public class IndexController
 	public @ResponseBody String processCricketProcedures(
 			@ModelAttribute("session_match") Match session_match,
 			@ModelAttribute("session_socket") Socket session_socket,
-			@ModelAttribute("session_viz_scene") String session_viz_scene,
 			@ModelAttribute("session_selected_match") String session_selected_match,
 			@ModelAttribute("session_selected_broadcaster") String session_selected_broadcaster,
 			@ModelAttribute("session_which_graphics_onscreen") String session_which_graphics_onscreen,
@@ -134,20 +134,21 @@ public class IndexController
 				switch (whatToProcess.toUpperCase()) {
 				case "POPULATE-SCORECARD": 
 					this_doad.populateScorecard(new PrintWriter(session_socket.getOutputStream(), true), 
-						Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+						Integer.valueOf(valueToProcess), session_match, viz_scene_path);
 					break;
 				case "POPULATE-BOWLINGCARD":
 					this_doad.populateBowlingcard(new PrintWriter(session_socket.getOutputStream(), true), 
-						Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+						Integer.valueOf(valueToProcess), session_match, viz_scene_path);
 					break;
 				case "POPULATE-PARTNERSHIP":
 					this_doad.populatePartnership(new PrintWriter(session_socket.getOutputStream(), true), 
-							Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+							Integer.valueOf(valueToProcess), session_match, viz_scene_path);
 					break;
 				case "POPULATE-MATCHSUMMARY":
-					System.out.println("valTOProcess=" + valueToProcess);
+					System.out.println("valToProcess=" + valueToProcess);
+					System.out.println("viz_scene_path=" + viz_scene_path);
 					this_doad.populateMatchsummary(new PrintWriter(session_socket.getOutputStream(), true), 
-							Integer.valueOf(valueToProcess), session_match, session_viz_scene);
+							Integer.valueOf(valueToProcess), session_match, viz_scene_path);
 					break;
 				}
 				
@@ -160,10 +161,6 @@ public class IndexController
 		}
 	}
 
-	@ModelAttribute("session_viz_scene")
-	public String session_viz_scene(){
-		return new String();
-	}
 	@ModelAttribute("session_viz_ip_address")
 	public String session_viz_ip_address(){
 		return new String();
