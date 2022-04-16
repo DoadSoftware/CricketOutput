@@ -145,8 +145,6 @@ public class IndexController
 							Integer.valueOf(valueToProcess), session_match, viz_scene_path);
 					break;
 				case "POPULATE-MATCHSUMMARY":
-					System.out.println("valToProcess=" + valueToProcess);
-					System.out.println("viz_scene_path=" + viz_scene_path);
 					this_doad.populateMatchsummary(new PrintWriter(session_socket.getOutputStream(), true), 
 							Integer.valueOf(valueToProcess), session_match, viz_scene_path);
 					break;

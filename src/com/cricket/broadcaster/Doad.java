@@ -111,6 +111,11 @@ public class Doad extends Scene{
 					}
 				}
 			}
+			
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Battingcard.png In 0.700 BattingCardIn 2.600 \0");
+
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BattingCardIn START \0");
 			this.status = "SUCCESS";
 		}
 	}
@@ -189,6 +194,11 @@ public class Doad extends Scene{
 					}
 				}
 			}
+			
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Bowlingcard.png In 0.700 BowlingCardIn 2.500 \0");
+
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BowlingCardIn START \0");
 			this.status = "SUCCESS";
 		}
 	}
@@ -286,6 +296,11 @@ public class Doad extends Scene{
 					}
 				}
 			}
+			
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/partnership.png In 0.700 PartnershipIn 2.800 \0");
+
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*PartnershipIn START \0");
 			this.status = "SUCCESS";
 		}
 	}
@@ -310,16 +325,18 @@ public class Doad extends Scene{
 			if(total_inn > 0 && whichInning > total_inn) {
 				whichInning = total_inn;
 			}
-			
-			System.out.println("whichInning = " + whichInning);
-			print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$DataAll*FUNCTION*Omo*vis_con SET " + whichInning + "/0");
+			System.out.println("Inning=" + whichInning);
+			print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$DataAll*FUNCTION*Omo*vis_con SET " + whichInning + " \0");
+			//print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$DataAll$" +  whichInning + "Innings*ACTIVE SET 1 \0");
 			
 			for(int i = 1; i <= whichInning ; i++) {
 
 				if(i == 1) {
 					row_id = 0;
+					max_Strap = 5;
 				} else {
 					row_id = 5;
+					max_Strap = 10;
 				}
 				row_id = row_id + 1;
 				
@@ -347,41 +364,42 @@ public class Doad extends Scene{
 				else {
 					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+ whichInning +"Innings$Row"+row_id+"$TotalGrp$TotalScore*GEOM*TEXT SET " + match.getInning().get(i-1).getTotalRuns() + slashOrDash + String.valueOf(match.getInning().get(i-1).getTotalWickets()) + "\0");	
 				}
-				
-				Collections.sort(match.getInning().get(i-1).getBattingCard(),new CricketFunctions.BatsmenScoreComparator());
-
-				for(BattingCard bc : match.getInning().get(i-1).getBattingCard()) {
-				
-					row_id = row_id + 1;
-					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$" + whichInning + "Innings$Row" + row_id + "$LeftPlayer$LeftText*ACTIVE SET 1 \0");
-					if(bc.getStatus().equalsIgnoreCase(CricketUtil.NOT_OUT)) {
-						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() +"*"+ "\0");
-					} else {
-						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() + "\0");
-					}
-					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
-					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
+				if(match.getInning().get(i-1).getBattingCard() != null) {
 					
-					if(i == 1 && row_id >= 5) {
-						break;
-					}
-					else if(i == 2 && row_id >= 10) {
-						break;
+					Collections.sort(match.getInning().get(i-1).getBattingCard(),new CricketFunctions.BatsmenScoreComparator());
+					for(BattingCard bc : match.getInning().get(i-1).getBattingCard()) {
+					
+						row_id = row_id + 1;
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$" + whichInning + "Innings$Row" + row_id + "$LeftPlayer*ACTIVE SET 1 \0");
+						if(bc.getStatus().equalsIgnoreCase(CricketUtil.NOT_OUT)) {
+							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() +"*"+ "\0");
+						} else {
+							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() + "\0");
+						}
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
+						
+						if(i == 1 && row_id >= 5) {
+							break;
+						}else if(i == 2 && row_id >= 10) {
+							break;
+						}
 					}
 				}
+				System.out.println("RowId="+ row_id);
+				System.out.println("MaxStrap="+ max_Strap);
+				for(int j = row_id + 1; j <= max_Strap; j++) {
+					System.out.println("Val="+ j);
+					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$" + whichInning + "Innings$Row"+ j + "$LeftPlayer*ACTIVE SET 0 \0");
+				}
+				
 				if(i == 1) {
 					row_id = 1;
-					max_Strap = 5;
 				}
 				else {
 					row_id = 6;
-					max_Strap = 10;
 				}
-				
-				for(int j = row_id + 1; j <= max_Strap; j++) {
-					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$" + whichInning + "Innings$Row"+ j + "$LeftPlayer$LeftText*ACTIVE SET 0 \0");
-				}
-				
+
 				if(match.getInning().get(i-1).getBowlingCard() != null) {
 					
 					Collections.sort(match.getInning().get(i-1).getBowlingCard(),new CricketFunctions.BowlerFiguresComparator());
@@ -411,7 +429,7 @@ public class Doad extends Scene{
 
 			print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$BottomInfoPosition$InfoTextAll$InfoText*GEOM*TEXT SET " + generateMatchSummaryStatus(whichInning, match, "FULL") + " \0");
 			
-			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/matchsummary.png In 1.400 SummaryIn 2.400 \0");
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/matchsummary.png In 0.700 SummaryIn 2.400 \0");
 
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*SummaryIn START \0");
