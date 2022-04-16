@@ -325,9 +325,13 @@ public class Doad extends Scene{
 			if(total_inn > 0 && whichInning > total_inn) {
 				whichInning = total_inn;
 			}
-			System.out.println("Inning=" + whichInning);
-			print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$DataAll*FUNCTION*Omo*vis_con SET " + whichInning + " \0");
-			//print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$DataAll$" +  whichInning + "Innings*ACTIVE SET 1 \0");
+			for(int i = 1; i <= 4 ; i++) {
+				if(i == whichInning) {
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$DataAll$" +  i + "Innings*ACTIVE SET 1 \0");
+				} else {
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$SummaryData$DataAll$" +  i + "Innings*ACTIVE SET 0 \0");
+				}
+			}
 			
 			for(int i = 1; i <= whichInning ; i++) {
 
@@ -386,10 +390,8 @@ public class Doad extends Scene{
 						}
 					}
 				}
-				System.out.println("RowId="+ row_id);
-				System.out.println("MaxStrap="+ max_Strap);
+
 				for(int j = row_id + 1; j <= max_Strap; j++) {
-					System.out.println("Val="+ j);
 					print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$" + whichInning + "Innings$Row"+ j + "$LeftPlayer*ACTIVE SET 0 \0");
 				}
 				
