@@ -92,7 +92,7 @@ public class Doad extends Scene{
 							print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$" + cont_name + "$LeftText$Language1$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
 							print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$" + cont_name + "$LeftText$Language1$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
 							
-							if(bc.getStatus().equalsIgnoreCase(CricketUtil.OUT)) {
+							if(bc.getStatus().toUpperCase().equalsIgnoreCase(CricketUtil.OUT)) {
 								print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$" + cont_name + "$RightText$Language1$WicketPlayerName*GEOM*TEXT SET " + bc.getHowOutPartOne() + "\0");
 								print_writer.println("-1 RENDERER*TREE*$Main$BattingData$Row" + row_id + "$" + cont_name + "$RightText$Language1$BallPlayerName*GEOM*TEXT SET " + bc.getHowOutPartTwo() + "\0");
 							}
@@ -112,7 +112,7 @@ public class Doad extends Scene{
 				}
 			}
 			
-			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Battingcard.png In 0.700 BattingCardIn 2.600 \0");
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Battingcard.png In 1.400 BattingCardIn 2.600 \0");
 
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BattingCardIn START \0");
@@ -195,7 +195,7 @@ public class Doad extends Scene{
 				}
 			}
 			
-			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Bowlingcard.png In 0.700 BowlingCardIn 2.500 \0");
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Bowlingcard.png In 1.400 BowlingCardIn 2.500 \0");
 
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BowlingCardIn START \0");
@@ -277,7 +277,7 @@ public class Doad extends Scene{
 									row_id = row_id + 1;
 									print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$PartOmo*FUNCTION*Omo*vis_con SET 1"+ " \0");
 								}
-								else if(bc.getStatus().equalsIgnoreCase(CricketUtil.STILL_TO_BAT)) {
+								else if(bc.getStatus().toUpperCase().equalsIgnoreCase(CricketUtil.STILL_TO_BAT)) {
 									row_id = row_id + 1;
 									print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$PartOmo*FUNCTION*Omo*vis_con SET 2"+ " \0");
 									print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$StiilToBatPlayerGrp$LeftPlayeName*GEOM*TEXT SET "+bc.getPlayer().getSurname()+" \0");
@@ -297,7 +297,7 @@ public class Doad extends Scene{
 				}
 			}
 			
-			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/partnership.png In 0.700 PartnershipIn 2.800 \0");
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/partnership.png In 1.400 PartnershipIn 2.800 \0");
 
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*PartnershipIn START \0");
@@ -372,21 +372,22 @@ public class Doad extends Scene{
 					
 					Collections.sort(match.getInning().get(i-1).getBattingCard(),new CricketFunctions.BatsmenScoreComparator());
 					for(BattingCard bc : match.getInning().get(i-1).getBattingCard()) {
-					
-						row_id = row_id + 1;
-						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$" + whichInning + "Innings$Row" + row_id + "$LeftPlayer*ACTIVE SET 1 \0");
-						if(bc.getStatus().equalsIgnoreCase(CricketUtil.NOT_OUT)) {
-							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() +"*"+ "\0");
-						} else {
-							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() + "\0");
-						}
-						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
-						print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
-						
-						if(i == 1 && row_id >= 5) {
-							break;
-						}else if(i == 2 && row_id >= 10) {
-							break;
+						if(!bc.getStatus().toUpperCase().equalsIgnoreCase(CricketUtil.STILL_TO_BAT)) {
+							row_id = row_id + 1;
+							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$" + whichInning + "Innings$Row" + row_id + "$LeftPlayer*ACTIVE SET 1 \0");
+							if(bc.getStatus().toUpperCase().equalsIgnoreCase(CricketUtil.NOT_OUT)) {
+								print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() +"*"+ "\0");
+							} else {
+								print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerName*GEOM*TEXT SET " + bc.getPlayer().getSurname() + "\0");
+							}
+							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerRuns*GEOM*TEXT SET " + bc.getRuns() + "\0");
+							print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$"+whichInning+"Innings$Row"+row_id+"$LeftPlayer$LeftText$PlayerBalls*GEOM*TEXT SET " + String.valueOf(bc.getBalls()) + "\0");
+							
+							if(i == 1 && row_id >= 5) {
+								break;
+							}else if(i == 2 && row_id >= 10) {
+								break;
+							}
 						}
 					}
 				}
@@ -431,7 +432,7 @@ public class Doad extends Scene{
 
 			print_writer.println("-1 RENDERER*TREE*$Main$SummaryData$BottomInfoPosition$InfoTextAll$InfoText*GEOM*TEXT SET " + generateMatchSummaryStatus(whichInning, match, "FULL") + " \0");
 			
-			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/matchsummary.png In 0.700 SummaryIn 2.400 \0");
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/matchsummary.png In 1.400 SummaryIn 2.400 \0");
 
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*SummaryIn START \0");
