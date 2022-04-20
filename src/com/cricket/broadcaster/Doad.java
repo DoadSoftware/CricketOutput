@@ -164,12 +164,7 @@ public class Doad extends Scene{
 									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow3$FowValues2$FowValue" + fow.getFowNumber() + "*GEOM*TEXT SET "+fow.getFowNumber()+slashOrDash+fow.getFowRuns()+"\0");
 									
 									//remove the best over from the bowling card for now
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$group*Active SET 0"+" "+"\0");
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$BestHead$Language1*GEOM*TEXT SET "+" "+"\0");
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$BestValue*GEOM*TEXT SET "+" "+"\0");
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$BestOver$Language1*GEOM*TEXT SET "+" "+"\0");
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$PlayerFirstName$Language1*GEOM*TEXT SET "+" "+"\0");
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$PlayerLastName$Language1*GEOM*TEXT SET "+" "+"\0");
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$BestOver*ACTIVE SET 0"+"\0");
 									
 									for(int value=10; inn.getTotalWickets() < value;value--) {
 										if(value < 6) {
@@ -211,7 +206,8 @@ public class Doad extends Scene{
 			this.status = "ERROR: Partnership's inning is null";
 		} else {
 			
-			int row_id = 0, omo_num = 0;
+			int row_id = 0, omo_num = 0,Top_Score = 50;
+			float Mult = 300, ScaleFac1 = 0, ScaleFac2 = 0;
 			String cont_name= "",Left_Batsman = "",Right_Batsman="";
 
 			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$Langauage1*GEOM*TEXT SET " + match.getTournament() + "\0");
@@ -226,6 +222,19 @@ public class Doad extends Scene{
 					} else {
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$PartHeader$Language1$BattingTeamName*FUNCTION*ControlDatapool*input SET " + match.getAwayTeam().getFullname() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$TopPart$PartHeader$Language1$BowlingTeamName*FUNCTION*ControlDatapool*input SET " + match.getHomeTeam().getFullname() + "\0");
+					}
+					
+					for(int a = 1; a <= inn.getPartnerships().size(); a++){
+						ScaleFac1=0;ScaleFac2=0;
+						
+						if(inn.getPartnerships().get(a-1).getFirstBatterRuns() > Top_Score) {
+							Top_Score = inn.getPartnerships().get(a-1).getFirstBatterRuns();
+						}
+						
+						if(inn.getPartnerships().get(a-1).getSecondBatterRuns() > Top_Score) {
+							Top_Score = inn.getPartnerships().get(a-1).getSecondBatterRuns();
+						}
+						
 					}
 
 					for (Partnership ps : inn.getPartnerships()) {
@@ -258,11 +267,17 @@ public class Doad extends Scene{
 							}
 						}
 						
-						
+						ScaleFac1 = ((ps.getFirstBatterRuns())*(Mult/Top_Score)) ;
+						ScaleFac2 = ((ps.getSecondBatterRuns())*(Mult/Top_Score)) ;
+
 						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$Row" + row_id  + "$PartOmo*FUNCTION*Omo*vis_con SET "+String.valueOf(omo_num)+ " \0");
 						
 						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$"+cont_name+"$LeftPlayeName*GEOM*TEXT SET " + Left_Batsman + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$"+cont_name+"$RightPlayeName*GEOM*TEXT SET " + Right_Batsman + "\0");
+						
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$"+cont_name+"$BarGrp*FUNCTION*BarValues*Bar_Value__1 SET " + ScaleFac1 + "\0");
+						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$"+cont_name+"$BarGrp*FUNCTION*BarValues*Bar_Value__2 SET " + ScaleFac2 + "\0");
+						
 						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$"+cont_name+"$ScoreGrp$PlayerRuns*GEOM*TEXT SET " + ps.getTotalRuns() + "\0");
 						print_writer.println("-1 RENDERER*TREE*$Main$PartnershipData$DataAll$Row" + row_id  + "$"+cont_name+"$ScoreGrp$PlayerBalls*GEOM*TEXT SET " + ps.getTotalBalls() + "\0");		
 					}
