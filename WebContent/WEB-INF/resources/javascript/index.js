@@ -1,3 +1,4 @@
+var match_data;
 function processWaitingButtonSpinner(whatToProcess) 
 {
 	switch (whatToProcess) {
@@ -86,16 +87,13 @@ function processUserSelection(whichInput)
 	case 'selectInning': case 'selectStatsType':
 		switch ($(whichInput).attr('name')) {
 		case 'selectInning':
-			addItemsToList('BUG-OPTIONS',null);
+			addItemsToList('POPULATE-PLAYERS',match_data);
 			break;
 		case 'selectStatsType':
-			addItemsToList('BUG-OPTIONS',null);
+			addItemsToList('POPULATE-PLAYERS',match_data);
 			break;
-			}
+		}
 		break;
-	/*case 'bug_graphic_btn':
-		addItemsToList('BUG-OPTIONS',null);
-		break;*/
 	}
 }
 function processCricketProcedures(whatToProcess)
@@ -109,7 +107,7 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
-			valueToProcess = $('#selectInning').find(":selected").val();
+			valueToProcess = $('#selectInning option:selected').val();
 			break;
 		}
 		break;
@@ -128,9 +126,10 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'GRAPHICS-OPTIONS':
 				addItemsToList('BUG-OPTIONS',data);
+				addItemsToList('POPULATE-PLAYERS',data);
+				match_data = data;
 				break;
 			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':
-			//$('#matchFileTimeStamp').val(session_match.matchFileTimeStamp);
 				if (data.status.toUpperCase() == 'SUCCESS') {
 		        	switch(whatToProcess) {
 					case 'POPULATE-SCORECARD': 
@@ -170,7 +169,36 @@ function addItemsToList(whatToProcess, dataToProcess)
 {
 	var select,option,header_text,div,table,tbody,row,max_cols;
 	var cellCount = 0;
+
 	switch (whatToProcess) {
+	case 'POPULATE-PLAYERS' :
+	
+		$('#selectPlayer').empty();
+
+		dataToProcess.inning.forEach(function(inn,index,arr){
+			if(inn.inningNumber == $('#selectInning option:selected').val()){
+				if($('#selectStatsType option:selected').val() == 'Batsman'){
+					inn.battingCard.forEach(function(bc,bc_index,bc_arr){
+			            $('#selectPlayer').append(
+							$(document.createElement('option')).prop({
+			                value: bc.playerId,
+			                text: bc.player.full_name
+			            }))						
+					});
+				} else{
+					inn.bowlingCard.forEach(function(boc,boc_index,boc_arr){
+			            $('#selectPlayer').append(
+							$(document.createElement('option')).prop({
+			                value: boc.playerId,
+			                text: boc.player.full_name
+			            }))						
+					});
+				}	
+			}
+		});
+		
+		break;
+		
 	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
@@ -179,7 +207,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			$('#select_graphic_options_div').empty();
 	
 			header_text = document.createElement('h6');
-			header_text.innerHTML = 'Select Scorecard Options';
+			header_text.innerHTML = 'Select Graphic Options';
 			document.getElementById('select_graphic_options_div').appendChild(header_text);
 			
 			table = document.createElement('table');
@@ -194,6 +222,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 
 			select = document.createElement('select');
 			select.id = 'selectInning';
+			select.name = select.id;
 			
 			if(document.getElementById('selected_match_max_overs').value > 0) {
 				max_cols = 2;
@@ -204,68 +233,44 @@ function addItemsToList(whatToProcess, dataToProcess)
 				option = document.createElement('option');
 				option.value = i;
 			    option.text = 'Inning ' + i;
-			    option.onChange="processUserSelection(this);";
 			    select.appendChild(option);
 			}
-			//select.setAttribute('onclick',"processUserSelection(this)");
-			//select.onchange="processUserSelection(this)";
-			//$("#selectInning").onchange=('processUserSelection(this);');
 			row.insertCell(cellCount).appendChild(select);
 			cellCount = cellCount + 1;
 			
-			
 			switch(whatToProcess){
 			case'BUG-OPTIONS':
+
+			    select.setAttribute('onchange',"processUserSelection(this)");
+
 				select = document.createElement('select');
 				select.id = 'selectStatsType';
+				select.name = select.id;
 				
 				option = document.createElement('option');
 				option.value = 'Batsman';
 				option.text = 'Batsman';
-				option.onChange="processUserSelection(this);";
 				select.appendChild(option);
 				
 				option = document.createElement('option');
 				option.value = 'Bowler';
 				option.text = 'Bowler';
-				option.onChange=('processUserSelection(this);')
 				select.appendChild(option);
 				
-				//select.setAttribute('onclick',"processUserSelection(this)");
-				//select.onchange="processUserSelection(this)";
-				//$("#selectStatsType").onchange=('processUserSelection(this)')
+			    select.setAttribute('onchange',"processUserSelection(this)");
 				row.insertCell(cellCount).appendChild(select);
+				
 				cellCount = cellCount + 1;
 				
 				select = document.createElement('select');
 				select.id = 'selectPlayer';
-				dataToProcess.inning.forEach(function(inn,index,arr){
-					if(inn.inningNumber == $('#selectInning').val()){
-						if($('#selectStatsType option:selected').val() == 'Batsman'){
-							inn.battingCard.forEach(function(bc,index,arr1){
-								if(bc.status == 'OUT'){
-									option = document.createElement('option');
-									option.value = bc.player.full_name;
-									option.text = bc.player.full_name;
-									select.appendChild(option);
-								}
-							});
-						}
-						else{
-							inn.bowlingCard.forEach(function(boc,index,arr1){
-								if(boc.status == 'OTHERBOWLER'){
-									option = document.createElement('option');
-									option.value = boc.player.full_name;
-									option.text = boc.player.full_name;
-									select.appendChild(option);
-								}
-							});
-						}	
-					}
-				});
+				select.name = select.id;
+				
 				row.insertCell(cellCount).appendChild(select);
+
 				cellCount = cellCount + 1;
-			break; 
+				
+				break; 
 			}
 			
 			option = document.createElement('input');

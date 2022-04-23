@@ -33,8 +33,7 @@ import com.cricket.util.CricketUtil;
 import net.sf.json.JSONObject;
 
 @Controller
-@SessionAttributes(value={"session_match","session_selected_match","session_viz_ip_address","session_viz_port_number",
-		"session_socket","session_selected_broadcaster", "session_which_graphics_onscreen"})
+@SessionAttributes(value={"session_match","session_socket","session_selected_broadcaster", "session_which_graphics_onscreen"})
 public class IndexController 
 {
 	@Autowired
@@ -65,14 +64,10 @@ public class IndexController
 
 	@RequestMapping(value = {"/output"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String outputPage(ModelMap model,
-			@ModelAttribute("session_viz_ip_address") String session_viz_ip_address,
-			@ModelAttribute("session_viz_port_number") int session_viz_port_number,
-			@ModelAttribute("session_selected_match") String session_selected_match,
 			@ModelAttribute("session_socket") Socket session_socket,
 			@ModelAttribute("session_which_graphics_onscreen") String session_which_graphics_onscreen,
 			@ModelAttribute("session_match") Match session_match,
 			@ModelAttribute("session_selected_broadcaster") String session_selected_broadcaster,
-			@ModelAttribute("session_match_file_timestamp") String session_match_file_timestamp,
 			@RequestParam(value = "select_broadcaster", required = false, defaultValue = "") String select_broadcaster,
 			@RequestParam(value = "select_cricket_matches", required = false, defaultValue = "") String selectedMatch,
 			@RequestParam(value = "vizIPAddress", required = false, defaultValue = "") String vizIPAddresss,
@@ -80,23 +75,20 @@ public class IndexController
 			@RequestParam(value = "vizScene", required = false, defaultValue = "") String vizScene) 
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
 	{
-		session_selected_match = selectedMatch; session_viz_ip_address = vizIPAddresss; session_selected_broadcaster = select_broadcaster;
-		session_viz_port_number = Integer.parseInt(vizPortNumber); viz_scene_path = vizScene; 
+		session_selected_broadcaster = select_broadcaster;
+		viz_scene_path = vizScene; 
 		
-		session_socket = new Socket(vizIPAddresss, session_viz_port_number);
+		session_socket = new Socket(vizIPAddresss, Integer.valueOf(vizPortNumber));
 		new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
 		
 		session_which_graphics_onscreen = "";
 
 		session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
-				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_selected_match)));
-		
+				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + selectedMatch)));
+		session_match.setMatchFileName(selectedMatch);
 		session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
 
 		model.addAttribute("session_match", session_match);
-		model.addAttribute("session_selected_match", session_selected_match);
-		model.addAttribute("session_viz_ip_address", session_viz_ip_address);
-		model.addAttribute("session_viz_port_number", session_viz_port_number);
 		model.addAttribute("session_socket", session_socket);
 		model.addAttribute("session_selected_broadcaster", session_selected_broadcaster);
 		
@@ -107,7 +99,6 @@ public class IndexController
 	public @ResponseBody String processCricketProcedures(
 			@ModelAttribute("session_match") Match session_match,
 			@ModelAttribute("session_socket") Socket session_socket,
-			@ModelAttribute("session_selected_match") String session_selected_match,
 			@ModelAttribute("session_selected_broadcaster") String session_selected_broadcaster,
 			@ModelAttribute("session_which_graphics_onscreen") String session_which_graphics_onscreen,
 			@RequestParam(value = "whatToProcess", required = false, defaultValue = "") String whatToProcess,
@@ -119,12 +110,12 @@ public class IndexController
 			return JSONObject.fromObject(session_match).toString();
 		case "READ-MATCH-AND-POPULATE":
 			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
-					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_selected_match).lastModified())))
+					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified())))
 			{
 				session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
-						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_selected_match)));
+						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName())));
 				session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
-						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_selected_match).lastModified()));
+						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified()));
 				return JSONObject.fromObject(session_match).toString();
 			} else {
 				return JSONObject.fromObject(null).toString();
@@ -165,19 +156,6 @@ public class IndexController
 		}
 	}
 
-	@ModelAttribute("session_viz_ip_address")
-	public String session_viz_ip_address(){
-		return new String();
-	}
-	@SuppressWarnings("removal")
-	@ModelAttribute("session_viz_port_number")
-	public Integer session_viz_port_number(){
-		return new Integer(6100);
-	}
-	@ModelAttribute("session_selected_match")
-	public String session_selected_match(){
-		return new String();
-	}
 	@ModelAttribute("session_socket")
 	public Socket session_socket(){
 		return new Socket();
