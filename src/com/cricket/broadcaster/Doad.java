@@ -622,4 +622,15 @@ public class Doad extends Scene{
 		return BottomLineText;
 	}
 	
+public void populateBug(PrintWriter print_writer, int whichInning, Match match, String viz_scene_path)
+{
+	if (match == null) {
+		this.status = "ERROR: Match is null";
+	} else if (match.getInning() == null) {
+		this.status = "ERROR: Match Summary's inning is null";
+	} else {
+		this.status = "SUCCESS";	
+		
+	}
 }
+	}

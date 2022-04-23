@@ -23,7 +23,7 @@ function reloadPage(whichPage)
 function processUserSelection(whichInput)
 {	
 	switch ($(whichInput).attr('name')) {
-	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn':
+	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -38,9 +38,12 @@ function processUserSelection(whichInput)
 		case 'matchsummary_graphic_btn':
 			addItemsToList('MATCHSUMMARY-OPTIONS',null);
 			break;
+		case 'bug_graphic_btn':
+			processCricketProcedures('GRAPHICS-OPTIONS');
+			break;
 		}
 		break;
-	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn':
+	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -54,6 +57,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_matchsummary_btn':
 			processCricketProcedures('POPULATE-MATCHSUMMARY');
+			break;
+		case 'populate_bug_btn':
+			processCricketProcedures('POPULATE-BUG');
 			break;
 		}
 		break;
@@ -77,9 +83,19 @@ function processUserSelection(whichInput)
 		}
       	document.initialise_form.submit();
 		break;
-	case 'bug_graphic_btn':
-		addItemsToList('BUG-OPTIONS',null);
+	case 'selectInning': case 'selectStatsType':
+		switch ($(whichInput).attr('name')) {
+		case 'selectInning':
+			addItemsToList('BUG-OPTIONS',null);
+			break;
+		case 'selectStatsType':
+			addItemsToList('BUG-OPTIONS',null);
+			break;
+			}
 		break;
+	/*case 'bug_graphic_btn':
+		addItemsToList('BUG-OPTIONS',null);
+		break;*/
 	}
 }
 function processCricketProcedures(whatToProcess)
@@ -90,7 +106,7 @@ function processCricketProcedures(whatToProcess)
 	case 'READ-MATCH-AND-POPULATE':
 		valueToProcess = $('#matchFileTimeStamp').val();
 		break;
-	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY':
+	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
 			valueToProcess = $('#selectInning').find(":selected").val();
@@ -108,9 +124,12 @@ function processCricketProcedures(whatToProcess)
         	switch(whatToProcess) {
 			case 'READ-MATCH-AND-POPULATE':
 				addItemsToList(whatToProcess,data);
-				$('#matchFileTimeStamp').val(session_match.matchFileTimeStamp);
+				$('#matchFileTimeStamp').val(data.matchFileTimeStamp);
 				break;
-			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY':
+			case 'GRAPHICS-OPTIONS':
+				addItemsToList('BUG-OPTIONS',data);
+				break;
+			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':
 			//$('#matchFileTimeStamp').val(session_match.matchFileTimeStamp);
 				if (data.status.toUpperCase() == 'SUCCESS') {
 		        	switch(whatToProcess) {
@@ -130,6 +149,10 @@ function processCricketProcedures(whatToProcess)
 						$('#populate_matchsummary_btn').hide();
 						$('#animate_in_matchsummary_btn').show();
 						break;
+					case 'POPULATE-BUG':
+						$('#populate_bug_btn').hide();
+						$('#animate_in_bug_btn').show();
+						break;
 					}
 				} else {
 					alert(data.status);
@@ -146,9 +169,9 @@ function processCricketProcedures(whatToProcess)
 function addItemsToList(whatToProcess, dataToProcess)
 {
 	var select,option,header_text,div,table,tbody,row,max_cols;
-	
+	var cellCount = 0;
 	switch (whatToProcess) {
-	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS':
+	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
@@ -171,6 +194,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 
 			select = document.createElement('select');
 			select.id = 'selectInning';
+			
 			if(document.getElementById('selected_match_max_overs').value > 0) {
 				max_cols = 2;
 			} else {
@@ -180,13 +204,73 @@ function addItemsToList(whatToProcess, dataToProcess)
 				option = document.createElement('option');
 				option.value = i;
 			    option.text = 'Inning ' + i;
+			    option.onChange="processUserSelection(this);";
 			    select.appendChild(option);
 			}
-
-			row.insertCell(0).appendChild(select);
-	
-		    option = document.createElement('input');
+			//select.setAttribute('onclick',"processUserSelection(this)");
+			//select.onchange="processUserSelection(this)";
+			//$("#selectInning").onchange=('processUserSelection(this);');
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			
+			switch(whatToProcess){
+			case'BUG-OPTIONS':
+				select = document.createElement('select');
+				select.id = 'selectStatsType';
+				
+				option = document.createElement('option');
+				option.value = 'Batsman';
+				option.text = 'Batsman';
+				option.onChange="processUserSelection(this);";
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'Bowler';
+				option.text = 'Bowler';
+				option.onChange=('processUserSelection(this);')
+				select.appendChild(option);
+				
+				//select.setAttribute('onclick',"processUserSelection(this)");
+				//select.onchange="processUserSelection(this)";
+				//$("#selectStatsType").onchange=('processUserSelection(this)')
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectPlayer';
+				dataToProcess.inning.forEach(function(inn,index,arr){
+					if(inn.inningNumber == $('#selectInning').val()){
+						if($('#selectStatsType option:selected').val() == 'Batsman'){
+							inn.battingCard.forEach(function(bc,index,arr1){
+								if(bc.status == 'OUT'){
+									option = document.createElement('option');
+									option.value = bc.player.full_name;
+									option.text = bc.player.full_name;
+									select.appendChild(option);
+								}
+							});
+						}
+						else{
+							inn.bowlingCard.forEach(function(boc,index,arr1){
+								if(boc.status == 'OTHERBOWLER'){
+									option = document.createElement('option');
+									option.value = boc.player.full_name;
+									option.text = boc.player.full_name;
+									select.appendChild(option);
+								}
+							});
+						}	
+					}
+				});
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+			break; 
+			}
+			
+			option = document.createElement('input');
 		    option.type = 'button';
+		    
 			switch (whatToProcess) {
 			case 'SCORECARD-OPTIONS': 
 			    option.name = 'populate_scorecard_btn';
@@ -203,6 +287,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case'MATCHSUMMARY-OPTIONS':
 			    option.name = 'populate_matchsummary_btn';
 			    option.value = 'Populate Matchsummary';
+				break;
+			case'BUG-OPTIONS':
+			    option.name = 'populate_bug_btn';
+			    option.value = 'Populate Bug';
 				break;
 			}
 		    option.id = option.name;
@@ -230,6 +318,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.name = 'animate_in_matchsummary_btn';
 			    option.value = 'Animate In Matchsummary';
 				break;
+			case'BUG-OPTIONS':
+			    option.name = 'animate_in_bug_btn';
+			    option.value = 'Animate In Bug';
+				break;
 			}
 		    option.id = option.name;
 		    option.style.display = 'none';
@@ -246,7 +338,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 	
 		    div.append(option);
 		    
-		    row.insertCell(1).appendChild(div);
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
 		    
 			document.getElementById('select_graphic_options_div').style.display = '';
 

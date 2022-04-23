@@ -115,6 +115,8 @@ public class IndexController
 					throws IOException, IllegalAccessException, InvocationTargetException, JAXBException
 	{	
 		switch (whatToProcess.toUpperCase()) {
+		case "GRAPHICS-OPTIONS":
+			return JSONObject.fromObject(session_match).toString();
 		case "READ-MATCH-AND-POPULATE":
 			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
 					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_selected_match).lastModified())))
@@ -127,7 +129,7 @@ public class IndexController
 			} else {
 				return JSONObject.fromObject(null).toString();
 			}
-		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY":
+		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case CricketUtil.DOAD:
 				Doad this_doad = new Doad();
@@ -146,6 +148,10 @@ public class IndexController
 					break;
 				case "POPULATE-MATCHSUMMARY":
 					this_doad.populateMatchsummary(new PrintWriter(session_socket.getOutputStream(), true), 
+							Integer.valueOf(valueToProcess), session_match, viz_scene_path);
+					break;
+				case "POPULATE-BUG":
+					this_doad.populateBug(new PrintWriter(session_socket.getOutputStream(), true), 
 							Integer.valueOf(valueToProcess), session_match, viz_scene_path);
 					break;
 				}
