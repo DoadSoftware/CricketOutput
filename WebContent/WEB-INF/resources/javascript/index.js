@@ -72,7 +72,8 @@ function processUserSelection(whichInput)
 	case 'select_broadcaster':
 		switch ($('#select_broadcaster :selected').val().toUpperCase()) {
 		case 'DOAD':
-			$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
+			//$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
+			$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
 			break;
 		}
 		break;
@@ -99,17 +100,30 @@ function processUserSelection(whichInput)
 function processCricketProcedures(whatToProcess)
 {
 	var valueToProcess;
+		switch(whatToProcess){
+	case 'READ-MATCH-AND-POPULATE':
+		valueToProcess = $('#matchFileTimeStamp').val();
+		break;
+	case 'POPULATE-BUG':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD':
+			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
+			break;
+		}
+		break;		
+	}
 	
 	switch(whatToProcess) {
 	case 'READ-MATCH-AND-POPULATE':
 		valueToProcess = $('#matchFileTimeStamp').val();
 		break;
-	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':
+	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
 			valueToProcess = $('#selectInning option:selected').val();
 			break;
 		}
+	
 		break;
 	}
 

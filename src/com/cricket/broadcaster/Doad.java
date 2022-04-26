@@ -450,13 +450,60 @@ public class Doad extends Scene{
 		}
 	}
 
-	public void populateBug(PrintWriter print_writer, int whichInning, Match match, String viz_scene_path)
+	public void populateBug(PrintWriter print_writer, int whichInning, String statsType, int playerId, Match match, String viz_scene_path)
 	{
 		if (match == null) {
 			this.status = "ERROR: Match is null";
 		} else if (match.getInning() == null) {
 			this.status = "ERROR: Match Summary's inning is null";
 		} else {
+			int total_inn = 0;
+			
+			for(Inning inn : match.getInning()) {
+				if(inn.getInningStatus() != null) {
+					total_inn = total_inn + 1;
+				}
+			}
+			
+			if(total_inn > 0 && whichInning > total_inn) {
+				whichInning = total_inn;
+			}
+			for(Inning inn : match.getInning()) {
+				if (inn.getInningNumber() == whichInning) {
+					switch(statsType.toUpperCase()) {
+					case CricketUtil.BATSMAN :
+						
+						for (BattingCard bc : inn.getBattingCard()) {
+							if(bc.getPlayerId()==playerId) {
+								if(bc.getStatus().toUpperCase().equalsIgnoreCase(CricketUtil.NOT_OUT)) {
+									System.out.println("Player:" + bc.getPlayer().getFull_name());
+									print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$LINES$1Line$SubHeaderGrp$SubHeaderText$LanguageGrp$Language1*GEOM*TEXT SET " + bc.getPlayer().getFull_name() + "*" + " \0");
+								}
+								else {
+									System.out.println("Player:" + bc.getPlayer().getFull_name());
+									print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$LINES$1Line$SubHeaderGrp$SubHeaderText$LanguageGrp$Language1*GEOM*TEXT SET " + bc.getPlayer().getFull_name() + " \0");
+								}
+								print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$LINES$1Line$SubHeaderGrp$SubHeaderText$LanguageGrp1$Language1*GEOM*TEXT SET " + "Fours: " + bc.getFours() + "," + "Sixes: " + bc.getSixes()  + "\0");
+								print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$LINES$1Line$Dehighlight$StatHeadHrp$StatHead1$StatHead1*GEOM*TEXT SET " + bc.getRuns() + "( " + bc.getBalls() + " )" + "\0");
+							}
+						}
+						break;
+					case "BOWLER":
+						for (BowlingCard boc : inn.getBowlingCard()) {
+							if(boc.getPlayerId()==playerId) {
+								print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$LINES$1Line$SubHeaderGrp$SubHeaderText$LanguageGrp$Language1*GEOM*TEXT SET " + boc.getPlayer().getFull_name() + " \0");
+								print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$LINES$1Line$SubHeaderGrp$SubHeaderText$LanguageGrp1$Language1*GEOM*TEXT SET " + "Overs: " + CricketFunctions.OverBalls(boc.getOvers(), boc.getBalls()) + "\0");
+								print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$LINES$1Line$Dehighlight$StatHeadHrp$StatHead1$StatHead1*GEOM*TEXT SET " + boc.getWickets() + slashOrDash + boc.getRuns() + "\0");
+							}
+						}
+						break;
+					}
+				}
+			}
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Bug.png In 1.040 \0");
+
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
+			
 			this.status = "SUCCESS";	
 		}
 	}

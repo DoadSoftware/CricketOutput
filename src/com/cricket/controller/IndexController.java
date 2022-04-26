@@ -143,7 +143,7 @@ public class IndexController
 					break;
 				case "POPULATE-BUG":
 					this_doad.populateBug(new PrintWriter(session_socket.getOutputStream(), true), 
-							Integer.valueOf(valueToProcess), session_match, viz_scene_path);
+							Integer.valueOf(valueToProcess.split(",")[0]), valueToProcess.split(",")[1],Integer.valueOf(valueToProcess.split(",")[2]), session_match, viz_scene_path);
 					break;
 				}
 				
