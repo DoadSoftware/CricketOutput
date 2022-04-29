@@ -24,7 +24,12 @@ function reloadPage(whichPage)
 function processUserSelection(whichInput)
 {	
 	switch ($(whichInput).attr('name')) {
-	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn':
+	case 'animateout_graphic_btn':
+		if(confirm('It will Also Delete Your Preview from Directory...\r\n \r\nAre You Sure To Animate Out? ') == true){
+			processCricketProcedures('ANIMATE-OUT');	
+		}
+		break;
+	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': 
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -72,8 +77,8 @@ function processUserSelection(whichInput)
 	case 'select_broadcaster':
 		switch ($('#select_broadcaster :selected').val().toUpperCase()) {
 		case 'DOAD':
-			//$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
-			$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
+			$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
+			//$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
 			break;
 		}
 		break;
@@ -100,19 +105,6 @@ function processUserSelection(whichInput)
 function processCricketProcedures(whatToProcess)
 {
 	var valueToProcess;
-		switch(whatToProcess){
-	case 'READ-MATCH-AND-POPULATE':
-		valueToProcess = $('#matchFileTimeStamp').val();
-		break;
-	case 'POPULATE-BUG':
-		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD':
-			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
-			break;
-		}
-		break;		
-	}
-	
 	switch(whatToProcess) {
 	case 'READ-MATCH-AND-POPULATE':
 		valueToProcess = $('#matchFileTimeStamp').val();
@@ -121,10 +113,16 @@ function processCricketProcedures(whatToProcess)
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
 			valueToProcess = $('#selectInning option:selected').val();
+			break;	
+		}
+		break;
+	case 'POPULATE-BUG':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD':
+			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
 			break;
 		}
-	
-		break;
+		break;		
 	}
 
 	$.ajax({    
@@ -144,28 +142,30 @@ function processCricketProcedures(whatToProcess)
 				match_data = data;
 				break;
 			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':
-				if (data.status.toUpperCase() == 'SUCCESS') {
-		        	switch(whatToProcess) {
-					case 'POPULATE-SCORECARD': 
-						$('#populate_scorecard_btn').hide();
-						$('#animate_in_scorecard_btn').show();
-						break;
-					case 'POPULATE-BOWLINGCARD':
-						$('#populate_bowlingcard_btn').hide();
-						$('#animate_in_bowlingcard_btn').show();
-						break;
-					case 'POPULATE-PARTNERSHIP':
-						$('#populate_partnership_btn').hide();
-						$('#animate_in_partnership_btn').show();
-						break;
-					case 'POPULATE-MATCHSUMMARY':
-						$('#populate_matchsummary_btn').hide();
-						$('#animate_in_matchsummary_btn').show();
-						break;
-					case 'POPULATE-BUG':
-						$('#populate_bug_btn').hide();
-						$('#animate_in_bug_btn').show();
-						break;
+				if (data.status.toUpperCase() == 'SUCCESSFUL') {
+					if(confirm('Animate In?') == true){
+						
+						$('#select_graphic_options_div').empty();
+						document.getElementById('select_graphic_options_div').style.display = 'none';
+						$("#captions_div").show();
+						
+			        	switch(whatToProcess) {
+						case 'POPULATE-SCORECARD': 
+							processCricketProcedures('ANIMATE-IN-SCORECARD');
+							break;
+						case 'POPULATE-BOWLINGCARD':
+							processCricketProcedures('ANIMATE-IN-BOWLINGCARD');					
+							break;
+						case 'POPULATE-PARTNERSHIP':
+							processCricketProcedures('ANIMATE-IN-PARTNERSHIP');					
+							break;
+						case 'POPULATE-MATCHSUMMARY':
+							processCricketProcedures('ANIMATE-IN-MATCHSUMMARY');			
+							break;
+						case 'POPULATE-BUG':
+							processCricketProcedures('ANIMATE-IN-BUG');				
+							break;
+					}
 					}
 				} else {
 					alert(data.status);
@@ -316,36 +316,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 		    option.setAttribute('onclick',"processUserSelection(this)");
 		    
 		    div = document.createElement('div');
-		    div.append(option);
-
-		    option = document.createElement('input');
-		    option.type = 'button';
-			switch (whatToProcess) {
-			case 'SCORECARD-OPTIONS': 
-			    option.name = 'animate_in_scorecard_btn';
-			    option.value = 'Animate In Scorecard';
-				break;
-			case'BOWLINGCARD-OPTIONS':
-			    option.name = 'animate_in_bowlingcard_btn';
-			    option.value = 'Animate In Bowlingcard';
-				break;
-			case'PARTNERSHIP-OPTIONS':
-			    option.name = 'animate_in_partnership_btn';
-			    option.value = 'Animate In Partnership';
-				break;
-			case'MATCHSUMMARY-OPTIONS':
-			    option.name = 'animate_in_matchsummary_btn';
-			    option.value = 'Animate In Matchsummary';
-				break;
-			case'BUG-OPTIONS':
-			    option.name = 'animate_in_bug_btn';
-			    option.value = 'Animate In Bug';
-				break;
-			}
-		    option.id = option.name;
-		    option.style.display = 'none';
-		    option.setAttribute('onclick',"processUserSelection(this)");
-		    
 		    div.append(option);
 
 			option = document.createElement('input');

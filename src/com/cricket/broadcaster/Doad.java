@@ -108,10 +108,7 @@ public class Doad extends Scene{
 			}
 			
 			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Battingcard.png In 1.400 BattingCardIn 2.600 \0");
-
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BattingCardIn START \0");
-			this.status = "SUCCESS";
+			this.status = CricketUtil.SUCCESSFUL;
 		}
 	}
 	public void populateBowlingcard(PrintWriter print_writer, int whichInning, Match match, String viz_scene_path) 
@@ -186,10 +183,7 @@ public class Doad extends Scene{
 			}
 			
 			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Bowlingcard.png In 1.400 BowlingCardIn 2.500 \0");
-
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BowlingCardIn START \0");
-			this.status = "SUCCESS";
+			this.status = CricketUtil.SUCCESSFUL;
 		}
 	}
 	
@@ -305,11 +299,8 @@ public class Doad extends Scene{
 			}
 			
 			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/partnership.png In 1.400 PartnershipIn 2.800 \0");
-
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*PartnershipIn START \0");
 			
-			this.status = "SUCCESS";
+			this.status = CricketUtil.SUCCESSFUL;
 		}
 	}
 	
@@ -442,10 +433,7 @@ public class Doad extends Scene{
 			
 			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/matchsummary.png In 1.400 SummaryIn 2.400 \0");
 
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*SummaryIn START \0");
-
-			this.status = "SUCCESS";	
+			this.status = CricketUtil.SUCCESSFUL;	
 		
 		}
 	}
@@ -501,10 +489,47 @@ public class Doad extends Scene{
 				}
 			}
 			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Bug.png In 1.040 \0");
-
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
 			
-			this.status = "SUCCESS";	
+			this.status = CricketUtil.SUCCESSFUL;	
 		}
+	}
+	public void AnimateInGraphics(PrintWriter print_writer, String whichGraphic)
+	{
+		print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
+		
+		switch(whichGraphic) {
+		case "SCORECARD":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BattingCardIn START \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "BOWLINGCARD":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BowlingCardIn START \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "PARTNERSHIP":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*PartnershipIn START \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "MATCHSUMMARY":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*SummaryIn START \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "BUG":
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		}	
+	}
+	public void AnimateOutGraphics(PrintWriter print_writer, String whichGraphic)
+	{
+		switch(whichGraphic) {
+		case "BUG":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out START \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "BATBALLSUMMARY":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out START \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		}	
 	}
 }

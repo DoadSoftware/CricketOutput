@@ -33,13 +33,13 @@ import com.cricket.util.CricketUtil;
 import net.sf.json.JSONObject;
 
 @Controller
-@SessionAttributes(value={"session_match","session_socket","session_selected_broadcaster", "session_which_graphics_onscreen"})
+@SessionAttributes(value={"session_match","session_socket","session_selected_broadcaster"})
 public class IndexController 
 {
 	@Autowired
 	CricketService cricketService;
 
-	String viz_scene_path;
+	String viz_scene_path, which_graphics_onscreen;
 	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String initialisePage(ModelMap model)  
@@ -65,7 +65,6 @@ public class IndexController
 	@RequestMapping(value = {"/output"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String outputPage(ModelMap model,
 			@ModelAttribute("session_socket") Socket session_socket,
-			@ModelAttribute("session_which_graphics_onscreen") String session_which_graphics_onscreen,
 			@ModelAttribute("session_match") Match session_match,
 			@ModelAttribute("session_selected_broadcaster") String session_selected_broadcaster,
 			@RequestParam(value = "select_broadcaster", required = false, defaultValue = "") String select_broadcaster,
@@ -81,7 +80,7 @@ public class IndexController
 		session_socket = new Socket(vizIPAddresss, Integer.valueOf(vizPortNumber));
 		new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
 		
-		session_which_graphics_onscreen = "";
+		which_graphics_onscreen = "";
 
 		session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + selectedMatch)));
@@ -100,7 +99,6 @@ public class IndexController
 			@ModelAttribute("session_match") Match session_match,
 			@ModelAttribute("session_socket") Socket session_socket,
 			@ModelAttribute("session_selected_broadcaster") String session_selected_broadcaster,
-			@ModelAttribute("session_which_graphics_onscreen") String session_which_graphics_onscreen,
 			@RequestParam(value = "whatToProcess", required = false, defaultValue = "") String whatToProcess,
 			@RequestParam(value = "valueToProcess", required = false, defaultValue = "") String valueToProcess) 
 					throws IOException, IllegalAccessException, InvocationTargetException, JAXBException
@@ -149,6 +147,60 @@ public class IndexController
 				
 				return JSONObject.fromObject(this_doad).toString();
 			}
+		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMMARY": case "ANIMATE-IN-BUG": case "ANIMATE-OUT":
+			switch (session_selected_broadcaster.toUpperCase()) {
+			case CricketUtil.DOAD:
+				Doad this_doad = new Doad();
+				switch (whatToProcess.toUpperCase()) {
+				case "ANIMATE-IN-SCORECARD":
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "SCORECARD");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "BATBALLSUMMARY";
+					}
+					break;
+				case "ANIMATE-IN-BOWLINGCARD":
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BOWLINGCARD");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "BATBALLSUMMARY";
+					}
+					break;
+				case "ANIMATE-IN-PARTNERSHIP":
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PARTNERSHIP");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "BATBALLSUMMARY";
+					}
+					break;
+				case "ANIMATE-IN-MATCHSUMARRY":
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "MATCHSUMMARY");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "BATBALLSUMMARY";
+					}
+					break;
+				case "ANIMATE-IN-BUG":
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BUG");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "BUG";
+					}
+					break;
+				case "ANIMATE-OUT":
+					switch(which_graphics_onscreen) {
+					case "BUG":
+						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BUG");
+						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+							which_graphics_onscreen = "";
+						}
+						break;
+					case "BATBALLSUMMARY":
+						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BATBALLSUMMARY");
+						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+							which_graphics_onscreen = "";
+						}
+						break;
+					}
+					break;
+				}
+				return JSONObject.fromObject(this_doad).toString();
+			}
 		case "POPULATE-SELECT-PLAYER": 
 			return JSONObject.fromObject(session_match).toString();
 		default:
@@ -167,9 +219,5 @@ public class IndexController
 	@ModelAttribute("session_match")
 	public Match session_match(){
 		return new Match();
-	}
-	@ModelAttribute("session_which_graphics_onscreen")
-	public String session_which_graphics_onscreen(){
-		return new String();
 	}
 }

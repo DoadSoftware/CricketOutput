@@ -66,7 +66,8 @@
 							</c:choose>	
   					</c:forEach>
 				</c:forEach>
-			    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+				<div class="left">
+			    <button style="background-color:#2E008B;color:#FEFEFE;;" class="btn btn-sm" type="button"
 			  		name="scorecard_graphic_btn" id="scorecard_graphic_btn" onclick="processUserSelection(this)"> ScoreCard </button>
 			    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="bowlingcard_graphic_btn" id="bowlingcard_graphic_btn" onclick="processUserSelection(this)"> BowlingCard </button>
@@ -76,6 +77,9 @@
 			  		name="matchsummary_graphic_btn" id="matchsummary_graphic_btn" onclick="processUserSelection(this)"> Match Summary </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="bug_graphic_btn" id="bug_graphic_btn" onclick="processUserSelection(this)"> Bug </button>
+			  	<button style="background-color:#f44336;color:#FEFEFE;;" class="btn btn-sm" type="button"
+			  		name="animateout_graphic_btn" id="animateout_graphic_btn" onclick="processUserSelection(this)"> AnimateOut </button>
+			  </div>
 			  </div>
 	       </div>
 	    </div>
