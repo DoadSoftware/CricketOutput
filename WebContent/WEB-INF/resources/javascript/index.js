@@ -29,7 +29,7 @@ function processUserSelection(whichInput)
 			processCricketProcedures('ANIMATE-OUT');	
 		}
 		break;
-	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': 
+	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': case 'howout_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -47,9 +47,12 @@ function processUserSelection(whichInput)
 		case 'bug_graphic_btn':
 			processCricketProcedures('GRAPHICS-OPTIONS');
 			break;
+		case 'howout_graphic_btn':
+			processCricketProcedures('GRAPHIC-OPTIONS');
+			break;
 		}
 		break;
-	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn':
+	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -67,6 +70,9 @@ function processUserSelection(whichInput)
 		case 'populate_bug_btn':
 			processCricketProcedures('POPULATE-BUG');
 			break;
+		case 'populate_howout_btn':
+			processCricketProcedures('POPULATE-HOWOUT');
+			break;
 		}
 		break;
 	case 'cancel_graphics_btn':
@@ -77,8 +83,9 @@ function processUserSelection(whichInput)
 	case 'select_broadcaster':
 		switch ($('#select_broadcaster :selected').val().toUpperCase()) {
 		case 'DOAD':
-			$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
+			//$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
+			$('#vizScene').attr('value','/Default/DOAD_In_House/Lt_HowOut');
 			break;
 		}
 		break;
@@ -119,10 +126,17 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-BUG':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
-			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
+			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
 			break;
 		}
-		break;		
+		break;
+	case 'POPULATE-HOWOUT':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD':
+			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+			break;
+		}
+		break;			
 	}
 
 	$.ajax({    
@@ -141,7 +155,12 @@ function processCricketProcedures(whatToProcess)
 				addItemsToList('POPULATE-PLAYERS',data);
 				match_data = data;
 				break;
-			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':
+			case 'GRAPHIC-OPTIONS':
+				addItemsToList('HOWOUT-OPTIONS',data);
+				addItemsToList('POPULATE-PLAYERS',data);
+				match_data = data;
+				break;
+			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG': case 'POPULATE-HOWOUT':
 				if (data.status.toUpperCase() == 'SUCCESSFUL') {
 					if(confirm('Animate In?') == true){
 						
@@ -160,10 +179,13 @@ function processCricketProcedures(whatToProcess)
 							processCricketProcedures('ANIMATE-IN-PARTNERSHIP');					
 							break;
 						case 'POPULATE-MATCHSUMMARY':
-							processCricketProcedures('ANIMATE-IN-MATCHSUMMARY');			
+							processCricketProcedures('ANIMATE-IN-MATCHSUMARRY');			
 							break;
 						case 'POPULATE-BUG':
 							processCricketProcedures('ANIMATE-IN-BUG');				
+							break;
+						case 'POPULATE-HOWOUT':
+							processCricketProcedures('ANIMATE-IN-HOWOUT');				
 							break;
 					}
 					}
@@ -187,13 +209,13 @@ function addItemsToList(whatToProcess, dataToProcess)
 	switch (whatToProcess) {
 	case 'POPULATE-PLAYERS' :
 	
-		$('#selectPlayer').empty();
+		$('#selectPlayers').empty();
 
 		dataToProcess.inning.forEach(function(inn,index,arr){
 			if(inn.inningNumber == $('#selectInning option:selected').val()){
 				if($('#selectStatsType option:selected').val() == 'Batsman'){
 					inn.battingCard.forEach(function(bc,bc_index,bc_arr){
-			            $('#selectPlayer').append(
+			            $('#selectPlayers').append(
 							$(document.createElement('option')).prop({
 			                value: bc.playerId,
 			                text: bc.player.full_name
@@ -201,7 +223,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 					});
 				} else{
 					inn.bowlingCard.forEach(function(boc,boc_index,boc_arr){
-			            $('#selectPlayer').append(
+			            $('#selectPlayers').append(
 							$(document.createElement('option')).prop({
 			                value: boc.playerId,
 			                text: boc.player.full_name
@@ -213,7 +235,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 		
 		break;
 		
-	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS':
+	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
@@ -277,13 +299,40 @@ function addItemsToList(whatToProcess, dataToProcess)
 				cellCount = cellCount + 1;
 				
 				select = document.createElement('select');
-				select.id = 'selectPlayer';
+				select.id = 'selectPlayers';
 				select.name = select.id;
 				
 				row.insertCell(cellCount).appendChild(select);
 
 				cellCount = cellCount + 1;
 				
+				break;
+				
+			case'HOWOUT-OPTIONS':
+			
+				select.setAttribute('onchange',"processUserSelection(this)");
+				
+				select = document.createElement('select');
+				select.id = 'selectStatsType';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'Batsman';
+				option.text = 'Batsman';
+				select.appendChild(option);
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
+				
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectPlayers';
+				select.name = select.id;
+				
+				row.insertCell(cellCount).appendChild(select);
+
+				cellCount = cellCount + 1;
 				break; 
 			}
 			
@@ -310,6 +359,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case'BUG-OPTIONS':
 			    option.name = 'populate_bug_btn';
 			    option.value = 'Populate Bug';
+				break;
+			case'HOWOUT-OPTIONS':
+			    option.name = 'populate_howout_btn';
+			    option.value = 'Populate Howout';
 				break;
 			}
 		    option.id = option.name;

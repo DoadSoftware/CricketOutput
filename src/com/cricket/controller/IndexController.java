@@ -2,7 +2,9 @@ package com.cricket.controller;
 
 import java.io.File;
 import java.io.FileFilter;
+
 import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.cricket.broadcaster.Doad;
+import com.cricket.containers.Configurations;
+//import com.cricket.containers.Configurations;
 import com.cricket.containers.Scene;
 import com.cricket.model.Match;
 import com.cricket.service.CricketService;
@@ -38,11 +42,12 @@ public class IndexController
 {
 	@Autowired
 	CricketService cricketService;
+	public static Configurations session_Configurations;
 
-	String viz_scene_path, which_graphics_onscreen;
+	String viz_scene_path, which_graphics_onscreen, CONFIGURATIONS_DIRECTORY = "Configurations/", OUTPUT_CONFIG= "OUTPUT.XML" ;
 	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
-	public String initialisePage(ModelMap model)  
+	public String initialisePage(ModelMap model) throws JAXBException, IOException 
 	{
 		model.addAttribute("session_viz_scenes", new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.SCENES_DIRECTORY).listFiles(new FileFilter() {
 			@Override
@@ -59,6 +64,16 @@ public class IndexController
 		    }
 		}));
 		
+		if(new File(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG).exists()) {
+			session_Configurations = (Configurations)JAXBContext.newInstance(Configurations.class).createUnmarshaller().unmarshal(
+					new File(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
+		}
+		else {
+			session_Configurations = new Configurations();
+			System.out.println(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG);
+			JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
+					new File(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
+		}
 		return "initialise";
 	}
 
@@ -70,17 +85,31 @@ public class IndexController
 			@RequestParam(value = "select_broadcaster", required = false, defaultValue = "") String select_broadcaster,
 			@RequestParam(value = "select_cricket_matches", required = false, defaultValue = "") String selectedMatch,
 			@RequestParam(value = "vizIPAddress", required = false, defaultValue = "") String vizIPAddresss,
-			@RequestParam(value = "vizPortNumber", required = false, defaultValue = "") String vizPortNumber,
-			@RequestParam(value = "vizScene", required = false, defaultValue = "") String vizScene) 
+			@RequestParam(value = "vizPortNumber", required = false, defaultValue = "") int vizPortNumber,
+			@RequestParam(value = "vizScene", required = false, defaultValue = "") String vizScene,
+			@RequestParam(value = "select_sponsor", required = false, defaultValue = "") String select_sponsor) 
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
 	{
 		session_selected_broadcaster = select_broadcaster;
-		viz_scene_path = vizScene; 
+		viz_scene_path = vizScene;
+		
 		
 		session_socket = new Socket(vizIPAddresss, Integer.valueOf(vizPortNumber));
 		new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true));
 		
 		which_graphics_onscreen = "";
+
+		session_Configurations = new Configurations();
+		
+		session_Configurations.setFilename(selectedMatch);
+		session_Configurations.setBroadcaster(select_broadcaster);
+		session_Configurations.setIpAddress(vizIPAddresss);
+		session_Configurations.setPortNumber(vizPortNumber);
+		session_Configurations.setSponser(select_sponsor);
+		session_Configurations.setVizscene(vizScene);
+		
+		JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
+				new File(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
 
 		session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + selectedMatch)));
@@ -90,6 +119,7 @@ public class IndexController
 		model.addAttribute("session_match", session_match);
 		model.addAttribute("session_socket", session_socket);
 		model.addAttribute("session_selected_broadcaster", session_selected_broadcaster);
+		/*model.addAttribute("session_configurations", session_configurations);*/
 		
 		return "output";
 	}
@@ -106,6 +136,8 @@ public class IndexController
 		switch (whatToProcess.toUpperCase()) {
 		case "GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
+		case "GRAPHIC-OPTIONS":
+			return JSONObject.fromObject(session_match).toString();
 		case "READ-MATCH-AND-POPULATE":
 			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
 					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified())))
@@ -118,7 +150,7 @@ public class IndexController
 			} else {
 				return JSONObject.fromObject(null).toString();
 			}
-		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG":
+		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG": case "POPULATE-HOWOUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case CricketUtil.DOAD:
 				Doad this_doad = new Doad();
@@ -143,11 +175,15 @@ public class IndexController
 					this_doad.populateBug(new PrintWriter(session_socket.getOutputStream(), true), 
 							Integer.valueOf(valueToProcess.split(",")[0]), valueToProcess.split(",")[1],Integer.valueOf(valueToProcess.split(",")[2]), session_match, viz_scene_path);
 					break;
+				case "POPULATE-HOWOUT":
+					this_doad.populateHowout(new PrintWriter(session_socket.getOutputStream(), true), 
+							Integer.valueOf(valueToProcess.split(",")[0]), valueToProcess.split(",")[1], Integer.valueOf(valueToProcess.split(",")[2]), session_match, viz_scene_path);
+					break;
 				}
 				
 				return JSONObject.fromObject(this_doad).toString();
 			}
-		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMMARY": case "ANIMATE-IN-BUG": case "ANIMATE-OUT":
+		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMMARY": case "ANIMATE-IN-BUG": case "ANIMATE-IN-HOWOUT": case "ANIMATE-OUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case CricketUtil.DOAD:
 				Doad this_doad = new Doad();
@@ -182,6 +218,12 @@ public class IndexController
 						which_graphics_onscreen = "BUG";
 					}
 					break;
+				case "ANIMATE-IN-HOWOUT":
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "HOWOUT");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "HOWOUT";
+					}
+					break;
 				case "ANIMATE-OUT":
 					switch(which_graphics_onscreen) {
 					case "BUG":
@@ -192,6 +234,12 @@ public class IndexController
 						break;
 					case "BATBALLSUMMARY":
 						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BATBALLSUMMARY");
+						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+							which_graphics_onscreen = "";
+						}
+						break;
+					case "HOWOUT":
+						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "HOWOUT");
 						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
 							which_graphics_onscreen = "";
 						}
@@ -220,4 +268,8 @@ public class IndexController
 	public Match session_match(){
 		return new Match();
 	}
+	/*@ModelAttribute("session_configurations")
+	public String session_configurations(){
+		return new String();
+	}*/
 }

@@ -493,6 +493,45 @@ public class Doad extends Scene{
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
 	}
+	public void populateHowout(PrintWriter print_writer, int whichInning, String statsType, int playerId, Match match, String viz_scene_path)
+	{
+		if (match == null) {
+			this.status = "ERROR: Match is null";
+		} else if (match.getInning() == null) {
+			this.status = "ERROR: Match Summary's inning is null";
+		} else {
+			int total_inn = 0;
+			
+			for(Inning inn : match.getInning()) {
+				if(inn.getInningStatus() != null) {
+					total_inn = total_inn + 1;
+				}
+			}
+			
+			if(total_inn > 0 && whichInning > total_inn) {
+				whichInning = total_inn;
+			}
+			for(Inning inn : match.getInning()) {
+				if (inn.getInningNumber() == whichInning) {
+					for (BattingCard bc : inn.getBattingCard()) {
+						if(bc.getPlayerId()==playerId) {
+							System.out.println("Player:" + bc.getPlayer().getFull_name());
+							print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Language1*GEOM*TEXT SET " + bc.getPlayer().getFull_name().toUpperCase() + " \0");
+							print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$TopPart$HeaderGrp$HowOutData$LanguageGrp$HowOutL1*GEOM*TEXT SET " + bc.getHowOutPartOne() +" " + bc.getHowOutPartTwo().toUpperCase() + "\0");
+							print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$TopPart$DataAll$RowAnim$Dehighlight$FoursGrp$LanguageGrp$Language1$FoursValue*GEOM*TEXT SET " + bc.getFours() + "\0");
+							print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$TopPart$DataAll$RowAnim$Dehighlight$SixGrp$LanguageGrp$Language1$SixValue*GEOM*TEXT SET " + bc.getSixes()  + "\0");
+							print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$TopPart$DataAll$RowAnim$Dehighlight$StrikeRateGrp$LanguageGrp$Language1$SR_Value*GEOM*TEXT SET " + bc.getStrikeRate()  + "\0");
+							print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$TopPart$ScoreGrp$noname$Score*GEOM*TEXT SET " + bc.getRuns() + "\0");
+							print_writer.println("-1 RENDERER*TREE*$Main$Lt_Position$TopPart$ScoreGrp$noname$Balls*GEOM*TEXT SET " + bc.getBalls() + "\0");
+						}
+					}
+				}
+			}
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Howout.png In 1.040 \0");
+			
+			this.status = CricketUtil.SUCCESSFUL;	
+		}
+	}
 	public void AnimateInGraphics(PrintWriter print_writer, String whichGraphic)
 	{
 		print_writer.println("-1 RENDERER*STAGE*DIRECTOR*In START \0");
@@ -517,17 +556,24 @@ public class Doad extends Scene{
 		case "BUG":
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
+		case "HOWOUT":
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
 		}	
 	}
 	public void AnimateOutGraphics(PrintWriter print_writer, String whichGraphic)
 	{
 		switch(whichGraphic) {
 		case "BUG":
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out START \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
 		case "BATBALLSUMMARY":
-			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out START \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "HOWOUT":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
 		}	
