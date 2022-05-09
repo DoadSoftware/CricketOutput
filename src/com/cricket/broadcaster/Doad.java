@@ -6,6 +6,7 @@ import java.util.Collections;
 import com.cricket.model.BattingCard;
 import com.cricket.model.BowlingCard;
 import com.cricket.model.Partnership;
+import com.cricket.model.Player;
 import com.cricket.model.Inning;
 import com.cricket.model.Match;
 import com.cricket.model.FallOfWicket;
@@ -156,7 +157,7 @@ public class Doad extends Scene{
 									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow3$FowValues2$FowValue" + fow.getFowNumber() + "*GEOM*TEXT SET "+fow.getFowNumber()+slashOrDash+fow.getFowRuns()+"\0");
 									
 									//remove the best over from the bowling card for now
-									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$BestOver*ACTIVE SET 0"+"\0");
+									print_writer.println("-1 RENDERER*TREE*$Main$BowlingData$FowGrp$Fow1$2*ACTIVE SET 0"+"\0");
 									
 									for(int value=10; inn.getTotalWickets() < value;value--) {
 										if(value < 6) {
@@ -527,7 +528,59 @@ public class Doad extends Scene{
 					}
 				}
 			}
-			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Howout.png In 1.040 \0");
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Howout.png In 1.500 \0");
+			
+			this.status = CricketUtil.SUCCESSFUL;	
+		}
+	}
+	public void populateDoubleteams(PrintWriter print_writer, String Statstype1, String Statstype2, Match match, String viz_scene_path)
+	{
+		if (match == null) {
+			this.status = "ERROR: Match is null";
+		} else if (match.getInning() == null) {
+			this.status = "ERROR: Match Summary's inning is null";
+		} else {
+			
+			int row_id = 0;
+			
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Langauage1*GEOM*TEXT SET " + match.getMatchIdent() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$HeaderTextAll$BattingTeamName*GEOM*TEXT SET " + "TEAMS" + "\0");
+			
+			switch(Statstype1) {
+			case "HomeTeam":
+				for(Player hs : match.getHomeSquad()) {
+					row_id = row_id + 1;
+					System.out.println("HomeTeam=" + hs.getFull_name() );
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerName*GEOM*TEXT SET " + hs.getFull_name().toUpperCase() + "\0");
+				}
+				break;
+			case "AwayTeam":
+				for(Player as : match.getAwaySquad()) {
+					row_id = row_id + 1;
+					System.out.println("AwayTeam=" + as.getFull_name() );
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerName*GEOM*TEXT SET " + as.getFull_name().toUpperCase() + "\0");
+				}
+				break;
+			}
+			switch(Statstype2) {
+			case "HomeTeam":
+				for(Player hs : match.getHomeSquad()) {
+					row_id = row_id + 1;
+					System.out.println("HomeTeam=" + hs.getFull_name() );
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$RightText$LanguageGrp$Language1$PlayerDesignation*GEOM*TEXT SET " + hs.getFull_name().toUpperCase() + "\0");
+				}
+				break;
+			case "AwayTeam":
+				for(Player as : match.getAwaySquad()) {
+					row_id = row_id + 1;
+					System.out.println("AwayTeam=" + as.getFull_name() );
+					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$RightText$LanguageGrp$Language1$PlayerDesignation*GEOM*TEXT SET " + as.getFull_name().toUpperCase() + "\0");
+				}
+				break;
+			}
+			
+			//print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$BottomInfoPosition$BottomInfoBand$noname1$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "\0");
+			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Doubleteams.png In 2.400 \0");
 			
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
@@ -559,6 +612,9 @@ public class Doad extends Scene{
 		case "HOWOUT":
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
+		case "DOUBLETEAMS":
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
 		}	
 	}
 	public void AnimateOutGraphics(PrintWriter print_writer, String whichGraphic)
@@ -568,11 +624,31 @@ public class Doad extends Scene{
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
-		case "BATBALLSUMMARY":
+		case "BATBALLSUMMARY_SCORECARD":
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BattingCardOut CONTINUE \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "BATBALLSUMMARY_BOWLINGCARD":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*BowlingCardOut CONTINUE \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "BATBALLSUMMARY_PARTNERSHIP":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*PartnershipOut CONTINUE \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "BATBALLSUMMARY_MATCHSUMMARY":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*SummaryOut CONTINUE \0");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
 		case "HOWOUT":
+			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "DOUBLETEAMS":
 			print_writer.println("-1 RENDERER*STAGE*DIRECTOR*Out CONTINUE \0");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;

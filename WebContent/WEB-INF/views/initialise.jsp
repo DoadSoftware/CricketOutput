@@ -53,7 +53,7 @@
 			    <div class="col-sm-6 col-md-6">
 			      <select id="select_sponsors" name="select_sponsors" class="browser-default custom-select custom-select-sm"
 			      		onchange="processUserSelection(this)">
-			          <option value="doad">Airtel</option>
+			          <option value="Airtel">Airtel</option>
 			      </select>
 			    </div>
 			  </div>

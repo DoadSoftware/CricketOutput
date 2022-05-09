@@ -9,11 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Configurations {
 	
-	@XmlElement(name="vizscene")
-	private String vizscene;
-	
-	@XmlElement(name="ipAddress")
-	private String ipAddress;
+	@XmlElement(name="filename")
+	private String filename;
 	
 	@XmlElement(name="broadcaster")
 	private String broadcaster;
@@ -21,12 +18,31 @@ public class Configurations {
 	@XmlElement(name="sponsor")
 	private String sponsor;
 	
+	@XmlElement(name="ipAddress")
+	private String ipAddress;
+	
 	@XmlElement(name="portNumber")
 	private int portNumber;
 	
-	@XmlElement(name="filename")
-	private String filename;
+	@XmlElement(name="vizscene")
+	private String vizscene;
+
+	public Configurations(String filename, String broadcaster, String sponsor, String ipAddress, int portNumber,
+			String vizscene) {
+		super();
+		this.filename = filename;
+		this.broadcaster = broadcaster;
+		this.sponsor = sponsor;
+		this.ipAddress = ipAddress;
+		this.portNumber = portNumber;
+		this.vizscene = vizscene;
+	}
 	
+	public Configurations() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getVizscene() {
 		return vizscene;
 	}
@@ -48,7 +64,7 @@ public class Configurations {
 	public String getSponsor() {
 		return sponsor;
 	}
-	public void setSponser(String sponsor) {
+	public void setSponsor(String sponsor) {
 		this.sponsor = sponsor;
 	}
 	public int getPortNumber() {
