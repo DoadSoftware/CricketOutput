@@ -46,8 +46,8 @@ public class Doad extends Scene{
 			int row_id = 0, omo_num = 0;
 			String cont_name= "";
 
-			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$Langauage1*GEOM*TEXT SET " + match.getTournament() + "\0");
-			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$BatHeader$MatchId$Langauage1*GEOM*TEXT SET " + match.getMatchIdent() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$Language1*GEOM*TEXT SET " + match.getTournament() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$BatHeader$MatchId$Language1*GEOM*TEXT SET " + match.getMatchIdent() + "\0");
 			
 			for(Inning inn : match.getInning()) {
 				if (inn.getInningNumber() == whichInning) {
@@ -533,7 +533,7 @@ public class Doad extends Scene{
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
 	}
-	public void populateDoubleteams(PrintWriter print_writer, String Statstype1, String Statstype2, Match match, String viz_scene_path)
+	public void populateDoubleteams(PrintWriter print_writer, Match match, String viz_scene_path)
 	{
 		if (match == null) {
 			this.status = "ERROR: Match is null";
@@ -542,44 +542,54 @@ public class Doad extends Scene{
 		} else {
 			
 			int row_id = 0;
+			String cont="";
 			
-			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$LanguageGrp$Langauage1*GEOM*TEXT SET " + match.getMatchIdent() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$Language1*GEOM*TEXT SET " + match.getTournament() + "\0");
 			print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$HeaderTextAll$BattingTeamName*GEOM*TEXT SET " + "TEAMS" + "\0");
 			
-			switch(Statstype1) {
-			case "HomeTeam":
-				for(Player hs : match.getHomeSquad()) {
-					row_id = row_id + 1;
-					System.out.println("HomeTeam=" + hs.getFull_name() );
-					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerName*GEOM*TEXT SET " + hs.getFull_name().toUpperCase() + "\0");
+			for(int i = 1; i <= 2 ; i++) {
+				if(i == 1) {
+					for(Player hs : match.getHomeSquad()) {
+						row_id = row_id + 1;
+						cont = "";
+						if(hs.getCaptainWicketKeeper() != null ) {
+							switch(hs.getCaptainWicketKeeper().toUpperCase()) {
+							case CricketUtil.CAPTAIN:
+								cont = "(c)";
+								break;
+							case CricketUtil.WICKET_KEEPER:
+								cont = "(wk)";
+								break;
+							case "CAPTAIN_WICKET_KEEPER":
+								cont = "(c/wk)";
+								break;
+							}
+						print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerName*GEOM*TEXT SET " + hs.getFull_name().toUpperCase() + " " + cont + "\0");
+						}
+						}
+				} else {
+					row_id = 0;
+					for(Player as : match.getAwaySquad()) {
+						row_id = row_id + 1;
+						cont = "";
+						if(as.getCaptainWicketKeeper() != null ) {
+							switch(as.getCaptainWicketKeeper().toUpperCase()) {
+							case CricketUtil.CAPTAIN:
+								cont = "(c)";
+								break;
+							case CricketUtil.WICKET_KEEPER:
+								cont = "(wk)";
+								break;
+							case "CAPTAIN_WICKET_KEEPER":
+								cont = "(c/wk)";
+								break;
+							}
+						print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$RightText$LanguageGrp$Language1$PlayerDesignation*GEOM*TEXT SET " + as.getFull_name().toUpperCase() +" " + cont + "\0");
+						}
+					}
 				}
-				break;
-			case "AwayTeam":
-				for(Player as : match.getAwaySquad()) {
-					row_id = row_id + 1;
-					System.out.println("AwayTeam=" + as.getFull_name() );
-					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$LeftText$LanguageGrp$Language1$PlayerName*GEOM*TEXT SET " + as.getFull_name().toUpperCase() + "\0");
-				}
-				break;
 			}
-			switch(Statstype2) {
-			case "HomeTeam":
-				for(Player hs : match.getHomeSquad()) {
-					row_id = row_id + 1;
-					System.out.println("HomeTeam=" + hs.getFull_name() );
-					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$RightText$LanguageGrp$Language1$PlayerDesignation*GEOM*TEXT SET " + hs.getFull_name().toUpperCase() + "\0");
-				}
-				break;
-			case "AwayTeam":
-				for(Player as : match.getAwaySquad()) {
-					row_id = row_id + 1;
-					System.out.println("AwayTeam=" + as.getFull_name() );
-					print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$DataGrp$Row" + row_id + "$RowAnim$BatOmo$Dehighlight$RightText$LanguageGrp$Language1$PlayerDesignation*GEOM*TEXT SET " + as.getFull_name().toUpperCase() + "\0");
-				}
-				break;
-			}
-			
-			//print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$BottomInfoPosition$BottomInfoBand$noname1$TotalGrp$TotalScore*GEOM*TEXT SET " + inn.getTotalRuns() + "\0");
+			print_writer.println("-1 RENDERER*TREE*$Main$AllDataGrp$BattingData$DataAll$BottomInfoPosition$BottomInfoBand$noname1$TotalGrp$TotalScore*GEOM*TEXT SET " +"Extras - " +match.getInning().get(0).getTotalExtras() +" Total - "+ match.getInning().get(0).getTotalRuns() + "\0");
 			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene_path + " C:/Temp/Doubleteams.png In 2.400 \0");
 			
 			this.status = CricketUtil.SUCCESSFUL;	

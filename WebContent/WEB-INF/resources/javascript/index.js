@@ -51,7 +51,7 @@ function processUserSelection(whichInput)
 			processCricketProcedures('GRAPHIC-OPTIONS');
 			break;
 		case 'doubleteams_graphic_btn':
-			processCricketProcedures('GRAPHIC1-OPTIONS');
+			addItemsToList('DOUBLETEAMS-OPTIONS',null);
 			break;
 		}
 		break;
@@ -104,7 +104,7 @@ function processUserSelection(whichInput)
 		}
       	document.initialise_form.submit();
 		break;
-	case 'selectInning': case 'selectStatsType':
+	/*case 'selectInning': case 'selectStatsType':
 		switch ($(whichInput).attr('name')) {
 		case 'selectInning':
 			addItemsToList('POPULATE-PLAYERS',match_data);
@@ -113,17 +113,7 @@ function processUserSelection(whichInput)
 			addItemsToList('POPULATE-PLAYERS',match_data);
 			break;
 		}
-		break;
-	case 'selectStatsType1': case 'selectStatsType2':
-		switch ($(whichInput).attr('name')) {
-		case 'selectStatsType1':
-			addItemsToList('POPULATE-PLAYERS',match_data);
-			break;
-		case 'selectStatsType2':
-			addItemsToList('POPULATE-PLAYERS',match_data);
-			break;
-		}
-		break;
+		break;*/
 	}
 }
 function processCricketProcedures(whatToProcess)
@@ -153,14 +143,7 @@ function processCricketProcedures(whatToProcess)
 			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
 			break;
 		}
-		break;
-	case 'POPULATE-DOUBLETEAMS':
-		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD':
-			valueToProcess = $('#selectStatsType1 option:selected').val() + ',' + $('#selectStatsType2 option:selected').val() ;
-			break;
-		}
-		break;			
+		break;		
 	}
 
 	$.ajax({    
@@ -182,10 +165,6 @@ function processCricketProcedures(whatToProcess)
 			case 'GRAPHIC-OPTIONS':
 				addItemsToList('HOWOUT-OPTIONS',data);
 				addItemsToList('POPULATE-PLAYERS',data);
-				match_data = data;
-				break;
-			case 'GRAPHIC1-OPTIONS':
-				addItemsToList('DOUBLETEAMS-OPTIONS',data);
 				match_data = data;
 				break;
 			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG': case 'POPULATE-HOWOUT': case 'POPULATE-DOUBLETEAMS':
@@ -238,7 +217,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	var cellCount = 0;
 
 	switch (whatToProcess) {
-	case 'POPULATE-PLAYERS' :
+	/*case 'POPULATE-PLAYERS' :
 	
 		$('#selectPlayers').empty();
 
@@ -264,107 +243,9 @@ function addItemsToList(whatToProcess, dataToProcess)
 			}
 		});
 		
-		break;
-	case'DOUBLETEAMS-OPTIONS':
-	
-		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD':
-
-			$('#select_graphic_options_div').empty();
-	
-			header_text = document.createElement('h6');
-			header_text.innerHTML = 'Select Graphic Options';
-			document.getElementById('select_graphic_options_div').appendChild(header_text);
-			
-			table = document.createElement('table');
-			table.setAttribute('class', 'table table-bordered');
-					
-			tbody = document.createElement('tbody');
-	
-			table.appendChild(tbody);
-			document.getElementById('select_graphic_options_div').appendChild(table);
-			
-			row = tbody.insertRow(tbody.rows.length);
-
-			select = document.createElement('select');
-			select.id = 'selectStatsType1';
-			select.name = select.id;
-			
-			option = document.createElement('option');
-			option.value = 'HomeTeam';
-			option.text = 'HomeTeam';
-			select.appendChild(option);
-			
-			option = document.createElement('option');
-			option.value = 'AwayTeam';
-			option.text = 'AwayTeam';
-			select.appendChild(option);
-			
-			row.insertCell(cellCount).appendChild(select);
-			
-			cellCount = cellCount + 1;
-			
-			switch(whatToProcess){
-			case'DOUBLETEAMS-OPTIONS':
-			
-				select.setAttribute('onchange',"processUserSelection(this)");
-				
-				select = document.createElement('select');
-				select.id = 'selectStatsType2';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'HomeTeam';
-				option.text = 'HomeTeam';
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = 'AwayTeam';
-				option.text = 'AwayTeam';
-				select.appendChild(option);
-				
-			    select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				
-				cellCount = cellCount + 1;
-				
-				break;  
-			}
-			
-			option = document.createElement('input');
-		    option.type = 'button';
-		    
-			switch (whatToProcess) {
-			case'DOUBLETEAMS-OPTIONS':
-			    option.name = 'populate_doubleteams_btn';
-			    option.value = 'Populate Doubleteams';
-				break;
-			}
-		    option.id = option.name;
-		    option.setAttribute('onclick',"processUserSelection(this)");
-		    
-		    div = document.createElement('div');
-		    div.append(option);
-
-			option = document.createElement('input');
-			option.type = 'button';
-			option.name = 'cancel_graphics_btn';
-			option.id = option.name;
-			option.value = 'Cancel';
-			option.setAttribute('onclick','processUserSelection(this)');
-	
-		    div.append(option);
-		    
-		    row.insertCell(cellCount).appendChild(div);
-		    cellCount = cellCount + 1;
-		    
-			document.getElementById('select_graphic_options_div').style.display = '';
-
-			break;
-		}
-		 break;
-		 
-	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS': //case'DOUBLETEAMS-OPTIONS':
+		break;*/
+ 	
+	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD':
@@ -442,7 +323,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select.setAttribute('onchange',"processUserSelection(this)");
 				
 				select = document.createElement('select');
-				select.id = 'selectStatsType';
+				select.id = 'selectHowOutBatsmen';
 				select.name = select.id;
 				
 				option = document.createElement('option');
@@ -463,31 +344,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 
 				cellCount = cellCount + 1;
 				break;
-			
-			/*case'DOUBLETEAMS-OPTIONS':
-			
-				select.setAttribute('onchange',"processUserSelection(this)");
-				
-				select = document.createElement('select');
-				select.id = 'selectInnings';
-				select.name = select.id;
-				
-				if(document.getElementById('selected_match_max_overs').value > 0) {
-					max_cols = 2;
-				} else {
-					max_cols = 4;
-				}
-				for(var i=1; i<=max_cols; i++) {
-					option = document.createElement('option');
-					option.value = i;
-				    option.text = 'Inning ' + i;
-				    select.appendChild(option);
-				}
-				select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				break;*/  
 			}
 			
 			option = document.createElement('input');
@@ -518,10 +374,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.name = 'populate_howout_btn';
 			    option.value = 'Populate Howout';
 				break;
-			/*case'DOUBLETEAMS-OPTIONS':
-			    option.name = 'populate_doubleteams_btn';
-			    option.value = 'Populate Doubleteams';
-				break;*/
 			}
 		    option.id = option.name;
 		    option.setAttribute('onclick',"processUserSelection(this)");
@@ -546,6 +398,59 @@ function addItemsToList(whatToProcess, dataToProcess)
 			break;
 		}
 		break;
+		
+	case'DOUBLETEAMS-OPTIONS':
+	
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD':
+
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+
+			option = document.createElement('input');
+		    option.type = 'button';
+		    
+			switch (whatToProcess) {
+			case'DOUBLETEAMS-OPTIONS':
+			    option.name = 'populate_doubleteams_btn';
+			    option.value = 'Populate Doubleteams';
+				break;
+			}
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}	
 	}
 }
 function checkEmpty(inputBox,textToShow) {

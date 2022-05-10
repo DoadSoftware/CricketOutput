@@ -44,7 +44,7 @@ public class IndexController
 	CricketService cricketService;
 	public static Configurations session_Configurations;
 
-	String viz_scene_path, which_graphics_onscreen, CONFIGURATIONS_DIRECTORY = "Configurations/", OUTPUT_CONFIG= "OUTPUT.XML" ;
+	String viz_scene_path, which_graphics_onscreen, OUTPUT_CONFIG = CricketUtil.OUTPUT_XML ;
 	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String initialisePage(ModelMap model) throws JAXBException, IOException 
@@ -64,15 +64,15 @@ public class IndexController
 		    }
 		}));
 		
-		if(new File(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG).exists()) {
+		if(new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG).exists()) {
 			session_Configurations = (Configurations)JAXBContext.newInstance(Configurations.class).createUnmarshaller().unmarshal(
-					new File(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
+					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
 		}
 		else {
 			session_Configurations = new Configurations();
-			System.out.println(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG);
+			System.out.println(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG);
 			JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
-					new File(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
+					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
 		}
 		return "initialise";
 	}
@@ -101,7 +101,7 @@ public class IndexController
 		session_Configurations = new Configurations(selectedMatch, select_broadcaster, select_sponsors, vizIPAddresss, vizPortNumber, vizScene);
 		
 		JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
-				new File(CricketUtil.CRICKET_DIRECTORY + CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
+				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
 
 		session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + selectedMatch)));
@@ -128,8 +128,6 @@ public class IndexController
 		case "GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		case "GRAPHIC-OPTIONS":
-			return JSONObject.fromObject(session_match).toString();
-		case "GRAPHIC1-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		case "READ-MATCH-AND-POPULATE":
 			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
@@ -173,8 +171,7 @@ public class IndexController
 							Integer.valueOf(valueToProcess.split(",")[0]), valueToProcess.split(",")[1], Integer.valueOf(valueToProcess.split(",")[2]), session_match, viz_scene_path);
 					break;
 				case "POPULATE-DOUBLETEAMS":
-					this_doad.populateDoubleteams(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0], valueToProcess.split(",")[1], session_match, viz_scene_path);
+					this_doad.populateDoubleteams(new PrintWriter(session_socket.getOutputStream(), true), session_match, viz_scene_path);
 					break;
 				}
 				
