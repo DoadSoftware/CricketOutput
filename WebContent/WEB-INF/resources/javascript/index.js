@@ -1,4 +1,4 @@
-var match_data;
+var match_data,vizScene;
 function processWaitingButtonSpinner(whatToProcess) 
 {
 	switch (whatToProcess) {
@@ -29,7 +29,7 @@ function processUserSelection(whichInput)
 			processCricketProcedures('ANIMATE-OUT');	
 		}
 		break;
-	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': case 'howout_graphic_btn': case 'doubleteams_graphic_btn':
+	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': case 'howout_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -53,9 +53,12 @@ function processUserSelection(whichInput)
 		case 'doubleteams_graphic_btn':
 			addItemsToList('DOUBLETEAMS-OPTIONS',null);
 			break;
+		case 'infobar_graphic_btn':
+			processCricketProcedures('ANIMATE-OPTIONS');
+			break;
 		}
 		break;
-	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn': case 'populate_doubleteams_btn':
+	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn': case 'populate_doubleteams_btn': case 'populate_infobar_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -79,6 +82,9 @@ function processUserSelection(whichInput)
 		case 'populate_doubleteams_btn':
 			processCricketProcedures('POPULATE-DOUBLETEAMS');
 			break;
+		case 'populate_infobar_btn':
+			processCricketProcedures('POPULATE-INFOBAR');
+			break;
 		}
 		break;
 	case 'cancel_graphics_btn':
@@ -88,23 +94,29 @@ function processUserSelection(whichInput)
 		break;
 	case 'select_broadcaster':
 		switch ($('#select_broadcaster :selected').val().toUpperCase()) {
-		case 'DOAD':
-			//$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
+		case 'DOAD_IN_HOUSE_VIZ':
+			$('#vizPortNumber').attr('value','6100');
+			$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Lt_HowOut');
-			$('#vizScene').attr('value','/Default/DOAD_In_House/TeamLineUp');
+			//$('#vizScene').attr('value','/Default/DOAD_In_House/TeamLineUpSingles');
+			break;
+			
+		case 'DOAD_IN_HOUSE_EVEREST':
+			
+			$('#vizPortNumber').attr('value','1980');
+			$('label[for=vizScene], input#vizScene').hide();
 			break;
 		}
 		break;
 	case 'load_scene_btn':
 		if(checkEmpty($('#vizIPAddress'),'IP Address Blank') == false
-			|| checkEmpty($('#vizPortNumber'),'Port Number Blank') == false
-			|| checkEmpty($('#vizScene'),'Scene Path Blank') == false) {
+			|| checkEmpty($('#vizPortNumber'),'Port Number Blank') == false) {
 			return false;
 		}
       	document.initialise_form.submit();
 		break;
-	/*case 'selectInning': case 'selectStatsType':
+	case 'selectInning': case 'selectStatsType':
 		switch ($(whichInput).attr('name')) {
 		case 'selectInning':
 			addItemsToList('POPULATE-PLAYERS',match_data);
@@ -113,7 +125,7 @@ function processUserSelection(whichInput)
 			addItemsToList('POPULATE-PLAYERS',match_data);
 			break;
 		}
-		break;*/
+		break;
 	}
 }
 function processCricketProcedures(whatToProcess)
@@ -123,24 +135,68 @@ function processCricketProcedures(whatToProcess)
 	case 'READ-MATCH-AND-POPULATE':
 		valueToProcess = $('#matchFileTimeStamp').val();
 		break;
-	case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': 
+	case 'POPULATE-SCORECARD': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD':
-			valueToProcess = $('#selectInning option:selected').val();
+		case 'DOAD_IN_HOUSE_EVEREST':
+			
+			//valueToProcess = $('#bowlingScene option:selected').val();
+			valueToProcess = $('#battingScene').val() + ',' + $('#selectInning option:selected').val() ;
+			//alert("Scene =" + $('#bowlingScene').val());
+			//alert("valueToProcess = " + valueToProcess);
+			break;	
+		}
+		break;
+	case 'POPULATE-BOWLINGCARD': 
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			
+			//valueToProcess = $('#bowlingScene option:selected').val();
+			valueToProcess = $('#bowlingScene').val() + ',' + $('#selectInning option:selected').val() ;
+			//alert("Scene =" + $('#bowlingScene').val());
+			//alert("valueToProcess = " + valueToProcess);
+			break;	
+		}
+		break;
+	case 'POPULATE-PARTNERSHIP':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			
+			//valueToProcess = $('#bowlingScene option:selected').val();
+			valueToProcess = $('#partnershipScene').val() + ',' + $('#selectInning option:selected').val() ;
+			//alert("Scene =" + $('#bowlingScene').val());
+			//alert("valueToProcess = " + valueToProcess);
+			break;	
+		}
+		break;
+	case 'POPULATE-MATCHSUMMARY': 
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			
+			//valueToProcess = $('#bowlingScene option:selected').val();
+			valueToProcess = $('#summaryScene').val() + ',' + $('#selectInning option:selected').val() ;
+			//alert("Scene =" + $('#bowlingScene').val());
+			//alert("valueToProcess = " + valueToProcess);
 			break;	
 		}
 		break;
 	case 'POPULATE-BUG':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD':
-			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#bugScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
 			break;
 		}
 		break;
 	case 'POPULATE-HOWOUT':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD':
-			valueToProcess = $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#howoutScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+			break;
+		}
+		break;
+	case 'POPULATE-INFOBAR':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#infobarScene').val() + ',' + $('#selectTopLeftStats option:selected').val() + ',' + $('#selectTopRightStats option:selected').val() + ',' + $('#selectBottomLeftStats option:selected').val() + ',' + $('#selectBottomRightStats option:selected').val() ;
 			break;
 		}
 		break;		
@@ -167,10 +223,14 @@ function processCricketProcedures(whatToProcess)
 				addItemsToList('POPULATE-PLAYERS',data);
 				match_data = data;
 				break;
-			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG': case 'POPULATE-HOWOUT': case 'POPULATE-DOUBLETEAMS':
+			case 'ANIMATE-OPTIONS':
+				addItemsToList('INFOBAR-OPTIONS',data);
+				match_data = data;
+				break;
+			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG': case 'POPULATE-HOWOUT': case 'POPULATE-DOUBLETEAMS': case 'POPULATE-INFOBAR':
 				if (data.status.toUpperCase() == 'SUCCESSFUL') {
 					if(confirm('Animate In?') == true){
-						
+						     
 						$('#select_graphic_options_div').empty();
 						document.getElementById('select_graphic_options_div').style.display = 'none';
 						$("#captions_div").show();
@@ -186,6 +246,7 @@ function processCricketProcedures(whatToProcess)
 							processCricketProcedures('ANIMATE-IN-PARTNERSHIP');					
 							break;
 						case 'POPULATE-MATCHSUMMARY':
+							processCricketProcedures('SUMMARY-DATA');
 							processCricketProcedures('ANIMATE-IN-MATCHSUMARRY');			
 							break;
 						case 'POPULATE-BUG':
@@ -196,6 +257,9 @@ function processCricketProcedures(whatToProcess)
 							break;
 						case 'POPULATE-DOUBLETEAMS':
 							processCricketProcedures('ANIMATE-IN-DOUBLETEAMS');				
+							break;
+						case 'POPULATE-INFOBAR':
+							processCricketProcedures('ANIMATE-IN-INFOBAR');				
 							break;
 					}
 					}
@@ -217,7 +281,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	var cellCount = 0;
 
 	switch (whatToProcess) {
-	/*case 'POPULATE-PLAYERS' :
+	case 'POPULATE-PLAYERS' :
 	
 		$('#selectPlayers').empty();
 
@@ -243,12 +307,12 @@ function addItemsToList(whatToProcess, dataToProcess)
 			}
 		});
 		
-		break;*/
+		break;
  	
 	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD':
+		case 'DOAD_IN_HOUSE_EVEREST':
 
 			$('#select_graphic_options_div').empty();
 	
@@ -265,7 +329,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			document.getElementById('select_graphic_options_div').appendChild(table);
 			
 			row = tbody.insertRow(tbody.rows.length);
-
+			
 			select = document.createElement('select');
 			select.id = 'selectInning';
 			select.name = select.id;
@@ -316,6 +380,14 @@ function addItemsToList(whatToProcess, dataToProcess)
 
 				cellCount = cellCount + 1;
 				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'bugScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_BUG.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
 				break;
 				
 			case'HOWOUT-OPTIONS':
@@ -323,7 +395,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select.setAttribute('onchange',"processUserSelection(this)");
 				
 				select = document.createElement('select');
-				select.id = 'selectHowOutBatsmen';
+				select.id = 'selectStatsType';
 				select.name = select.id;
 				
 				option = document.createElement('option');
@@ -343,6 +415,15 @@ function addItemsToList(whatToProcess, dataToProcess)
 				row.insertCell(cellCount).appendChild(select);
 
 				cellCount = cellCount + 1;
+				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'howoutScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
 				break;
 			}
 			
@@ -350,19 +431,51 @@ function addItemsToList(whatToProcess, dataToProcess)
 		    option.type = 'button';
 		    
 			switch (whatToProcess) {
-			case 'SCORECARD-OPTIONS': 
+			case 'SCORECARD-OPTIONS':
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'battingScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Batting_Card.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				 
 			    option.name = 'populate_scorecard_btn';
 			    option.value = 'Populate Scorecard';
 				break;
 			case'BOWLINGCARD-OPTIONS':
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'bowlingScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Bowling_Card.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
 			    option.name = 'populate_bowlingcard_btn';
 			    option.value = 'Populate Bowlingcard';
 				break;
 			case'PARTNERSHIP-OPTIONS':
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'partnershipScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Bowling_Card.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
 			    option.name = 'populate_partnership_btn';
 			    option.value = 'Populate Partnership';
 				break;
 			case'MATCHSUMMARY-OPTIONS':
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'summaryScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Summary.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
 			    option.name = 'populate_matchsummary_btn';
 			    option.value = 'Populate Matchsummary';
 				break;
@@ -402,7 +515,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	case'DOUBLETEAMS-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD':
+		case 'DOAD_IN_HOUSE_EVEREST':
 
 			$('#select_graphic_options_div').empty();
 	
@@ -425,8 +538,218 @@ function addItemsToList(whatToProcess, dataToProcess)
 		    
 			switch (whatToProcess) {
 			case'DOUBLETEAMS-OPTIONS':
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'doubleteamScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
 			    option.name = 'populate_doubleteams_btn';
 			    option.value = 'Populate Doubleteams';
+				break;
+			}
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}
+	case'INFOBAR-OPTIONS':
+	
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+			
+			switch(whatToProcess){
+			case'INFOBAR-OPTIONS':
+				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'infobarScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Scorebug.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectTopLeftStats';
+				select.name = select.id;
+				
+				
+				option = document.createElement('option');
+				option.value = 'Batsman';
+				option.text = 'Batsman';
+				select.appendChild(option);
+				
+				/*text = document.createElement('label');
+				text.innerHTML = 'Top Left Stats';
+				text.htmlFor = option.id;
+				select.appendChild(option).appendChild(text);*/
+				
+				row.insertCell(cellCount).appendChild(select);
+				
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectTopRightStats';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'Bowler';
+				option.text = 'Bowler';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'ThisOver';
+				option.text = 'ThisOver';
+				select.appendChild(option);
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				dataToProcess.inning.forEach(function(inn,index,arr){
+					if(inn.isCurrentInning == 'YES'){
+						if(inn.inningNumber == 1){
+							select = document.createElement('select');
+							select.id = 'selectBottomLeftStats';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'CRR';
+							option.text = 'CRR';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'TeamB';
+							option.text = 'TeamB';
+							select.appendChild(option);
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+							
+							select = document.createElement('select');
+							select.id = 'selectBottomRightStats';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'Toss Winning';
+							option.text = 'Toss Winning';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'Boundaries';
+							option.text = 'Boundaries';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'Partnership';
+							option.text = 'Partnership';
+							select.appendChild(option);
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+						
+					}
+					else{
+						select = document.createElement('select');
+						select.id = 'selectBottomLeftStats';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = 'CRR';
+						option.text = 'CRR';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'TeamB';
+						option.text = 'TeamB';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'RRR';
+						option.text = 'RRR';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'Target';
+						option.text = 'Target';
+						select.appendChild(option);
+										
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						select = document.createElement('select');
+						select.id = 'selectBottomRightStats';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = 'Equation';
+						option.text = 'Equation';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'Comparision';
+						option.text = 'Comparision';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'Boundaries';
+						option.text = 'Boundaries';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'Partnership';
+						option.text = 'Partnership';
+						select.appendChild(option);
+						
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+					}
+					}
+				});
+				break;
+			}
+
+			option = document.createElement('input');
+		    option.type = 'button';
+		    
+			switch (whatToProcess) {
+			case'INFOBAR-OPTIONS':
+			    option.name = 'populate_infobar_btn';
+			    option.value = 'Populate Infobar';
 				break;
 			}
 		    option.id = option.name;

@@ -44,7 +44,8 @@
 			    <div class="col-sm-6 col-md-6">
 			      <select id="select_broadcaster" name="select_broadcaster" class="browser-default custom-select custom-select-sm"
 			      		onchange="processUserSelection(this)">
-			          <option value="doad">DOAD In House</option>
+			          <option value="DOAD_In_House_Viz">DOAD In House Viz</option>
+			          <option value="DOAD_In_House_Everest">DOAD In House Everest</option>
 			      </select>
 			    </div>
 			  </div>
@@ -57,6 +58,15 @@
 			      </select>
 			    </div>
 			  </div>
+			  <div id="vizPortNumber_div" class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
+			    <label for="vizPortNumber" class="col-sm-4 col-form-label text-left">Viz Port Number 
+			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>
+			    <div class="col-sm-6 col-md-6">
+		             <input type="text" id="vizPortNumber" name="vizPortNumber" 
+		             	class="form-control form-control-sm floatlabel"></input>
+		              <label id="vizPortNumber-validation" style="color:red; display: none;"></label> 
+			    </div>
+			  </div>
 			  <div id="vizIPAddress_div" class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
 			    <label for="vizIPAddress" class="col-sm-4 col-form-label text-left">Viz IP Address 
 			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>
@@ -66,18 +76,9 @@
 		              <label id="vizIPAddress-validation" style="color:red; display: none;"></label> 
 			    </div>
 			  </div>
-			  <div id="vizPortNumber_div" class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
-			    <label for="vizPortNumber" class="col-sm-4 col-form-label text-left">Viz Port Number 
-			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>
-			    <div class="col-sm-6 col-md-6">
-		             <input type="text" id="vizPortNumber" name="vizPortNumber" 
-		             	class="form-control form-control-sm floatlabel" value="6100"></input>
-		              <label id="vizPortNumber-validation" style="color:red; display: none;"></label> 
-			    </div>
-			  </div>
 			  <div class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
-			    <label for="vizScene" class="col-sm-4 col-form-label text-left">Viz Scene 
-			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>
+			    <label for="vizScene" class="col-sm-4 col-form-label text-left">Viz Scene
+			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>	
 			    <div class="col-sm-6 col-md-6">
 		             <input type="text" id="vizScene" name="vizScene"
 		             		class="form-control form-control-sm floatlabel"></input>
