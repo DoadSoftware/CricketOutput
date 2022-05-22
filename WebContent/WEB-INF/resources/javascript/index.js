@@ -29,7 +29,8 @@ function processUserSelection(whichInput)
 			processCricketProcedures('ANIMATE-OUT');	
 		}
 		break;
-	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': case 'howout_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_graphic_btn':
+	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': case 'howout_graphic_btn': 
+	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -45,10 +46,16 @@ function processUserSelection(whichInput)
 			addItemsToList('MATCHSUMMARY-OPTIONS',null);
 			break;
 		case 'bug_graphic_btn':
-			processCricketProcedures('GRAPHICS-OPTIONS');
+			processCricketProcedures('BUG_GRAPHICS-OPTIONS');
 			break;
 		case 'howout_graphic_btn':
-			processCricketProcedures('GRAPHIC-OPTIONS');
+			processCricketProcedures('HOWHOT_GRAPHICS-OPTIONS');
+			break;
+		case 'playerstats_graphic_btn':
+			processCricketProcedures('PLAYERSTATS_GRAPHICS-OPTIONS');
+			break;
+		case 'namesuper_graphic_btn':
+			processCricketProcedures('NAMESUPER_GRAPHICS-OPTIONS');
 			break;
 		case 'doubleteams_graphic_btn':
 			addItemsToList('DOUBLETEAMS-OPTIONS',null);
@@ -58,7 +65,8 @@ function processUserSelection(whichInput)
 			break;
 		}
 		break;
-	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn': case 'populate_doubleteams_btn': case 'populate_infobar_btn':
+	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn': 
+	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_doubleteams_btn': case 'populate_infobar_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -78,6 +86,12 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_howout_btn':
 			processCricketProcedures('POPULATE-HOWOUT');
+			break;
+		case 'populate_playerstats_btn':
+			processCricketProcedures('POPULATE-PLAYERSTATS');
+			break;
+		case 'populate_namesuper_btn':
+			processCricketProcedures('POPULATE-NAMESUPER');
 			break;
 		case 'populate_doubleteams_btn':
 			processCricketProcedures('POPULATE-DOUBLETEAMS');
@@ -193,6 +207,20 @@ function processCricketProcedures(whatToProcess)
 			break;
 		}
 		break;
+	case 'POPULATE-PLAYERSTATS':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#playerstatsScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+			break;
+		}
+		break;
+	case 'POPULATE-NAMESUPER':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#namesuperScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+			break;
+		}
+		break;
 	case 'POPULATE-INFOBAR':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -213,13 +241,23 @@ function processCricketProcedures(whatToProcess)
 				addItemsToList(whatToProcess,data);
 				$('#matchFileTimeStamp').val(data.matchFileTimeStamp);
 				break;
-			case 'GRAPHICS-OPTIONS':
+			case 'BUG_GRAPHICS-OPTIONS':
 				addItemsToList('BUG-OPTIONS',data);
 				addItemsToList('POPULATE-PLAYERS',data);
 				match_data = data;
 				break;
-			case 'GRAPHIC-OPTIONS':
+			case 'HOWOUT_GRAPHICS-OPTIONS':
 				addItemsToList('HOWOUT-OPTIONS',data);
+				addItemsToList('POPULATE-PLAYERS',data);
+				match_data = data;
+				break;
+			case 'PLAYERSTATS_GRAPHICS-OPTIONS':
+				addItemsToList('PLAYERSTATS-OPTIONS',data);
+				addItemsToList('POPULATE-PLAYERS',data);
+				match_data = data;
+				break;
+			case 'NAMESUPER_GRAPHICS-OPTIONS':
+				addItemsToList('NAMESUPER-OPTIONS',data);
 				addItemsToList('POPULATE-PLAYERS',data);
 				match_data = data;
 				break;
@@ -227,7 +265,8 @@ function processCricketProcedures(whatToProcess)
 				addItemsToList('INFOBAR-OPTIONS',data);
 				match_data = data;
 				break;
-			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG': case 'POPULATE-HOWOUT': case 'POPULATE-DOUBLETEAMS': case 'POPULATE-INFOBAR':
+			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG': case 'POPULATE-HOWOUT': 
+			case 'POPULATE-PLAYERSTATS': case 'POPULATE-NAMESUPER': case 'POPULATE-DOUBLETEAMS': case 'POPULATE-INFOBAR':
 				if (data.status.toUpperCase() == 'SUCCESSFUL') {
 					if(confirm('Animate In?') == true){
 						     
@@ -254,6 +293,12 @@ function processCricketProcedures(whatToProcess)
 							break;
 						case 'POPULATE-HOWOUT':
 							processCricketProcedures('ANIMATE-IN-HOWOUT');				
+							break;
+						case 'POPULATE-PLAYERSTATS':
+							processCricketProcedures('ANIMATE-IN-PLAYERSTATS');				
+							break;
+						case 'POPULATE-NAMESUPER':
+							processCricketProcedures('ANIMATE-IN-NAMESUPER');				
 							break;
 						case 'POPULATE-DOUBLETEAMS':
 							processCricketProcedures('ANIMATE-IN-DOUBLETEAMS');				
@@ -309,7 +354,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 		
 		break;
  	
-	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS':
+	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS': case'PLAYERSTATS-OPTIONS':
+	case'NAMESUPER-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -425,6 +471,78 @@ function addItemsToList(whatToProcess, dataToProcess)
 				cellCount = cellCount + 1;
 				
 				break;
+				
+				case'PLAYERSTATS-OPTIONS':
+			
+				select.setAttribute('onchange',"processUserSelection(this)");
+				
+				select = document.createElement('select');
+				select.id = 'selectStatsType';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'Batsman';
+				option.text = 'Batsman';
+				select.appendChild(option);
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
+				
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectPlayers';
+				select.name = select.id;
+				
+				row.insertCell(cellCount).appendChild(select);
+
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'playerstatsScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				break;
+				
+				case'NAMESUPER-OPTIONS':
+			
+				select.setAttribute('onchange',"processUserSelection(this)");
+				
+				select = document.createElement('select');
+				select.id = 'selectStatsType';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'Batsman';
+				option.text = 'Batsman';
+				select.appendChild(option);
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
+				
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectPlayers';
+				select.name = select.id;
+				
+				row.insertCell(cellCount).appendChild(select);
+
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'namesuperScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_NameSuper.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				break;
 			}
 			
 			option = document.createElement('input');
@@ -486,6 +604,14 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case'HOWOUT-OPTIONS':
 			    option.name = 'populate_howout_btn';
 			    option.value = 'Populate Howout';
+				break;
+			case'PLAYERSTATS-OPTIONS':
+			    option.name = 'populate_playerstats_btn';
+			    option.value = 'Populate Playerstats';
+				break;
+			case'NAMESUPER-OPTIONS':
+			    option.name = 'populate_namesuper_btn';
+			    option.value = 'Populate Namesuper';
 				break;
 			}
 		    option.id = option.name;

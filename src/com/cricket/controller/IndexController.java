@@ -146,9 +146,13 @@ public class IndexController
 					throws IOException, IllegalAccessException, InvocationTargetException, JAXBException, InterruptedException
 	{
 		switch (whatToProcess.toUpperCase()) {
-		case "GRAPHICS-OPTIONS":
+		case "BUG_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
-		case "GRAPHIC-OPTIONS":
+		case "HOWHOT_GRAPHICS-OPTIONS":
+			return JSONObject.fromObject(session_match).toString();
+		case "PLAYERSTATS_GRAPHICS-OPTIONS":
+			return JSONObject.fromObject(session_match).toString();
+		case "NAMESUPER_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		case "ANIMATE-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
@@ -165,7 +169,8 @@ public class IndexController
 				return JSONObject.fromObject(null).toString();
 			}
 			
-		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG": case "POPULATE-HOWOUT": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR":
+		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG": case "POPULATE-HOWOUT": 
+		case "POPULATE-PLAYERSTATS": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 				Doad this_doad = new Doad();
@@ -202,6 +207,14 @@ public class IndexController
 							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2],Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-HOWOUT":
+					this_doad.populateHowout(new PrintWriter(session_socket.getOutputStream(), true), 
+							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+					break;
+				case "POPULATE-PLAYERSTATS":
+					this_doad.populateHowout(new PrintWriter(session_socket.getOutputStream(), true), 
+							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+					break;
+				case "POPULATE-NAMESUPER":
 					this_doad.populateHowout(new PrintWriter(session_socket.getOutputStream(), true), 
 							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
@@ -257,6 +270,12 @@ public class IndexController
 						which_graphics_onscreen = "HOWOUT";
 					}
 					break;
+				case "ANIMATE-IN-PLAYERSTATS":
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PLAYERSTATS");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "PLAYERSTATS";
+					}
+					break;
 				case "ANIMATE-IN-DOUBLETEAMS":
 					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "DOUBLETEAMS");
 					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
@@ -309,6 +328,12 @@ public class IndexController
 						break;
 					case "HOWOUT":
 						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "HOWOUT");
+						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+							which_graphics_onscreen = "";
+						}
+						break;
+					case "PLAYERSTATS":
+						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PLAYERSTATS");
 						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
 							which_graphics_onscreen = "";
 						}
