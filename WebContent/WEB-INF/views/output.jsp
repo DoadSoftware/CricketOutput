@@ -77,14 +77,14 @@
 			  		name="partnership_graphic_btn" id="partnership_graphic_btn" onclick="processUserSelection(this)"> Partnership </button> -->
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="matchsummary_graphic_btn" id="matchsummary_graphic_btn" onclick="processUserSelection(this)"> Match Summary </button> 
-			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
-			  		name="bug_graphic_btn" id="bug_graphic_btn" onclick="processUserSelection(this)"> Bug </button>
+			 <!-- 	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="bug_graphic_btn" id="bug_graphic_btn" onclick="processUserSelection(this)"> Bug </button> -->
 			  	 <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="howout_graphic_btn" id="howout_graphic_btn" onclick="processUserSelection(this)"> How Out </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="playerstats_graphic_btn" id="playerstats_graphic_btn" onclick="processUserSelection(this)"> PlayerStats </button>
-			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
-			  		name="namesuper_graphic_btn" id="namesuper_graphic_btn" onclick="processUserSelection(this)"> NameSuper </button>
+			  <!--	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="namesuper_graphic_btn" id="namesuper_graphic_btn" onclick="processUserSelection(this)"> NameSuper </button> -->
 			  		
 			  <!--	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="doubleteams_graphic_btn" id="doubleteams_graphic_btn" onclick="processUserSelection(this)"> Double Teams </button> -->

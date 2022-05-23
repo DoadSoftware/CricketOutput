@@ -215,8 +215,7 @@ public class IndexController
 							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-NAMESUPER":
-					this_doad.populatenamesuper(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populatenamesuper(new PrintWriter(session_socket.getOutputStream(), true), valueToProcess.split(",")[0], session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-DOUBLETEAMS":
 					this_doad.populateDoubleteams(new PrintWriter(session_socket.getOutputStream(), true),valueToProcess.split(",")[0], session_match, session_selected_broadcaster , viz_scene_path);

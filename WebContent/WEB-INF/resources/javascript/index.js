@@ -140,6 +140,16 @@ function processUserSelection(whichInput)
 			break;
 		}
 		break;
+	case 'selectTeam': case 'selectCaptianWicketKeeper':
+		switch ($(whichInput).attr('name')) {
+		case 'selectTeam':
+			addItemsToList('POPULATE-PLAYER',match_data);
+			break;
+		case 'selectCaptianWicketKeeper':
+			addItemsToList('POPULATE-PLAYER',match_data);
+			break;
+		}
+		break;
 	}
 }
 function processCricketProcedures(whatToProcess)
@@ -217,7 +227,7 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-NAMESUPER':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			valueToProcess = $('#namesuperScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+			valueToProcess = $('#namesuperScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + $('#selectCaptianWicketKeeper option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
 			break;
 		}
 		break;
@@ -258,7 +268,7 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'NAMESUPER_GRAPHICS-OPTIONS':
 				addItemsToList('NAMESUPER-OPTIONS',data);
-				addItemsToList('POPULATE-PLAYERS',data);
+				addItemsToList('POPULATE-PLAYER',data);
 				match_data = data;
 				break;
 			case 'ANIMATE-OPTIONS':
@@ -285,7 +295,6 @@ function processCricketProcedures(whatToProcess)
 							processCricketProcedures('ANIMATE-IN-PARTNERSHIP');					
 							break;
 						case 'POPULATE-MATCHSUMMARY':
-							processCricketProcedures('SUMMARY-DATA');
 							processCricketProcedures('ANIMATE-IN-MATCHSUMARRY');			
 							break;
 						case 'POPULATE-BUG':
@@ -353,9 +362,27 @@ function addItemsToList(whatToProcess, dataToProcess)
 		});
 		
 		break;
+	case 'POPULATE-PLAYER' :
+		$('#selectPlayer').empty();
+		
+		if(dataToProcess.homeTeam.shortname ==  $('#selectTeam option:selected').val()){
+			if($('#selectCaptainWicketKeeper option:selected').val() == 'Captain'){
+				dataToProcess.homeSquad.forEach(function(hs,index,arr){
+						if(hs.captainWicketKeeper == 'captain'){
+							$('#selectPlayer').append(
+								$(document.createElement('option')).prop({
+				                value: hs.playerId,
+				                text: hs.full_name
+					            }))	
+						}					
+				});
+			}
+		}
+		
+		break;
  	
 	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS': case'PLAYERSTATS-OPTIONS':
-	case'NAMESUPER-OPTIONS':
+	
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -512,41 +539,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 				break;
 				
-				case'NAMESUPER-OPTIONS':
-			
-				select.setAttribute('onchange',"processUserSelection(this)");
-				
-				select = document.createElement('select');
-				select.id = 'selectStatsType';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'Batsman';
-				option.text = 'Batsman';
-				select.appendChild(option);
-				
-				select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('select');
-				select.id = 'selectPlayers';
-				select.name = select.id;
-				
-				row.insertCell(cellCount).appendChild(select);
-
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'namesuperScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_NameSuper.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				break;
 			}
 			
 			option = document.createElement('input');
@@ -613,6 +605,126 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.name = 'populate_playerstats_btn';
 			    option.value = 'Populate Playerstats';
 				break;
+			
+			}
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}
+		break;
+		
+	case'NAMESUPER-OPTIONS':
+	
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+			
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+			
+			switch(whatToProcess){
+				
+				case'NAMESUPER-OPTIONS':
+				
+				//select.setAttribute('onchange',"processUserSelection(this)");
+				
+				select = document.createElement('select');
+				select.id = 'selectTeam';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = dataToProcess.homeTeam.shortname;
+				option.text = dataToProcess.homeTeam.shortname;
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = dataToProcess.awayTeam.shortname;
+				option.text = dataToProcess.awayTeam.shortname;
+				select.appendChild(option);
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+
+				select = document.createElement('select');
+				select.id = 'selectCaptainWicketKeeper';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'Captain';
+				option.text = 'Captian';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'CaptainWicketKeeper';
+				option.text = 'CaptainWicketKeeper';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'WicketKeeper';
+				option.text = 'WicketKeeper';
+				select.appendChild(option);
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
+				
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectPlayer';
+				select.name = select.id;
+				
+				row.insertCell(cellCount).appendChild(select);
+
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'namesuperScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_NameSuper.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				break;
+			}
+			
+			option = document.createElement('input');
+		    option.type = 'button';
+		    
+			switch (whatToProcess) {
+			
 			case'NAMESUPER-OPTIONS':
 			    option.name = 'populate_namesuper_btn';
 			    option.value = 'Populate Namesuper';
