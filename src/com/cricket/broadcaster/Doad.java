@@ -45,7 +45,7 @@ public class Doad extends Scene{
 			this.status = "ERROR: Scorecard's inning is null";
 		} else {
 
-			int row_id = 0, row_id_1=0 ;
+			int row_id = 0 ;
 			//print_writer.println("-1 RENDERER*TREE*$Main$TopPart$SubHeaderGrp$SubHeaderText$Language1*GEOM*TEXT SET " + match.getTournament() + "\0");
 			//print_writer.println("-1 RENDERER*TREE*$Main$TopPart$HeaderGrp$BatHeader$MatchId$Language1*GEOM*TEXT SET " + match.getMatchIdent() + "\0");
 			
@@ -174,7 +174,7 @@ public class Doad extends Scene{
 			this.status = CricketUtil.SUCCESSFUL;
 		}
 	}
-	
+
 	public void populatePartnership(PrintWriter print_writer, String viz_scene, int whichInning, Match match, String session_selected_broadcaster, String viz_scene_path) 
 	{
 		if (match == null) {

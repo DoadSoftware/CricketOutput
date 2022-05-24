@@ -1,6 +1,7 @@
 package com.cricket.containers;
 
 import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
 
 public class Scene {
 	
@@ -32,11 +33,14 @@ public class Scene {
 		this.broadcaster = broadcaster;
 	}
 
-	public void scene_load(PrintWriter print_writer, String broadcaster,String scene_path)
+	public void scene_load(PrintWriter print_writer, String broadcaster,String scene_path) throws InterruptedException
 	{
 		switch (broadcaster.toUpperCase()) {
 		case "DOAD_IN_HOUSE_EVEREST":
+			
 			print_writer.println("LAYER1*EVEREST*SINGLE_SCENE LOAD " + scene_path + ";");
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In RESET;");
+			//TimeUnit.SECONDS.sleep(3);
 			//print_writer.println("LAYER1*EVEREST*SINGLE_SCENE CLEAR;");
 			break;
 		case "DOAD_IN_HOUSE_VIZ":

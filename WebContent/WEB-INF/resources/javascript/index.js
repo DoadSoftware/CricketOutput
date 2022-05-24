@@ -209,18 +209,18 @@ function processCricketProcedures(whatToProcess)
 			valueToProcess = $('#bugScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
 			break;
 		}
-		break;
-	case 'POPULATE-PLAYERSTATS':
-		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
-			valueToProcess = $('#playerstatsScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
-			break;
-		}
 		break;	
 	case 'POPULATE-HOWOUT':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
 			valueToProcess = $('#howoutScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+			break;
+		}
+		break;
+	case 'POPULATE-PLAYERSTATS':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#playerstatsScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
 			break;
 		}
 		break;
@@ -463,6 +463,42 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 				break;
 				
+			case'HOWOUT-OPTIONS': 
+			
+				select.setAttribute('onchange',"processUserSelection(this)");
+				
+				select = document.createElement('select');
+				select.id = 'selectStatsType';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'Batsman';
+				option.text = 'Batsman';
+				select.appendChild(option);
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
+				
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectPlayers';
+				select.name = select.id;
+				
+				row.insertCell(cellCount).appendChild(select);
+
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'howoutScene';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				break;
+				
 			case'PLAYERSTATS-OPTIONS':
 				select.setAttribute('onchange',"processUserSelection(this)");
 
@@ -496,42 +532,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'playerstatsScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				break;
-				
-			case'HOWOUT-OPTIONS': 
-			
-				select.setAttribute('onchange',"processUserSelection(this)");
-				
-				select = document.createElement('select');
-				select.id = 'selectStatsType';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'Batsman';
-				option.text = 'Batsman';
-				select.appendChild(option);
-				
-				select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('select');
-				select.id = 'selectPlayers';
-				select.name = select.id;
-				
-				row.insertCell(cellCount).appendChild(select);
-
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'howoutScene';
 				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
@@ -657,8 +657,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 				case'NAMESUPER-OPTIONS':
 				
-				//select.setAttribute('onchange',"processUserSelection(this)");
-				
+			
 				select = document.createElement('select');
 				select.id = 'selectTeam';
 				select.name = select.id;
