@@ -164,6 +164,8 @@ public class IndexController
 			return JSONObject.fromObject(session_match).toString();
 		case "NAMESUPER_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
+		case "PLAYERPROFILE_GRAPHICS-OPTIONS":
+			return JSONObject.fromObject(session_match).toString();
 			
 		case "AUTO-UPDATE-GRAPHICS":
 			System.out.println("is_Infobar_on_Screen = " + is_Infobar_on_Screen);
@@ -190,7 +192,7 @@ public class IndexController
 			}*/
 			
 		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG":  case "POPULATE-HOWOUT":
-		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT":
+		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-PLAYERPROFILE": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 				Doad this_doad = new Doad();
@@ -241,6 +243,10 @@ public class IndexController
 				case "POPULATE-NAMESUPER":
 					this_doad.populatenamesuper(new PrintWriter(session_socket.getOutputStream(), true), 
 							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+					break;
+				case "POPULATE-PLAYERPROFILE":
+					this_doad.populateplayerprofile(new PrintWriter(session_socket.getOutputStream(), true), 
+							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),Integer.valueOf(valueToProcess.split(",")[2]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-DOUBLETEAMS":
 					this_doad.populateDoubleteams(new PrintWriter(session_socket.getOutputStream(), true),valueToProcess.split(",")[0], session_match, session_selected_broadcaster , viz_scene_path);

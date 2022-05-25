@@ -632,6 +632,9 @@ public class Doad extends Scene{
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
 	}
+	public void populateplayerprofile(PrintWriter print_writer,String viz_scene, int TeamId, int playerId, Match match, String session_selected_broadcaster, String viz_scene_path) {
+		
+	}
 	public void populateDoubleteams(PrintWriter print_writer,String viz_scene, Match match, String session_selected_broadcaster, String viz_scene_path)
 	{
 		if (match == null) {
