@@ -717,12 +717,17 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 				option = document.createElement('option');
 				option.value = 'Captain';
-				option.text = 'Captian';
+				option.text = 'Captain';
 				select.appendChild(option);
 				
 				option = document.createElement('option');
 				option.value = 'Captain-WicketKeeper';
 				option.text = 'Captain-WicketKeeper';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'Player';
+				option.text = 'Player';
 				select.appendChild(option);
 
 				option = document.createElement('option');

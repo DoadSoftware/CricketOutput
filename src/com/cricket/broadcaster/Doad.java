@@ -870,7 +870,7 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
-		case "MATCHSUMMARY":
+		case "SUMARRY":
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
@@ -915,7 +915,7 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
-		case "BATBALLSUMMARY_MATCHSUMMARY":
+		case "SUMARRY":
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;

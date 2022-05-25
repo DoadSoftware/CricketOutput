@@ -291,7 +291,7 @@ public class IndexController
 				
 				return JSONObject.fromObject(this_doad).toString();
 			}
-		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMMARY": case "ANIMATE-IN-BUG": case "ANIMATE-IN-HOWOUT": 
+		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMARRY": case "ANIMATE-IN-BUG": case "ANIMATE-IN-HOWOUT": 
 		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR": case "ANIMATE-OUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
@@ -316,9 +316,9 @@ public class IndexController
 					}
 					break;
 				case "ANIMATE-IN-MATCHSUMARRY":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "MATCHSUMMARY");
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "SUMARRY");
 					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "BATBALLSUMMARY_MATCHSUMMARY";
+						which_graphics_onscreen = "SUMARRY";
 					}
 					break;
 				case "ANIMATE-IN-BUG":
@@ -383,8 +383,8 @@ public class IndexController
 							which_graphics_onscreen = "";
 						}
 						break;
-					case "BATBALLSUMMARY_MATCHSUMMARY":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BATBALLSUMMARY_MATCHSUMMARY");
+					case "SUMARRY":
+						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "SUMARRY");
 						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
 							which_graphics_onscreen = "";
 						}
