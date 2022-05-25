@@ -487,6 +487,7 @@ public class Doad extends Scene{
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
 	}
+	
 	public void populateHowout(PrintWriter print_writer,String viz_scene, int whichInning, String statsType, int playerId, Match match, String session_selected_broadcaster, String viz_scene_path)
 	{
 		if (match == null) {
@@ -600,18 +601,31 @@ public class Doad extends Scene{
 		}
 	}
 	
-	public void populatenamesuper(PrintWriter print_writer,String viz_scene, Match match, String session_selected_broadcaster, String viz_scene_path)
+	public void populatenamesuper(PrintWriter print_writer,String viz_scene, int TeamId, String captainWicketKeeper, int playerId, Match match, String session_selected_broadcaster, String viz_scene_path)
 	{
 		if (match == null) {
 			this.status = "ERROR: Match is null";
 		} else {
 			
-			
-			
-			
-			
+			if(TeamId == match.getHomeTeamId()) {
+				for(Player hs : match.getHomeSquad()) {
+					if(playerId == hs.getPlayerId()) {
+						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHeader " + hs.getFull_name() + ";");
+					}
+				}
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + captainWicketKeeper +" - "+ match.getHomeTeam().getFullname() + ";");
+			}
+			else {
+				for(Player as : match.getAwaySquad()) {
+					if(playerId == as.getPlayerId()) {
+						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHeader " + as.getFull_name() + ";");
+					}
+				}
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + captainWicketKeeper +" - "+ match.getAwayTeam().getFullname() + ";");
+			}
+
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/PlayerStats.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/NameSuper.bmp;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
@@ -821,6 +835,14 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
+		case "PLAYERSTATS":
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "NAMESUPER":
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
 		case "DOUBLETEAMS":
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
 			this.status = CricketUtil.SUCCESSFUL;
@@ -834,10 +856,6 @@ public class Doad extends Scene{
 	public void AnimateOutGraphics(PrintWriter print_writer, String whichGraphic)
 	{
 		switch(whichGraphic) {
-		case "BUG":
-			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
-			this.status = CricketUtil.SUCCESSFUL;
-			break;
 		case "BATBALLSUMMARY_SCORECARD":
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
 			this.status = CricketUtil.SUCCESSFUL;
@@ -854,7 +872,19 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
+		case "BUG":
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
 		case "HOWOUT":
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
+		case "PLAYERSTATS":
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;	
+		case "NAMESUPER":
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;

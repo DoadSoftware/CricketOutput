@@ -29,7 +29,7 @@ function processUserSelection(whichInput)
 			processCricketProcedures('ANIMATE-OUT');	
 		}
 		break;
-	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': case 'howout_graphic_btn': 
+	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn':  case 'howout_graphic_btn':
 	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
@@ -49,7 +49,7 @@ function processUserSelection(whichInput)
 			processCricketProcedures('BUG_GRAPHICS-OPTIONS');
 			break;
 		case 'howout_graphic_btn':
-			processCricketProcedures('HOWHOT_GRAPHICS-OPTIONS');
+			processCricketProcedures('HOWOUT_GRAPHICS-OPTIONS');
 			break;
 		case 'playerstats_graphic_btn':
 			processCricketProcedures('PLAYERSTATS_GRAPHICS-OPTIONS');
@@ -65,7 +65,7 @@ function processUserSelection(whichInput)
 			break;
 		}
 		break;
-	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn': 
+	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn':
 	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_doubleteams_btn': case 'populate_infobar_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
@@ -227,7 +227,7 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-NAMESUPER':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			valueToProcess = $('#namesuperScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + $('#selectCaptianWicketKeeper option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
+			valueToProcess = $('#namesuperScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + $('#selectCaptainWicketKeeper option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
 			break;
 		}
 		break;
@@ -275,7 +275,7 @@ function processCricketProcedures(whatToProcess)
 				addItemsToList('INFOBAR-OPTIONS',data);
 				match_data = data;
 				break;
-			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG': case 'POPULATE-HOWOUT': 
+			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':  case 'POPULATE-HOWOUT':
 			case 'POPULATE-PLAYERSTATS': case 'POPULATE-NAMESUPER': case 'POPULATE-DOUBLETEAMS': case 'POPULATE-INFOBAR':
 				if (data.status.toUpperCase() == 'SUCCESSFUL') {
 					if(confirm('Animate In?') == true){
@@ -365,23 +365,29 @@ function addItemsToList(whatToProcess, dataToProcess)
 	case 'POPULATE-PLAYER' :
 		$('#selectPlayer').empty();
 		
-		if(dataToProcess.homeTeam.shortname ==  $('#selectTeam option:selected').val()){
-			if($('#selectCaptainWicketKeeper option:selected').val() == 'Captain'){
-				dataToProcess.homeSquad.forEach(function(hs,index,arr){
-						if(hs.captainWicketKeeper == 'captain'){
-							$('#selectPlayer').append(
-								$(document.createElement('option')).prop({
-				                value: hs.playerId,
-				                text: hs.full_name
-					            }))	
-						}					
-				});
-			}
+		if(dataToProcess.homeTeamId ==  $('#selectTeam option:selected').val()){
+			dataToProcess.homeSquad.forEach(function(hs,index,arr){
+				$('#selectPlayer').append(
+					$(document.createElement('option')).prop({
+	                value: hs.playerId,
+	                text: hs.full_name
+		        }))					
+			});
+		}
+		else{
+			dataToProcess.awaySquad.forEach(function(as,index,arr){
+				$('#selectPlayer').append(
+					$(document.createElement('option')).prop({
+	                value: as.playerId,
+	                text: as.full_name
+		        }))					
+			});
 		}
 		
 		break;
  	
-	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS': case'PLAYERSTATS-OPTIONS':
+	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS': 
+	case'PLAYERSTATS-OPTIONS':
 	
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
@@ -498,7 +504,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 				cellCount = cellCount + 1;
 				
 				break;
-				
 			case'PLAYERSTATS-OPTIONS':
 				select.setAttribute('onchange',"processUserSelection(this)");
 
@@ -657,18 +662,17 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 				case'NAMESUPER-OPTIONS':
 				
-			
 				select = document.createElement('select');
 				select.id = 'selectTeam';
 				select.name = select.id;
 				
 				option = document.createElement('option');
-				option.value = dataToProcess.homeTeam.shortname;
+				option.value = dataToProcess.homeTeamId;
 				option.text = dataToProcess.homeTeam.shortname;
 				select.appendChild(option);
 				
 				option = document.createElement('option');
-				option.value = dataToProcess.awayTeam.shortname;
+				option.value = dataToProcess.awayTeamId;
 				option.text = dataToProcess.awayTeam.shortname;
 				select.appendChild(option);
 				
@@ -686,8 +690,13 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select.appendChild(option);
 				
 				option = document.createElement('option');
-				option.value = 'CaptainWicketKeeper';
-				option.text = 'CaptainWicketKeeper';
+				option.value = 'Captain-WicketKeeper';
+				option.text = 'Captain-WicketKeeper';
+				select.appendChild(option);
+
+				option = document.createElement('option');
+				option.value = 'Player Of The Match';
+				option.text = 'Player Of The Match';
 				select.appendChild(option);
 				
 				option = document.createElement('option');
