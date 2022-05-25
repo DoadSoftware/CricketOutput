@@ -735,7 +735,9 @@ public class Doad extends Scene{
 						}
 						break;
 					}
-					switch(TopRightStats.toUpperCase()) {
+					populateInfobarBottomLeft(print_writer, BottomLeftStats, inn, session_selected_broadcaster);
+					populateInfobarBottomRight(print_writer, BottomRightStats, match, session_selected_broadcaster);
+					/*switch(TopRightStats.toUpperCase()) {
 					case "BOWLER":
 						for (BowlingCard boc : inn.getBowlingCard()) {
 							if(boc.getStatus().toUpperCase().equalsIgnoreCase(CricketUtil.CURRENT_BOWLER)) {
@@ -797,7 +799,7 @@ public class Doad extends Scene{
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tNeedRun " + CricketFunctions.getRequiredRuns(match) + ";");
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tNeedBall " + CricketFunctions.getRequiredBalls(match) + ";");
 						break;
-					}
+					}*/
 				}
 			}
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
@@ -807,6 +809,51 @@ public class Doad extends Scene{
 			
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
+	}
+	
+
+	public void populateInfobarBottomLeft(PrintWriter print_writer, String BottomLeftStats, Inning inning, String session_selected_broadcaster)
+	{
+		switch(BottomLeftStats.toUpperCase()) {
+		case "VS_BOWLING_TEAM":
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio4_data_GRP$CurrentRRGRP*CONTAINER SET ACTIVE 0;");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio4_data_GRP$TeamBGRP$group*CONTAINER SET ACTIVE 1;");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tBallTeamName " + inning.getBowling_team().getShortname().toUpperCase() + ";");
+			break;
+		case "CURRENT_RUN_RATE":
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio4_data_GRP$TeamBGRP$group*CONTAINER SET ACTIVE 0;");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio4_data_GRP$CurrentRRGRP*CONTAINER SET ACTIVE 1;");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tCurrentRunRate " + inning.getRunRate() + ";");
+			break;
+		}
+	
+	}
+	public void populateInfobarBottomRight(PrintWriter print_writer, String BottomRightStats, Match match, String session_selected_broadcaster)
+	{
+	
+		switch(BottomRightStats.toUpperCase()) {
+		case "TOSS_WINNING":
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio5_data_GRP$EquationGRP*CONTAINER SET ACTIVE 0;");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio5_data_GRP$TossGRP$group*CONTAINER SET ACTIVE 1;");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tTossResult " + CricketFunctions.TossResult(match, "SHORT", "FIELD", "FULL") + ";");
+			break;
+		case "EQUATION":
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio5_data_GRP$TossGRP$group*CONTAINER SET ACTIVE 0;");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio5_data_GRP$EquationGRP*CONTAINER SET ACTIVE 1;");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tNeedRun " + CricketFunctions.getRequiredRuns(match) + ";");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tNeedBall " + CricketFunctions.getRequiredBalls(match) + ";");
+			break;
+		}
+
+	}
+	public void AnimationProcess(PrintWriter print_writer, String animationName,String animationCommand, String which_broadcaster)
+	{
+		switch(which_broadcaster) {
+		case "DOAD_IN_HOUSE_EVEREST":
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*" + animationName + " " + animationCommand + ";");
+			break;
+		}
+		
 	}
 	public void AnimateInGraphics(PrintWriter print_writer, String whichGraphic)
 	{

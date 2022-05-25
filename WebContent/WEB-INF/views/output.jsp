@@ -14,6 +14,12 @@
   
   <link rel="stylesheet" href="<c:url value="/webjars/bootstrap/5.1.3/css/bootstrap.min.css"/>"/>  
   <link href="<c:url value="/webjars/font-awesome/6.0.0/css/all.css"/>" rel="stylesheet">
+  
+  <!-- <script type="text/javascript">
+  	setInterval(() => {
+  		processCricketProcedures('AUTO-UPDATE-GRAPHICS');		
+	}, 1000);
+  </script> -->
 	
 </head>
 <body>
@@ -67,6 +73,10 @@
   					</c:forEach>
 				</c:forEach>
 				<div class="left">
+				<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="infobar_bottom-left_graphic_btn" id="infobar_bottom-left_graphic_btn" onclick="processUserSelection(this)"> Infobar Bottom-Left </button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="infobar_bottom-right_graphic_btn" id="infobar_bottom-right_graphic_btn" onclick="processUserSelection(this)"> Infobar Bottom-Right </button>
 				<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="infobar_graphic_btn" id="infobar_graphic_btn" onclick="processUserSelection(this)"> Infobar </button>
 			    <button style="background-color:#2E008B;color:#FEFEFE;;" class="btn btn-sm" type="button"

@@ -30,7 +30,8 @@ function processUserSelection(whichInput)
 		}
 		break;
 	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn':  case 'howout_graphic_btn':
-	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_graphic_btn':
+	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_bottom-left_graphic_btn': 
+	case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -60,13 +61,23 @@ function processUserSelection(whichInput)
 		case 'doubleteams_graphic_btn':
 			addItemsToList('DOUBLETEAMS-OPTIONS',null);
 			break;
+		case 'infobar_bottom-left_graphic_btn':
+			addItemsToList('INFOBAR-BOTTOMLEFT-OPTIONS',null);
+			//processCricketProcedures('ANIMATE-BOTTOMLEFT-OPTIONS');
+			break;
 		case 'infobar_graphic_btn':
-			processCricketProcedures('ANIMATE-OPTIONS');
+			addItemsToList('INFOBAR-OPTIONS',null);
+			//processCricketProcedures('INFOBAR-OPTIONS');
+			break;
+		case 'infobar_bottom-right_graphic_btn':
+			addItemsToList('INFOBAR-BOTTOMRIGHT-OPTIONS',null);
+			//processCricketProcedures('ANIMATE-BOTTOMLEFT-OPTIONS');
 			break;
 		}
 		break;
 	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn':
-	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_doubleteams_btn': case 'populate_infobar_btn':
+	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_doubleteams_btn': case 'populate_infobar_bottom-left_btn': 
+	case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -96,9 +107,16 @@ function processUserSelection(whichInput)
 		case 'populate_doubleteams_btn':
 			processCricketProcedures('POPULATE-DOUBLETEAMS');
 			break;
+		case 'populate_infobar_bottom-left_btn':
+			processCricketProcedures('POPULATE-INFOBAR-BOTTOMLEFT');
+			break;
 		case 'populate_infobar_btn':
 			processCricketProcedures('POPULATE-INFOBAR');
 			break;
+		case 'populate_infobar_bottom-right_btn':
+			processCricketProcedures('POPULATE-INFOBAR-BOTTOMRIGHT');
+			break;
+
 		}
 		break;
 	case 'cancel_graphics_btn':
@@ -231,13 +249,29 @@ function processCricketProcedures(whatToProcess)
 			break;
 		}
 		break;
+	case 'POPULATE-INFOBAR-BOTTOMLEFT':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#selectBottomLeftStat option:selected').val() ;
+			break;
+		}
+		break;
 	case 'POPULATE-INFOBAR':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
 			valueToProcess = $('#infobarScene').val() + ',' + $('#selectTopLeftStats option:selected').val() + ',' + $('#selectTopRightStats option:selected').val() + ',' + $('#selectBottomLeftStats option:selected').val() + ',' + $('#selectBottomRightStats option:selected').val() ;
+			
 			break;
 		}
-		break;		
+		break;
+	case 'POPULATE-INFOBAR-BOTTOMRIGHT':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#selectBottomRightStat option:selected').val() ;
+			break;
+		}
+		break;
+	
 	}
 
 	$.ajax({    
@@ -271,10 +305,7 @@ function processCricketProcedures(whatToProcess)
 				addItemsToList('POPULATE-PLAYER',data);
 				match_data = data;
 				break;
-			case 'ANIMATE-OPTIONS':
-				addItemsToList('INFOBAR-OPTIONS',data);
-				match_data = data;
-				break;
+			
 			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':  case 'POPULATE-HOWOUT':
 			case 'POPULATE-PLAYERSTATS': case 'POPULATE-NAMESUPER': case 'POPULATE-DOUBLETEAMS': case 'POPULATE-INFOBAR':
 				if (data.status.toUpperCase() == 'SUCCESSFUL') {
@@ -822,7 +853,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 
 			break;
 		}
-	case'INFOBAR-OPTIONS':
+	case'INFOBAR-BOTTOMLEFT-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -844,162 +875,35 @@ function addItemsToList(whatToProcess, dataToProcess)
 			row = tbody.insertRow(tbody.rows.length);
 			
 			switch(whatToProcess){
-			case'INFOBAR-OPTIONS':
-				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'infobarScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Scorebug.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
+			case'INFOBAR-BOTTOMLEFT-OPTIONS':
 				
 				select = document.createElement('select');
-				select.id = 'selectTopLeftStats';
-				select.name = select.id;
-				
-				
-				option = document.createElement('option');
-				option.value = 'Batsman';
-				option.text = 'Batsman';
-				select.appendChild(option);
-				
-				/*text = document.createElement('label');
-				text.innerHTML = 'Top Left Stats';
-				text.htmlFor = option.id;
-				select.appendChild(option).appendChild(text);*/
-				
-				row.insertCell(cellCount).appendChild(select);
-				
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('select');
-				select.id = 'selectTopRightStats';
+				select.id = 'selectBottomLeftStat';
 				select.name = select.id;
 				
 				option = document.createElement('option');
-				option.value = 'Bowler';
-				option.text = 'Bowler';
+				option.value = 'current_run_rate';
+				option.text = 'Current Run Rate';
 				select.appendChild(option);
 				
 				option = document.createElement('option');
-				option.value = 'ThisOver';
-				option.text = 'ThisOver';
+				option.value = 'vs_bowling_team';
+				option.text = 'vs Bowling team';
 				select.appendChild(option);
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
 				
-				dataToProcess.inning.forEach(function(inn,index,arr){
-					if(inn.isCurrentInning == 'YES'){
-						if(inn.inningNumber == 1){
-							select = document.createElement('select');
-							select.id = 'selectBottomLeftStats';
-							select.name = select.id;
-							
-							option = document.createElement('option');
-							option.value = 'CRR';
-							option.text = 'CRR';
-							select.appendChild(option);
-							
-							option = document.createElement('option');
-							option.value = 'TeamB';
-							option.text = 'TeamB';
-							select.appendChild(option);
-							
-							row.insertCell(cellCount).appendChild(select);
-							cellCount = cellCount + 1;
-							
-							select = document.createElement('select');
-							select.id = 'selectBottomRightStats';
-							select.name = select.id;
-							
-							option = document.createElement('option');
-							option.value = 'Toss Winning';
-							option.text = 'Toss Winning';
-							select.appendChild(option);
-							
-							option = document.createElement('option');
-							option.value = 'Boundaries';
-							option.text = 'Boundaries';
-							select.appendChild(option);
-							
-							option = document.createElement('option');
-							option.value = 'Partnership';
-							option.text = 'Partnership';
-							select.appendChild(option);
-							
-							row.insertCell(cellCount).appendChild(select);
-							cellCount = cellCount + 1;
-						
-					}
-					else{
-						select = document.createElement('select');
-						select.id = 'selectBottomLeftStats';
-						select.name = select.id;
-						
-						option = document.createElement('option');
-						option.value = 'CRR';
-						option.text = 'CRR';
-						select.appendChild(option);
-						
-						option = document.createElement('option');
-						option.value = 'TeamB';
-						option.text = 'TeamB';
-						select.appendChild(option);
-						
-						option = document.createElement('option');
-						option.value = 'RRR';
-						option.text = 'RRR';
-						select.appendChild(option);
-						
-						option = document.createElement('option');
-						option.value = 'Target';
-						option.text = 'Target';
-						select.appendChild(option);
-										
-						row.insertCell(cellCount).appendChild(select);
-						cellCount = cellCount + 1;
-						
-						select = document.createElement('select');
-						select.id = 'selectBottomRightStats';
-						select.name = select.id;
-						
-						option = document.createElement('option');
-						option.value = 'Equation';
-						option.text = 'Equation';
-						select.appendChild(option);
-						
-						option = document.createElement('option');
-						option.value = 'Comparision';
-						option.text = 'Comparision';
-						select.appendChild(option);
-						
-						option = document.createElement('option');
-						option.value = 'Boundaries';
-						option.text = 'Boundaries';
-						select.appendChild(option);
-						
-						option = document.createElement('option');
-						option.value = 'Partnership';
-						option.text = 'Partnership';
-						select.appendChild(option);
-						
-						row.insertCell(cellCount).appendChild(select);
-						cellCount = cellCount + 1;
-					}
-					}
-				});
-				break;
-			}
+				break;		
+				}
 
 			option = document.createElement('input');
 		    option.type = 'button';
 		    
 			switch (whatToProcess) {
-			case'INFOBAR-OPTIONS':
-			    option.name = 'populate_infobar_btn';
-			    option.value = 'Populate Infobar';
+			case'INFOBAR-BOTTOMLEFT-OPTIONS':
+			    option.name = 'populate_infobar_bottom-left_btn';
+			    option.value = 'Change on Infobar';
 				break;
 			}
 		    option.id = option.name;
@@ -1023,7 +927,203 @@ function addItemsToList(whatToProcess, dataToProcess)
 			document.getElementById('select_graphic_options_div').style.display = '';
 
 			break;
-		}	
+		}
+		break;
+	case'INFOBAR-BOTTOMRIGHT-OPTIONS':
+	
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+			
+			switch(whatToProcess){
+			case'INFOBAR-BOTTOMRIGHT-OPTIONS':
+				
+				select = document.createElement('select');
+				select.id = 'selectBottomRightStat';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'toss_winning';
+				option.text = 'Toss Winning';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'equation';
+				option.text = 'Equation';
+				select.appendChild(option);
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				break;		
+				}
+
+			option = document.createElement('input');
+		    option.type = 'button';
+		    
+			switch (whatToProcess) {
+			case'INFOBAR-BOTTOMRIGHT-OPTIONS':
+			    option.name = 'populate_infobar_bottom-right_btn';
+			    option.value = 'Change on Infobar';
+				break;
+			}
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}
+		break;
+	case 'INFOBAR-OPTIONS':
+		//alert("Broadcaster = " +$('#selected_broadcaster').val());
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+			
+			select = document.createElement('input');
+			select.type = "text";
+			select.id = 'infobarScene';
+			select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Scorebug.sum';
+			
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('select');
+			select.id = 'selectTopLeftStats';
+			select.name = select.id;
+			
+			
+			option = document.createElement('option');
+			option.value = 'Batsman';
+			option.text = 'Batsman';
+			select.appendChild(option);
+			
+			
+			row.insertCell(cellCount).appendChild(select);
+			
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('select');
+			select.id = 'selectTopRightStats';
+			select.name = select.id;
+			
+			option = document.createElement('option');
+			option.value = 'Bowler';
+			option.text = 'Bowler';
+			select.appendChild(option);
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('select');
+			select.id = 'selectBottomLeftStats';
+			select.name = select.id;
+			
+			option = document.createElement('option');
+			option.value = 'vs_bowling_team';
+			option.text = 'vs Bowling team';
+			select.appendChild(option);
+			
+			option = document.createElement('option');
+			option.value = 'current_run_rate';
+			option.text = 'Current Run Rate';
+			select.appendChild(option);
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('select');
+			select.id = 'selectBottomRightStats';
+			select.name = select.id;
+			
+			option = document.createElement('option');
+			option.value = 'equation';
+			option.text = 'Equation';
+			select.appendChild(option);
+			
+			option = document.createElement('option');
+			option.value = 'boundaries';
+			option.text = 'Boundaries';
+			select.appendChild(option);
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+				
+			option = document.createElement('input');
+		    option.type = 'button';
+		    option.name = 'populate_infobar_btn';
+			option.value = 'Populate Infobar';
+			
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}
+		break;
 	}
 }
 function checkEmpty(inputBox,textToShow) {

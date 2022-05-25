@@ -31,6 +31,7 @@ import com.cricket.containers.Configurations;
 //import com.cricket.containers.Configurations;
 import com.cricket.containers.Scene;
 import com.cricket.model.EventFile;
+import com.cricket.model.Inning;
 import com.cricket.model.Match;
 import com.cricket.service.CricketService;
 import com.cricket.util.CricketFunctions;
@@ -46,7 +47,9 @@ public class IndexController
 	CricketService cricketService;
 	public static Configurations session_Configurations;
 
-	String viz_scene_path, which_graphics_onscreen, OUTPUT_CONFIG = CricketUtil.OUTPUT_XML ;
+	String viz_scene_path, which_graphics_onscreen, OUTPUT_CONFIG = CricketUtil.OUTPUT_XML , info_bar_bottom_left, info_bar_bottom_right;
+	boolean is_Infobar_on_Screen = false;
+	Doad this_doad = new Doad();
 	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String initialisePage(ModelMap model) throws JAXBException, IOException 
@@ -107,7 +110,14 @@ public class IndexController
 			@RequestParam(value = "select_sponsors", required = false, defaultValue = "") String select_sponsors) 
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
 	{
+		info_bar_bottom_left = "";
 		
+		info_bar_bottom_right = "";	
+		
+		which_graphics_onscreen = "";
+		
+		is_Infobar_on_Screen = false;
+
 		session_selected_broadcaster = select_broadcaster;
 		//vizScene = "C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Bowling_Card.sum" ;
 		//viz_scene_path = vizScene;
@@ -154,10 +164,19 @@ public class IndexController
 			return JSONObject.fromObject(session_match).toString();
 		case "NAMESUPER_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
-		case "ANIMATE-OPTIONS":
-			return JSONObject.fromObject(session_match).toString();
 			
-		case "READ-MATCH-AND-POPULATE":
+		case "AUTO-UPDATE-GRAPHICS":
+			System.out.println("is_Infobar_on_Screen = " + is_Infobar_on_Screen);
+			if(is_Infobar_on_Screen == true) {
+				session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
+						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName())));
+				
+				this_doad.populateInfobar(new PrintWriter(session_socket.getOutputStream(), true),"","BATSMAN", "BOWLER", info_bar_bottom_left, info_bar_bottom_right, 
+						session_match,session_selected_broadcaster,session_event_file, viz_scene_path );
+			}
+			return JSONObject.fromObject(session_match).toString();
+
+		/*case "READ-MATCH-AND-POPULATE":
 			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
 					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified())))
 			{
@@ -168,19 +187,27 @@ public class IndexController
 				return JSONObject.fromObject(session_match).toString();
 			} else {
 				return JSONObject.fromObject(null).toString();
-			}
+			}*/
 			
 		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG":  case "POPULATE-HOWOUT":
-		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR":
+		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 				Doad this_doad = new Doad();
 				
+				PrintWriter print_writer = new PrintWriter(session_socket.getOutputStream(), true);
 				vizScene = valueToProcess.split(",")[0];
 				viz_scene_path = vizScene;
 				
 				
-				new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true),session_selected_broadcaster,vizScene);
+				switch(whatToProcess.toUpperCase()) {
+				case"POPULATE-INFOBAR-BOTTOMLEFT": case"POPULATE-INFOBAR-BOTTOMRIGHT":
+					break;
+				default:
+					new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true),session_selected_broadcaster,vizScene);
+					break;
+				}
+
 				
 				switch (whatToProcess.toUpperCase()) {
 				case "POPULATE-SCORECARD":
@@ -219,9 +246,47 @@ public class IndexController
 					this_doad.populateDoubleteams(new PrintWriter(session_socket.getOutputStream(), true),valueToProcess.split(",")[0], session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-INFOBAR":
+					info_bar_bottom_left = valueToProcess.split(",")[3];
+					info_bar_bottom_right = valueToProcess.split(",")[4];
 					this_doad.populateInfobar(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],valueToProcess.split(",")[1], valueToProcess.split(",")[2], valueToProcess.split(",")[3], valueToProcess.split(",")[4], session_match, session_selected_broadcaster , session_event_file, viz_scene_path);
+							valueToProcess.split(",")[0],valueToProcess.split(",")[1], valueToProcess.split(",")[2],valueToProcess.split(",")[3],valueToProcess.split(",")[4], session_match, session_selected_broadcaster , session_event_file, viz_scene_path);
 					break;
+				case "POPULATE-INFOBAR-BOTTOMLEFT":
+					info_bar_bottom_left = valueToProcess;
+					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_Out CONTINUE;");
+
+					//this_doad.AnimationProcess(print_writer , "Section4_Out", "CONTINUE", session_selected_broadcaster);
+					TimeUnit.SECONDS.sleep(1);
+					for(Inning inn : session_match.getInning()) {
+						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
+							this_doad.populateInfobarBottomLeft(print_writer, info_bar_bottom_left, inn, session_selected_broadcaster);
+						}
+					}
+					TimeUnit.SECONDS.sleep(1);
+					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_In START;");
+
+					//this_doad.AnimationProcess(print_writer , "Section4_In", "START", session_selected_broadcaster);
+
+					break;
+				case "POPULATE-INFOBAR-BOTTOMRIGHT":
+					info_bar_bottom_right = valueToProcess;
+					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section5_Out CONTINUE;");
+
+					//this_doad.AnimationProcess(print_writer , "Section4_Out", "CONTINUE", session_selected_broadcaster);
+					TimeUnit.SECONDS.sleep(1);
+					for(Inning inn : session_match.getInning()) {
+						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
+							this_doad.populateInfobarBottomRight(print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
+						}
+					}
+					TimeUnit.SECONDS.sleep(1);
+					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section5_In START;");
+
+					//this_doad.AnimationProcess(print_writer , "Section4_In", "START", session_selected_broadcaster);
+
+					break;
+
+
 				}
 				
 				return JSONObject.fromObject(this_doad).toString();
