@@ -143,7 +143,11 @@ public class Doad extends Scene{
 					}
 					row_id= 0 ;
 					if(inn.getBowlingCard().size()<=8) {
-						if(inn.getFallsOfWickets() != null || inn.getFallsOfWickets().size() > 0) {
+						if(inn.getFallsOfWickets() == null) {
+							print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Bowling_Card$10*CONTAINER SET ACTIVE 0;");
+							print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Bowling_Card$11*CONTAINER SET ACTIVE 0;");
+						}
+						else if(inn.getFallsOfWickets() != null || inn.getFallsOfWickets().size() > 0) {
 							for(FallOfWicket fow : inn.getFallsOfWickets()) {								
 								if(inn.getTotalWickets()>=0 && inn.getTotalWickets() <= 10) {
 									row_id = row_id + 1;
@@ -633,7 +637,42 @@ public class Doad extends Scene{
 		}
 	}
 	public void populateplayerprofile(PrintWriter print_writer,String viz_scene, int TeamId, int playerId, Match match, String session_selected_broadcaster, String viz_scene_path) {
-		
+		if (match == null) {
+			this.status = "ERROR: Match is null";
+		} else {
+			
+			String path = "D:\\Mumbai_Indians\\Textures and Images\\Player_Images\\PLAYERS_PHOTO_MEDIUM\\" ;
+			
+					
+			
+			if(TeamId == match.getHomeTeamId()) {
+				for(Player hs : match.getHomeSquad()) {
+					if(playerId == hs.getPlayerId()) {
+						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPlayerImage "+ path + hs.getPhoto() +".png"+ ";");
+						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tFirstName "+hs.getFull_name()+ ";");
+						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Data$PlayerImage_Name_GRP$LastName*CONTAINER SET ACTIVE 0;");
+						
+					}
+				}
+				//print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + match.getHomeTeam().getFullname() + ";");
+			}
+			/*else {
+				for(Player as : match.getAwaySquad()) {
+					if(playerId == as.getPlayerId()) {
+						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHeader " + as.getFull_name() + ";");
+					}
+				}
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + match.getAwayTeam().getFullname() + ";");
+			}*/
+
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/PlayerProfile.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+			
+			this.status = CricketUtil.SUCCESSFUL;
+				
+		}
 	}
 	public void populateDoubleteams(PrintWriter print_writer,String viz_scene, Match match, String session_selected_broadcaster, String viz_scene_path)
 	{
@@ -814,7 +853,6 @@ public class Doad extends Scene{
 		}
 	}
 	
-
 	public void populateInfobarBottomLeft(PrintWriter print_writer, String BottomLeftStats, Inning inning, String session_selected_broadcaster)
 	{
 		switch(BottomLeftStats.toUpperCase()) {
@@ -893,6 +931,10 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
+		case "PLAYERPROFILE":
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
 		case "DOUBLETEAMS":
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In START;");
 			this.status = CricketUtil.SUCCESSFUL;
@@ -938,6 +980,10 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
 			this.status = CricketUtil.SUCCESSFUL;
 			break;
+		case "PLAYERPROFILE":
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
+			this.status = CricketUtil.SUCCESSFUL;
+			break;
 		case "DOUBLETEAMS":
 			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In CONTINUE;");
 			this.status = CricketUtil.SUCCESSFUL;
@@ -948,11 +994,5 @@ public class Doad extends Scene{
 			break;
 		}	
 	}
-	public static int getRequiredRunRate(Match match) {
-		int requiredRunRate = CricketFunctions.getRequiredRuns(match) / CricketFunctions.getRequiredBalls(match) * 6;
-	    if (requiredRunRate <= 0) {
-	    	requiredRunRate = 0;
-	    }
-	    return requiredRunRate;
-	}
+
 }

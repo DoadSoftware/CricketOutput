@@ -298,7 +298,7 @@ public class IndexController
 				return JSONObject.fromObject(this_doad).toString();
 			}
 		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMARRY": case "ANIMATE-IN-BUG": case "ANIMATE-IN-HOWOUT": 
-		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR": case "ANIMATE-OUT":
+		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR": case "ANIMATE-OUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 				Doad this_doad = new Doad();
@@ -349,6 +349,12 @@ public class IndexController
 					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "NAMESUPER");
 					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
 						which_graphics_onscreen = "NAMESUPER";
+					}
+					break;
+				case "ANIMATE-IN-PLAYERPROFILE":
+					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PLAYERPROFILE");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "PLAYERPROFILE";
 					}
 					break;
 				case "ANIMATE-IN-DOUBLETEAMS":
@@ -415,6 +421,12 @@ public class IndexController
 						break;
 					case "NAMESUPER":
 						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "NAMESUPER");
+						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+							which_graphics_onscreen = "";
+						}
+						break;
+					case "PLAYERPROFILE":
+						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PLAYERPROFILE");
 						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
 							which_graphics_onscreen = "";
 						}

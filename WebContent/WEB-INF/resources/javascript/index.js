@@ -815,7 +815,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'playerprofileScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_PointsTable.sum';
+				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_PlayerProfile.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
