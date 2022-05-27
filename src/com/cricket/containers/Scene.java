@@ -39,8 +39,11 @@ public class Scene {
 		case "DOAD_IN_HOUSE_EVEREST":
 			
 			print_writer.println("LAYER1*EVEREST*SINGLE_SCENE LOAD " + scene_path + ";");
-			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In RESET;");
-			//TimeUnit.SECONDS.sleep(3);
+			
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In STOP;");
+			print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*In SHOW 0.0;");
+			TimeUnit.SECONDS.sleep(2);
+			
 			//print_writer.println("LAYER1*EVEREST*SINGLE_SCENE CLEAR;");
 			break;
 		case "DOAD_IN_HOUSE_VIZ":

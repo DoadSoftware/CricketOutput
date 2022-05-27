@@ -34,8 +34,14 @@ public class Statistics
   private int runs;
   @Column(name="BALLSFACED")
   private int balls_faced;
+  
   @Column(name="BESTSCORE")
   private String best_score;
+  @Column(name="BESTSCOREAGAINST")
+  private String best_score_against;
+  @Column(name="BESTSCOREVENUE")
+  private String best_score_venue;
+  
   @Column(name="100s")
   private int s_100;
   @Column(name="50s")
@@ -46,8 +52,14 @@ public class Statistics
   private int runs_conceded;
   @Column(name="WICKETS")
   private int wickets;
+  
   @Column(name="BESTFIGURES")
   private String best_figures;
+  @Column(name="BESTFIGURESAGAINST")
+  private String best_figures_against;
+  @Column(name="BESTFIGURESVENUE")
+  private String best_figures_venue;
+  
   
   public int getStatistics_id()
   {
@@ -139,6 +151,22 @@ public void setBest_score(String best_score) {
 	this.best_score = best_score;
 }
 
+public String getBest_score_against() {
+	return best_score_against;
+}
+
+public void setBest_score_against(String best_score_against) {
+	this.best_score_against = best_score_against;
+}
+
+public String getBest_score_venue() {
+	return best_score_venue;
+}
+
+public void setBest_score_venue(String best_score_venue) {
+	this.best_score_venue = best_score_venue;
+}
+
 public int getS_100() {
 	return s_100;
 }
@@ -186,5 +214,21 @@ public String getBest_figures() {
 public void setBest_figures(String best_figures) {
 	this.best_figures = best_figures;
 }
-  
+
+public String getBest_figures_against() {
+	return best_figures_against;
+}
+
+public void setBest_figures_against(String best_figures_against) {
+	this.best_figures_against = best_figures_against;
+}
+
+public String getBest_figures_venue() {
+	return best_figures_venue;
+}
+
+public void setBest_figures_venue(String best_figures_venue) {
+	this.best_figures_venue = best_figures_venue;
+}
+
 }

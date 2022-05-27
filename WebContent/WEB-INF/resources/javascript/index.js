@@ -174,6 +174,16 @@ function processUserSelection(whichInput)
 			break;
 		}
 		break;
+	case 'PlayerType': case 'selectTeams':
+		switch ($(whichInput).attr('name')) {
+		case 'selectTeams':
+			addItemsToList('POPULATE-PROFILE',match_data);
+			break;
+		case 'PlayerType':
+			addItemsToList('POPULATE-PROFILE',match_data);
+			break;
+		}
+		break;
 	}
 }
 function processCricketProcedures(whatToProcess)
@@ -258,7 +268,7 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-PLAYERPROFILE':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			valueToProcess = $('#playerprofileScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
+			valueToProcess = $('#playerprofileScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + $('#PlayerType option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
 			break;
 		}
 		break;
@@ -320,7 +330,7 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'PLAYERPROFILE_GRAPHICS-OPTIONS':
 				addItemsToList('PLAYERPROFILE-OPTIONS',data);
-				addItemsToList('POPULATE-PLAYER',data);
+				addItemsToList('POPULATE-PROFILE',data);
 				match_data = data;
 				break;
 			
@@ -413,6 +423,34 @@ function addItemsToList(whatToProcess, dataToProcess)
 			}
 		});
 		
+		break;
+	case 'POPULATE-PROFILE' :
+	
+		$('#selectProfile').empty();
+
+			if(dataToProcess.homeTeamId ==  $('#selectTeams option:selected').val()){
+				dataToProcess.homeSquad.forEach(function(hs,index,arr){
+					if(hs.role == $('#PlayerType option:selected').val()){
+						$('#selectProfile').append(
+							$(document.createElement('option')).prop({
+			                value: hs.playerId,
+			                text: hs.full_name
+				        }))	
+					}				
+				});
+			}
+			else{
+				dataToProcess.awaySquad.forEach(function(as,index,arr){
+					if(as.role == $('#PlayerType option:selected').val()){
+						$('#selectProfile').append(
+							$(document.createElement('option')).prop({
+			                value: as.playerId,
+			                text: as.full_name
+				        }))	
+					}				
+				});
+			}
+			
 		break;
 	case 'POPULATE-PLAYER' :
 		$('#selectPlayer').empty();
@@ -703,7 +741,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 			table.setAttribute('class', 'table table-bordered');
 					
 			tbody = document.createElement('tbody');
-			
 	
 			table.appendChild(tbody);
 			document.getElementById('select_graphic_options_div').appendChild(table);
@@ -727,7 +764,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				option.value = dataToProcess.awayTeamId;
 				option.text = dataToProcess.awayTeam.shortname;
 				select.appendChild(option);
-				
+			
 				select.setAttribute('onchange',"processUserSelection(this)");
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -787,7 +824,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case'PLAYERPROFILE-OPTIONS':
 				
 				select = document.createElement('select');
-				select.id = 'selectTeam';
+				select.id = 'selectTeams';
 				select.name = select.id;
 				
 				option = document.createElement('option');
@@ -802,10 +839,28 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 				select.setAttribute('onchange',"processUserSelection(this)");
 				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'PlayerType';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'Batsman';
+				option.text = 'Batsman';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'Bowler';
+				option.text = 'Bowler';
+				select.appendChild(option);
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;	
 				
 				select = document.createElement('select');
-				select.id = 'selectPlayer';
+				select.id = 'selectProfile';
 				select.name = select.id;
 				
 				row.insertCell(cellCount).appendChild(select);
