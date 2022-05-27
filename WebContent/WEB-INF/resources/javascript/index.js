@@ -65,15 +65,15 @@ function processUserSelection(whichInput)
 			addItemsToList('DOUBLETEAMS-OPTIONS',null);
 			break;
 		case 'infobar_bottom-left_graphic_btn':
-			addItemsToList('INFOBAR-BOTTOMLEFT-OPTIONS',null);
+			processCricketProcedures('ANIMATE-OPTIONS');
 			//processCricketProcedures('ANIMATE-BOTTOMLEFT-OPTIONS');
 			break;
 		case 'infobar_graphic_btn':
-			addItemsToList('INFOBAR-OPTIONS',null);
+			processCricketProcedures('INFOBAR_GRAPHICS-OPTIONS');
 			//processCricketProcedures('INFOBAR-OPTIONS');
 			break;
 		case 'infobar_bottom-right_graphic_btn':
-			addItemsToList('INFOBAR-BOTTOMRIGHT-OPTIONS',null);
+			processCricketProcedures('ANIMATE_GRAPHICS-OPTIONS');
 			//processCricketProcedures('ANIMATE-BOTTOMLEFT-OPTIONS');
 			break;
 		}
@@ -331,6 +331,18 @@ function processCricketProcedures(whatToProcess)
 			case 'PLAYERPROFILE_GRAPHICS-OPTIONS':
 				addItemsToList('PLAYERPROFILE-OPTIONS',data);
 				addItemsToList('POPULATE-PROFILE',data);
+				match_data = data;
+				break;
+			case 'ANIMATE-OPTIONS':
+				addItemsToList('INFOBAR-BOTTOMLEFT-OPTIONS',data);
+				match_data = data;
+				break;
+			case 'ANIMATE_GRAPHICS-OPTIONS':
+				addItemsToList('INFOBAR-BOTTOMRIGHT-OPTIONS',data);
+				match_data = data;
+				break;
+			case 'INFOBAR_GRAPHICS-OPTIONS':
+				addItemsToList('INFOBAR-OPTIONS',data);
 				match_data = data;
 				break;
 			
@@ -999,23 +1011,57 @@ function addItemsToList(whatToProcess, dataToProcess)
 			
 			switch(whatToProcess){
 			case'INFOBAR-BOTTOMLEFT-OPTIONS':
-				
-				select = document.createElement('select');
-				select.id = 'selectBottomLeftStat';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'current_run_rate';
-				option.text = 'Current Run Rate';
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = 'vs_bowling_team';
-				option.text = 'vs Bowling team';
-				select.appendChild(option);
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
+				dataToProcess.inning.forEach(function(inn,index,arr){
+					if(inn.isCurrentInning == 'YES'){
+						if(inn.inningNumber == 1){
+							select = document.createElement('select');
+							select.id = 'selectBottomLeftStat';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'current_run_rate';
+							option.text = 'Current Run Rate';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'vs_bowling_team';
+							option.text = 'vs Bowling team';
+							select.appendChild(option);
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+						}
+						else{
+							select = document.createElement('select');
+							select.id = 'selectBottomLeftStat';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'current_run_rate';
+							option.text = 'Current Run Rate';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'vs_bowling_team';
+							option.text = 'vs Bowling team';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'required_run_rate';
+							option.text = 'Required Run Rate';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'target';
+							option.text = 'Target';
+							select.appendChild(option);
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+							
+						}
+					}
+				});
 				
 				break;		
 				}
@@ -1075,23 +1121,66 @@ function addItemsToList(whatToProcess, dataToProcess)
 			
 			switch(whatToProcess){
 			case'INFOBAR-BOTTOMRIGHT-OPTIONS':
-				
-				select = document.createElement('select');
-				select.id = 'selectBottomRightStat';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'toss_winning';
-				option.text = 'Toss Winning';
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = 'equation';
-				option.text = 'Equation';
-				select.appendChild(option);
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
+				dataToProcess.inning.forEach(function(inn,index,arr){
+					if(inn.isCurrentInning == 'YES'){
+						if(inn.inningNumber == 1){
+							select = document.createElement('select');
+							select.id = 'selectBottomRightStat';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'toss_winning';
+							option.text = 'Toss Winning';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'boundaries';
+							option.text = 'Boundaries';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'partnership';
+							option.text = 'Partnership';
+							select.appendChild(option);
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+						}
+						else{
+							select = document.createElement('select');
+							select.id = 'selectBottomRightStat';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'toss_winning';
+							option.text = 'Toss Winning';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'equation';
+							option.text = 'Equation';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'boundaries';
+							option.text = 'Boundaries';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'partnership';
+							option.text = 'Partnership';
+							select.appendChild(option);
+							
+							/*option = document.createElement('option');
+							option.value = 'comparision';
+							option.text = 'Comparision';
+							select.appendChild(option);*/
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+						}
+					}
+				});
 				
 				break;		
 				}
@@ -1164,7 +1253,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			
 			
 			option = document.createElement('option');
-			option.value = 'Batsman';
+			option.value = 'batsman';
 			option.text = 'Batsman';
 			select.appendChild(option);
 			
@@ -1178,46 +1267,114 @@ function addItemsToList(whatToProcess, dataToProcess)
 			select.name = select.id;
 			
 			option = document.createElement('option');
-			option.value = 'Bowler';
+			option.value = 'bowler';
 			option.text = 'Bowler';
 			select.appendChild(option);
 			
-			row.insertCell(cellCount).appendChild(select);
-			cellCount = cellCount + 1;
-			
-			select = document.createElement('select');
-			select.id = 'selectBottomLeftStats';
-			select.name = select.id;
-			
 			option = document.createElement('option');
-			option.value = 'vs_bowling_team';
-			option.text = 'vs Bowling team';
-			select.appendChild(option);
-			
-			option = document.createElement('option');
-			option.value = 'current_run_rate';
-			option.text = 'Current Run Rate';
+			option.value = 'this_over';
+			option.text = 'This Over';
 			select.appendChild(option);
 			
 			row.insertCell(cellCount).appendChild(select);
 			cellCount = cellCount + 1;
 			
-			select = document.createElement('select');
-			select.id = 'selectBottomRightStats';
-			select.name = select.id;
-			
-			option = document.createElement('option');
-			option.value = 'equation';
-			option.text = 'Equation';
-			select.appendChild(option);
-			
-			option = document.createElement('option');
-			option.value = 'boundaries';
-			option.text = 'Boundaries';
-			select.appendChild(option);
-			
-			row.insertCell(cellCount).appendChild(select);
-			cellCount = cellCount + 1;
+			dataToProcess.inning.forEach(function(inn,index,arr){
+					if(inn.isCurrentInning == 'YES'){
+						if(inn.inningNumber == 1){
+							select = document.createElement('select');
+							select.id = 'selectBottomLeftStats';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'current_run_rate';
+							option.text = 'Current Run Rate';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'vs_bowling_team';
+							option.text = 'vs Bowling Team';
+							select.appendChild(option);
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+							
+							select = document.createElement('select');
+							select.id = 'selectBottomRightStats';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'toss_winning';
+							option.text = 'Toss Winning';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'boundaries';
+							option.text = 'Boundaries';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'partnership';
+							option.text = 'Partnership';
+							select.appendChild(option);
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+						
+					}
+					else{
+						select = document.createElement('select');
+						select.id = 'selectBottomLeftStats';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = 'current_run_rate';
+						option.text = 'Current Run Rate';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'vs_bowling_team';
+						option.text = 'vs Bowling Team';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'required_run_rate';
+						option.text = 'Required Run Rate';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'target';
+						option.text = 'Target';
+						select.appendChild(option);				
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						select = document.createElement('select');
+						select.id = 'selectBottomRightStats';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = 'equation';
+						option.text = 'Equation';
+						select.appendChild(option);
+						
+						/*option = document.createElement('option');
+						option.value = 'comparision';
+						option.text = 'Comparision';
+						select.appendChild(option);*/
+						
+						option = document.createElement('option');
+						option.value = 'boundaries';
+						option.text = 'Boundaries';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'partnership';
+						option.text = 'Partnership';
+						select.appendChild(option);
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+					}
+					}
+				});
 				
 			option = document.createElement('input');
 		    option.type = 'button';
@@ -1248,6 +1405,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 		}
 		break;
 	}
+	
 }
 function checkEmpty(inputBox,textToShow) {
 

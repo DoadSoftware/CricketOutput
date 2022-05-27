@@ -11,7 +11,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -166,6 +165,12 @@ public class IndexController
 			return JSONObject.fromObject(session_match).toString();
 		case "PLAYERPROFILE_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
+		case "ANIMATE-OPTIONS":
+			return JSONObject.fromObject(session_match).toString();
+		case "ANIMATE_GRAPHICS-OPTIONS":
+			return JSONObject.fromObject(session_match).toString();
+		case "INFOBAR_GRAPHICS-OPTIONS":
+			return JSONObject.fromObject(session_match).toString();
 			
 		case "AUTO-UPDATE-GRAPHICS":
 			System.out.println("is_Infobar_on_Screen = " + is_Infobar_on_Screen);
@@ -195,7 +200,7 @@ public class IndexController
 		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-PLAYERPROFILE": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
-				Doad this_doad = new Doad();
+				//Doad this_doad = new Doad();
 				
 				PrintWriter print_writer = new PrintWriter(session_socket.getOutputStream(), true);
 				vizScene = valueToProcess.split(",")[0];
@@ -254,6 +259,7 @@ public class IndexController
 				case "POPULATE-INFOBAR":
 					info_bar_bottom_left = valueToProcess.split(",")[3];
 					info_bar_bottom_right = valueToProcess.split(",")[4];
+					System.out.println(valueToProcess.split(",")[2]);
 					this_doad.populateInfobar(new PrintWriter(session_socket.getOutputStream(), true), 
 							valueToProcess.split(",")[0],valueToProcess.split(",")[1], valueToProcess.split(",")[2],valueToProcess.split(",")[3],valueToProcess.split(",")[4], session_match, session_selected_broadcaster , session_event_file, viz_scene_path);
 					break;
@@ -262,13 +268,13 @@ public class IndexController
 					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_Out CONTINUE;");
 
 					//this_doad.AnimationProcess(print_writer , "Section4_Out", "CONTINUE", session_selected_broadcaster);
-					TimeUnit.SECONDS.sleep(1);
+					//TimeUnit.SECONDS.sleep(1);
 					for(Inning inn : session_match.getInning()) {
 						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
-							this_doad.populateInfobarBottomLeft(print_writer, info_bar_bottom_left, inn, session_selected_broadcaster);
+							this_doad.populateInfobarBottomLeft(print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
 						}
 					}
-					TimeUnit.SECONDS.sleep(1);
+					//TimeUnit.SECONDS.sleep(1);
 					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_In START;");
 
 					//this_doad.AnimationProcess(print_writer , "Section4_In", "START", session_selected_broadcaster);
@@ -276,23 +282,37 @@ public class IndexController
 					break;
 				case "POPULATE-INFOBAR-BOTTOMRIGHT":
 					info_bar_bottom_right = valueToProcess;
+					System.out.println(info_bar_bottom_right);
+					switch(info_bar_bottom_right.toUpperCase()) {
+					case"PARTNERSHIP":
+						print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_Out CONTINUE;");
+						break;
+					default:
+						//print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_In START;");
+						break;
+					}
+					//System.out.println(valueToProcess);
 					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section5_Out CONTINUE;");
 
 					//this_doad.AnimationProcess(print_writer , "Section4_Out", "CONTINUE", session_selected_broadcaster);
-					TimeUnit.SECONDS.sleep(1);
+					//TimeUnit.SECONDS.sleep(1);
 					for(Inning inn : session_match.getInning()) {
 						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
 							this_doad.populateInfobarBottomRight(print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
 						}
 					}
-					TimeUnit.SECONDS.sleep(1);
-					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section5_In START;");
-
+					//TimeUnit.SECONDS.sleep(1);
+					switch(info_bar_bottom_right.toUpperCase()) {
+					case"BOUNDARIES": case"PARTNERSHIP":
+						print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section6_In START;");
+						break;
+					default:
+						print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section5_In START;");						
+						break;
+					}
 					//this_doad.AnimationProcess(print_writer , "Section4_In", "START", session_selected_broadcaster);
 
 					break;
-
-
 				}
 				
 				return JSONObject.fromObject(this_doad).toString();
@@ -366,15 +386,16 @@ public class IndexController
 				case "ANIMATE-IN-INFOBAR":
 					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "INFOBAR");
 					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "INFOBAR";
+						is_Infobar_on_Screen = true;
 					}
 					break;
 				case "ANIMATE-OUT":
 					switch(which_graphics_onscreen) {
 					case "INFOBAR":
+						System.out.println("Infobar animate out...");
 						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "INFOBAR");
 						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
+							is_Infobar_on_Screen = false;
 						}
 						break;
 					case "BATBALLSUMMARY_SCORECARD":
