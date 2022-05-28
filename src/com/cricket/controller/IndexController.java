@@ -52,9 +52,9 @@ public class IndexController
 
 	String viz_scene_path, which_graphics_onscreen, OUTPUT_CONFIG = CricketUtil.OUTPUT_XML , info_bar_bottom_left, info_bar_bottom_right;
 	boolean is_Infobar_on_Screen = false;
-	int Player_id ;
-	Doad this_doad = new Doad();
+	int Player_id;
 	List<Statistics> stats_to_send = new ArrayList<Statistics>();
+	Doad this_doad = new Doad();
 	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String initialisePage(ModelMap model) throws JAXBException, IOException 
@@ -114,7 +114,7 @@ public class IndexController
 			@RequestParam(value = "vizScene", required = false, defaultValue = "") String vizScene,
 			@RequestParam(value = "select_sponsors", required = false, defaultValue = "") String select_sponsors) 
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
-	{	
+	{
 		info_bar_bottom_left = "";
 		
 		info_bar_bottom_right = "";	
@@ -232,52 +232,52 @@ public class IndexController
 				
 				switch (whatToProcess.toUpperCase()) {
 				case "POPULATE-SCORECARD":
-					this_doad.populateScorecard(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populateScorecard(print_writer, valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), 
+							session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-BOWLINGCARD":
-					this_doad.populateBowlingcard(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), session_match, session_selected_broadcaster, viz_scene_path);
+					this_doad.populateBowlingcard(print_writer, valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), 
+							session_match, session_selected_broadcaster, viz_scene_path);
 					break;
 				case "POPULATE-PARTNERSHIP":
-					this_doad.populatePartnership(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populatePartnership(print_writer, valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), 
+							session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-MATCHSUMMARY":
-					this_doad.populateMatchsummary(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populateMatchsummary(print_writer, valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), 
+							session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-BUG":
-					this_doad.populateBug(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2],Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populateBug(print_writer, valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), 
+							valueToProcess.split(",")[2],Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-HOWOUT":
-					this_doad.populateHowout(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populateHowout(print_writer, valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], 
+							Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-PLAYERSTATS":
-					this_doad.populatePlayerstats(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populatePlayerstats(print_writer, valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]), valueToProcess.split(",")[2], 
+							Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-NAMESUPER":
-					this_doad.populatenamesuper(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populatenamesuper(print_writer, valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],
+							Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-PLAYERPROFILE":
 					Player_id = Integer.valueOf(valueToProcess.split(",")[2]);
-					System.out.println(Player_id);	
-					this_doad.populateplayerprofile(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),Integer.valueOf(valueToProcess.split(",")[2]), session_match, session_selected_broadcaster , viz_scene_path);
+					System.out.println(Player_id);
+					this_doad.populateplayerprofile(print_writer,valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),Integer.valueOf(valueToProcess.split(",")[2]), 
+							session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-DOUBLETEAMS":
-					this_doad.populateDoubleteams(new PrintWriter(session_socket.getOutputStream(), true),valueToProcess.split(",")[0], session_match, session_selected_broadcaster , viz_scene_path);
+					this_doad.populateDoubleteams(print_writer,valueToProcess.split(",")[0], session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-INFOBAR":
 					info_bar_bottom_left = valueToProcess.split(",")[3];
 					info_bar_bottom_right = valueToProcess.split(",")[4];
 					//System.out.println(valueToProcess.split(",")[2]);
-					this_doad.populateInfobar(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],valueToProcess.split(",")[1], valueToProcess.split(",")[2],valueToProcess.split(",")[3],valueToProcess.split(",")[4], session_match, session_selected_broadcaster , session_event_file, viz_scene_path);
+					this_doad.populateInfobar(print_writer, valueToProcess.split(",")[0],valueToProcess.split(",")[1], valueToProcess.split(",")[2],valueToProcess.split(",")[3],
+							valueToProcess.split(",")[4], session_match, session_selected_broadcaster , session_event_file, viz_scene_path);
 					break;
 				case "POPULATE-INFOBAR-BOTTOMLEFT":
 					info_bar_bottom_left = valueToProcess;
