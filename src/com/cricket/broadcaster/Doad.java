@@ -625,21 +625,36 @@ public class Doad extends Scene{
 			this.status = "ERROR: Match is null";
 		} else {
 			
+			String Home_or_Away="";
+			
 			if(TeamId == match.getHomeTeamId()) {
+				Home_or_Away = match.getHomeTeam().getFullname();
 				for(Player hs : match.getHomeSquad()) {
 					if(playerId == hs.getPlayerId()) {
-						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHeader " + hs.getFull_name() + ";\0");
+						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHeader " + hs.getFull_name() + ";");
 					}
 				}
-				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + captainWicketKeeper +" - "+ match.getHomeTeam().getFullname() + ";\0");
 			}
 			else {
+				Home_or_Away = match.getAwayTeam().getFullname();
 				for(Player as : match.getAwaySquad()) {
 					if(playerId == as.getPlayerId()) {
-						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHeader " + as.getFull_name() + ";\0");
+						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHeader " + as.getFull_name() + ";");
 					}
 				}
-				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + captainWicketKeeper +" - "+ match.getAwayTeam().getFullname() + ";\0");
+			}
+			
+			switch(captainWicketKeeper.toUpperCase())
+			{
+			case CricketUtil.CAPTAIN: case CricketUtil.WICKET_KEEPER: case "PLAYER_OF_THE_MATCH":
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + captainWicketKeeper +" - "+ Home_or_Away + ";");
+				break;
+			case CricketUtil.PLAYER:
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + Home_or_Away + ";");
+				break;
+			case "CAPTAIN-WICKETKEEPER":
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " +"CAPTAIN & WICKETKEEPER" + " - " + Home_or_Away + ";");
+				break;
 			}
 
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");

@@ -803,7 +803,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select.appendChild(option);
 
 				option = document.createElement('option');
-				option.value = 'Player Of The Match';
+				option.value = 'Player_Of_The_Match';
 				option.text = 'Player Of The Match';
 				select.appendChild(option);
 				
