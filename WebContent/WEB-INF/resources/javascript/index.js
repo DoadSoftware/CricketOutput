@@ -60,6 +60,7 @@ function processUserSelection(whichInput)
 			break;
 		case 'playerprofile_graphic_btn':
 			processCricketProcedures('PLAYERPROFILE_GRAPHICS-OPTIONS');
+			processCricketProcedures('GET_PROFILE-OPTION');
 			break;
 		case 'doubleteams_graphic_btn':
 			addItemsToList('DOUBLETEAMS-OPTIONS',null);
@@ -174,12 +175,9 @@ function processUserSelection(whichInput)
 			break;
 		}
 		break;
-	case 'PlayerType': case 'selectTeams':
+	case 'selectTeams':
 		switch ($(whichInput).attr('name')) {
 		case 'selectTeams':
-			addItemsToList('POPULATE-PROFILE',match_data);
-			break;
-		case 'PlayerType':
 			addItemsToList('POPULATE-PROFILE',match_data);
 			break;
 		}
@@ -268,7 +266,7 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-PLAYERPROFILE':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			valueToProcess = $('#playerprofileScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + $('#PlayerType option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
+			valueToProcess = $('#playerprofileScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + $('#selectPlayerName option:selected').val() ;
 			break;
 		}
 		break;
@@ -330,6 +328,10 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'PLAYERPROFILE_GRAPHICS-OPTIONS':
 				addItemsToList('PLAYERPROFILE-OPTIONS',data);
+				addItemsToList('POPULATE-PROFILE',data);
+				match_data = data;
+				break;
+			case 'GET_PROFILE-OPTION':
 				addItemsToList('POPULATE-PROFILE',data);
 				match_data = data;
 				break;
@@ -438,28 +440,28 @@ function addItemsToList(whatToProcess, dataToProcess)
 		break;
 	case 'POPULATE-PROFILE' :
 	
-		$('#selectProfile').empty();
+		$('#selectPlayerName').empty();
 
 			if(dataToProcess.homeTeamId ==  $('#selectTeams option:selected').val()){
 				dataToProcess.homeSquad.forEach(function(hs,index,arr){
-					if(hs.role == $('#PlayerType option:selected').val()){
-						$('#selectProfile').append(
+					//if(hs.role == $('#PlayerType option:selected').val()){
+						$('#selectPlayerName').append(
 							$(document.createElement('option')).prop({
 			                value: hs.playerId,
 			                text: hs.full_name
 				        }))	
-					}				
+					//}				
 				});
 			}
 			else{
 				dataToProcess.awaySquad.forEach(function(as,index,arr){
-					if(as.role == $('#PlayerType option:selected').val()){
-						$('#selectProfile').append(
+					//if(as.role == $('#PlayerType option:selected').val()){
+						$('#selectPlayerName').append(
 							$(document.createElement('option')).prop({
 			                value: as.playerId,
 			                text: as.full_name
 				        }))	
-					}				
+					//}				
 				});
 			}
 			
@@ -854,7 +856,44 @@ function addItemsToList(whatToProcess, dataToProcess)
 				cellCount = cellCount + 1;
 				
 				select = document.createElement('select');
-				select.id = 'PlayerType';
+				select.id = 'selectPlayerName';
+				select.name = select.id;
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;	
+				
+				/*select = document.createElement('select');
+				select.id = 'selectProfile';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'ODI';
+				option.text = 'ODI';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'Test';
+				option.text = 'Test';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'T20';
+				option.text = 'T20';
+				select.appendChild(option);
+				
+				option = document.createElement('option');
+				option.value = 'It20.';
+				option.text = 'It20';
+				select.appendChild(option);
+				
+				select.setAttribute('onchange',"processUserSelection(this)");
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectTypeOfProfile';
 				select.name = select.id;
 				
 				option = document.createElement('option');
@@ -867,17 +906,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 				option.text = 'Bowler';
 				select.appendChild(option);
 				
-				select.setAttribute('onchange',"processUserSelection(this)");
 				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;	
-				
-				select = document.createElement('select');
-				select.id = 'selectProfile';
-				select.name = select.id;
-				
-				row.insertCell(cellCount).appendChild(select);
-
-				cellCount = cellCount + 1;
+				cellCount = cellCount + 1;*/
 				
 				select = document.createElement('input');
 				select.type = "text";

@@ -10,7 +10,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -32,6 +34,7 @@ import com.cricket.containers.Scene;
 import com.cricket.model.EventFile;
 import com.cricket.model.Inning;
 import com.cricket.model.Match;
+import com.cricket.model.Statistics;
 import com.cricket.service.CricketService;
 import com.cricket.util.CricketFunctions;
 import com.cricket.util.CricketUtil;
@@ -48,7 +51,9 @@ public class IndexController
 
 	String viz_scene_path, which_graphics_onscreen, OUTPUT_CONFIG = CricketUtil.OUTPUT_XML , info_bar_bottom_left, info_bar_bottom_right;
 	boolean is_Infobar_on_Screen = false;
+	String Player_id ;
 	Doad this_doad = new Doad();
+	List<Statistics> stats_to_send = new ArrayList<Statistics>();
 	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String initialisePage(ModelMap model) throws JAXBException, IOException 
@@ -109,6 +114,8 @@ public class IndexController
 			@RequestParam(value = "select_sponsors", required = false, defaultValue = "") String select_sponsors) 
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
 	{
+		Player_id = "";
+		
 		info_bar_bottom_left = "";
 		
 		info_bar_bottom_right = "";	
@@ -165,6 +172,14 @@ public class IndexController
 			return JSONObject.fromObject(session_match).toString();
 		case "PLAYERPROFILE_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
+		case "GET_PROFILE-OPTION":
+			System.out.println(Player_id);
+			for(Statistics stats : cricketService.getPlayerStatistics(Integer.valueOf(Player_id))) {
+				stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
+				stats_to_send.add(stats);
+				System.out.println("stats type = " + stats.getStats_type().getStats_full_name() + ", matches : " + stats.getMatches());
+			}
+			return JSONArray.fromObject(stats_to_send).toString();
 		case "ANIMATE-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		case "ANIMATE_GRAPHICS-OPTIONS":
@@ -250,8 +265,10 @@ public class IndexController
 							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-PLAYERPROFILE":
+					Player_id = valueToProcess.split(",")[2];
+					System.out.println(Player_id);	
 					this_doad.populateplayerprofile(new PrintWriter(session_socket.getOutputStream(), true), 
-							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
+							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),Integer.valueOf(valueToProcess.split(",")[2]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-DOUBLETEAMS":
 					this_doad.populateDoubleteams(new PrintWriter(session_socket.getOutputStream(), true),valueToProcess.split(",")[0], session_match, session_selected_broadcaster , viz_scene_path);
