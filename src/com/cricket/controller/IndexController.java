@@ -39,6 +39,7 @@ import com.cricket.service.CricketService;
 import com.cricket.util.CricketFunctions;
 import com.cricket.util.CricketUtil;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Controller
@@ -51,7 +52,7 @@ public class IndexController
 
 	String viz_scene_path, which_graphics_onscreen, OUTPUT_CONFIG = CricketUtil.OUTPUT_XML , info_bar_bottom_left, info_bar_bottom_right;
 	boolean is_Infobar_on_Screen = false;
-	String Player_id ;
+	int Player_id ;
 	Doad this_doad = new Doad();
 	List<Statistics> stats_to_send = new ArrayList<Statistics>();
 	
@@ -113,9 +114,7 @@ public class IndexController
 			@RequestParam(value = "vizScene", required = false, defaultValue = "") String vizScene,
 			@RequestParam(value = "select_sponsors", required = false, defaultValue = "") String select_sponsors) 
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
-	{
-		Player_id = "";
-		
+	{	
 		info_bar_bottom_left = "";
 		
 		info_bar_bottom_right = "";	
@@ -173,7 +172,7 @@ public class IndexController
 		case "PLAYERPROFILE_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		case "GET_PROFILE-OPTION":
-			System.out.println(Player_id);
+			System.out.println("case-get_profile"+Player_id);
 			for(Statistics stats : cricketService.getPlayerStatistics(Integer.valueOf(Player_id))) {
 				stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
 				stats_to_send.add(stats);
@@ -265,7 +264,7 @@ public class IndexController
 							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-PLAYERPROFILE":
-					Player_id = valueToProcess.split(",")[2];
+					Player_id = Integer.valueOf(valueToProcess.split(",")[2]);
 					System.out.println(Player_id);	
 					this_doad.populateplayerprofile(new PrintWriter(session_socket.getOutputStream(), true), 
 							valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),Integer.valueOf(valueToProcess.split(",")[2]), session_match, session_selected_broadcaster , viz_scene_path);
@@ -276,7 +275,7 @@ public class IndexController
 				case "POPULATE-INFOBAR":
 					info_bar_bottom_left = valueToProcess.split(",")[3];
 					info_bar_bottom_right = valueToProcess.split(",")[4];
-					System.out.println(valueToProcess.split(",")[2]);
+					//System.out.println(valueToProcess.split(",")[2]);
 					this_doad.populateInfobar(new PrintWriter(session_socket.getOutputStream(), true), 
 							valueToProcess.split(",")[0],valueToProcess.split(",")[1], valueToProcess.split(",")[2],valueToProcess.split(",")[3],valueToProcess.split(",")[4], session_match, session_selected_broadcaster , session_event_file, viz_scene_path);
 					break;
