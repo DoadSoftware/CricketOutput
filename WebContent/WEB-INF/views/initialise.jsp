@@ -16,7 +16,7 @@
   <link href="<c:url value="/webjars/font-awesome/6.0.0/css/all.css"/>" rel="stylesheet">
 		
 </head>
-<body onload="reloadPage('initialise')">
+<body onload="initialisePage('initialise')">
 <form:form name="initialise_form" autocomplete="off" action="output" method="POST">
 <div class="content py-5" style="background-color: #EAE8FF; color: #2E008B">
   <div class="container">
@@ -62,7 +62,7 @@
 			    <label for="vizPortNumber" class="col-sm-4 col-form-label text-left">Viz Port Number 
 			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>
 			    <div class="col-sm-6 col-md-6">
-		             <input type="text" id="vizPortNumber" name="vizPortNumber" 
+		             <input type="text" id="vizPortNumber" name="vizPortNumber" value="${session_Configurations.portNumber}"
 		             	class="form-control form-control-sm floatlabel"></input>
 		              <label id="vizPortNumber-validation" style="color:red; display: none;"></label> 
 			    </div>
@@ -71,7 +71,7 @@
 			    <label for="vizIPAddress" class="col-sm-4 col-form-label text-left">Viz IP Address 
 			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>
 			    <div class="col-sm-6 col-md-6">
-		             <input type="text" id="vizIPAddress" name="vizIPAddress" 
+		             <input type="text" id="vizIPAddress" name="vizIPAddress" value="${session_Configurations.ipAddress}"
 		             		class="form-control form-control-sm floatlabel" value="localhost"></input>
 		              <label id="vizIPAddress-validation" style="color:red; display: none;"></label> 
 			    </div>
@@ -80,7 +80,7 @@
 			    <label for="vizScene" class="col-sm-4 col-form-label text-left">Viz Scene
 			    	<i class="fas fa-asterisk fa-sm text-danger" style="font-size: 7px;"></i></label>	
 			    <div class="col-sm-6 col-md-6">
-		             <input type="text" id="vizScene" name="vizScene"
+		             <input type="text" id="vizScene" name="vizScene" value="${session_Configurations.vizscene}"
 		             		class="form-control form-control-sm floatlabel"></input>
 		              <label id="vizScene-validation" style="color:red; display: none;"></label> 
 			    </div>

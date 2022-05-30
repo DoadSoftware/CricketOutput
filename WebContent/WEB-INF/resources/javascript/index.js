@@ -1,4 +1,4 @@
-var match_data,vizScene;
+var match_data;
 function processWaitingButtonSpinner(whatToProcess) 
 {
 	switch (whatToProcess) {
@@ -13,9 +13,9 @@ function processWaitingButtonSpinner(whatToProcess)
 	}
 	
 }
-function reloadPage(whichPage)
+function initialisePage(whatToProcess)
 {
-	switch (whichPage) {
+	switch (whatToProcess) {
 	case 'initialise':
 		processUserSelection($('#select_broadcaster'));
 		break;
@@ -140,9 +140,7 @@ function processUserSelection(whichInput)
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Lt_HowOut');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/TeamLineUpSingles');
 			break;
-			
 		case 'DOAD_IN_HOUSE_EVEREST':
-			
 			$('#vizPortNumber').attr('value','1980');
 			$('label[for=vizScene], input#vizScene').hide();
 			break;

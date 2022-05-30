@@ -43,43 +43,30 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Controller
-@SessionAttributes(value={"session_match","session_event_file","session_socket","session_selected_broadcaster"})
 public class IndexController 
 {
 	@Autowired
 	CricketService cricketService;
 	public static Configurations session_Configurations;
+	public static Match session_match;
+	public static EventFile session_event_file;
+	public static Socket session_socket;
 
-	String viz_scene_path, which_graphics_onscreen, OUTPUT_CONFIG = CricketUtil.OUTPUT_XML , info_bar_bottom_left, info_bar_bottom_right;
+	String session_selected_broadcaster, viz_scene_path, which_graphics_onscreen, info_bar_bottom_left, info_bar_bottom_right;
 	boolean is_Infobar_on_Screen = false;
-	int Player_id;
 	List<Statistics> stats_to_send = new ArrayList<Statistics>();
 	Doad this_doad = new Doad();
 	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String initialisePage(ModelMap model) throws JAXBException, IOException 
 	{
-		switch(session_selected_broadcaster().toUpperCase()) {
-		/*case "DOAD_IN_HOUSE_EVEREST":
-			model.addAttribute("session_viz_scenes", new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.SCENES_DIRECTORY).listFiles(new FileFilter() {
-				@Override
-			    public boolean accept(File pathname) {
-			        String name = pathname.getName().toLowerCase();
-			        return name.endsWith(".sum") && pathname.isFile();
-			    }
-			}));
-			break;*/
-		case "DOAD_IN_HOUSE_VIZ":
-			model.addAttribute("session_viz_scenes", new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.SCENES_DIRECTORY).listFiles(new FileFilter() {
-				@Override
-			    public boolean accept(File pathname) {
-			        String name = pathname.getName().toLowerCase();
-			        return name.endsWith(".via") && pathname.isFile();
-			    }
-			}));
-			break;
-		}
-		
+		model.addAttribute("session_viz_scenes", new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.SCENES_DIRECTORY).listFiles(new FileFilter() {
+			@Override
+		    public boolean accept(File pathname) {
+		        String name = pathname.getName().toLowerCase();
+		        return name.endsWith(".via") && pathname.isFile();
+		    }
+		}));
 		model.addAttribute("match_files", new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY).listFiles(new FileFilter() {
 			@Override
 		    public boolean accept(File pathname) {
@@ -88,25 +75,23 @@ public class IndexController
 		    }
 		}));
 		
-		if(new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG).exists()) {
+		if(new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + CricketUtil.OUTPUT_XML).exists()) {
 			session_Configurations = (Configurations)JAXBContext.newInstance(Configurations.class).createUnmarshaller().unmarshal(
-					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
-		}
-		else {
+					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + CricketUtil.OUTPUT_XML));
+		} else {
 			session_Configurations = new Configurations();
-			System.out.println(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG);
 			JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
-					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
+					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + CricketUtil.OUTPUT_XML));
 		}
+	
+		model.addAttribute("session_Configurations",session_Configurations);
+		
 		return "initialise";
+	
 	}
 
 	@RequestMapping(value = {"/output"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String outputPage(ModelMap model,
-			@ModelAttribute("session_socket") Socket session_socket,
-			@ModelAttribute("session_match") Match session_match,
-			@ModelAttribute("session_event_file") EventFile session_event_file,
-			@ModelAttribute("session_selected_broadcaster") String session_selected_broadcaster,
 			@RequestParam(value = "select_broadcaster", required = false, defaultValue = "") String select_broadcaster,
 			@RequestParam(value = "select_cricket_matches", required = false, defaultValue = "") String selectedMatch,
 			@RequestParam(value = "vizIPAddress", required = false, defaultValue = "") String vizIPAddresss,
@@ -116,32 +101,26 @@ public class IndexController
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
 	{
 		info_bar_bottom_left = "";
-		
 		info_bar_bottom_right = "";	
-		
 		which_graphics_onscreen = "";
-		
 		is_Infobar_on_Screen = false;
-
 		session_selected_broadcaster = select_broadcaster;
-		//vizScene = "C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Bowling_Card.sum" ;
-		//viz_scene_path = vizScene;
-		
 		session_socket = new Socket(vizIPAddresss, Integer.valueOf(vizPortNumber));
-		//new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true),vizScene);
-		
-		which_graphics_onscreen = "";
-
 		session_Configurations = new Configurations(selectedMatch, select_broadcaster, select_sponsors, vizIPAddresss, vizPortNumber, vizScene);
 		
 		JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
-				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + OUTPUT_CONFIG));
+				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + CricketUtil.OUTPUT_XML));
 
+		session_event_file = (EventFile) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
+				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.EVENT_DIRECTORY + selectedMatch));
+		
 		session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + selectedMatch)));
 		session_match.setMatchFileName(selectedMatch);
 		session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
-
+		
+		session_match.setEvents(session_event_file.getEvents());
+		
 		model.addAttribute("session_match", session_match);
 		model.addAttribute("session_socket", session_socket);
 		model.addAttribute("session_selected_broadcaster", session_selected_broadcaster);
@@ -151,85 +130,51 @@ public class IndexController
 
 	@RequestMapping(value = {"/processCricketProcedures"}, method={RequestMethod.GET,RequestMethod.POST})    
 	public @ResponseBody String processCricketProcedures(
-			@ModelAttribute("session_match") Match session_match,
-			@ModelAttribute("session_event_file") EventFile session_event_file,
-			@ModelAttribute("session_socket") Socket session_socket,
-			@ModelAttribute("session_selected_broadcaster") String session_selected_broadcaster,
-			@RequestParam(value = "vizScene", required = false, defaultValue = "") String vizScene,
 			@RequestParam(value = "whatToProcess", required = false, defaultValue = "") String whatToProcess,
 			@RequestParam(value = "valueToProcess", required = false, defaultValue = "") String valueToProcess) 
-					throws IOException, IllegalAccessException, InvocationTargetException, JAXBException, InterruptedException
+					throws IOException, IllegalAccessException, InvocationTargetException, JAXBException, InterruptedException 
 	{
 		switch (whatToProcess.toUpperCase()) {
-		case "BUG_GRAPHICS-OPTIONS":
-			return JSONObject.fromObject(session_match).toString();
-		case "HOWOUT_GRAPHICS-OPTIONS": 
-			return JSONObject.fromObject(session_match).toString();
-		case "PLAYERSTATS_GRAPHICS-OPTIONS": 
-			return JSONObject.fromObject(session_match).toString();
-		case "NAMESUPER_GRAPHICS-OPTIONS":
-			return JSONObject.fromObject(session_match).toString();
-		case "PLAYERPROFILE_GRAPHICS-OPTIONS":
+		case "BUG_GRAPHICS-OPTIONS": case "HOWOUT_GRAPHICS-OPTIONS": case "PLAYERSTATS_GRAPHICS-OPTIONS": case "NAMESUPER_GRAPHICS-OPTIONS": 
+		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "ANIMATE-OPTIONS": case "ANIMATE_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		case "GET_PROFILE-OPTION":
-			System.out.println("case-get_profile"+Player_id);
-			for(Statistics stats : cricketService.getPlayerStatistics(Integer.valueOf(Player_id))) {
+			for(Statistics stats : cricketService.getPlayerStatistics(Integer.valueOf(valueToProcess))) {
 				stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
 				stats_to_send.add(stats);
-				System.out.println("stats type = " + stats.getStats_type().getStats_full_name() + ", matches : " + stats.getMatches());
 			}
 			return JSONArray.fromObject(stats_to_send).toString();
-		case "ANIMATE-OPTIONS":
-			return JSONObject.fromObject(session_match).toString();
-		case "ANIMATE_GRAPHICS-OPTIONS":
-			return JSONObject.fromObject(session_match).toString();
-		case "INFOBAR_GRAPHICS-OPTIONS":
-			return JSONObject.fromObject(session_match).toString();
-			
 		case "AUTO-UPDATE-GRAPHICS":
-			System.out.println("is_Infobar_on_Screen = " + is_Infobar_on_Screen);
 			if(is_Infobar_on_Screen == true) {
+				
 				session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName())));
+				session_event_file = (EventFile) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
+						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.EVENT_DIRECTORY + session_match.getMatchFileName()));
+				session_match.setEvents(session_event_file.getEvents());
 				
-				this_doad.populateInfobar(new PrintWriter(session_socket.getOutputStream(), true),"","BATSMAN", "BOWLER", info_bar_bottom_left, info_bar_bottom_right, 
-						session_match,session_selected_broadcaster,session_event_file, viz_scene_path );
+				this_doad.populateInfobarTeamScore(true, new PrintWriter(session_socket.getOutputStream(), true), session_match, session_selected_broadcaster);
+//				populateInfobarTeamScore(false, print_writer, match, session_selected_broadcaster);
+//				populateInfobarTopLeft(false, print_writer, TopLeftStats, match, session_selected_broadcaster);
+//				populateInfobarTopRight(false, print_writer, TopRightStats, match, session_selected_broadcaster);
+//				
+//				populateInfobarBottomLeft(false, print_writer, BottomLeftStats, match, session_selected_broadcaster);
+//				populateInfobarBottomRight(false, print_writer, BottomRightStats, match, session_selected_broadcaster);
 			}
 			return JSONObject.fromObject(session_match).toString();
-
-		/*case "READ-MATCH-AND-POPULATE":
-			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
-					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified())))
-			{
-				session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
-						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName())));
-				session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
-						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified()));
-				return JSONObject.fromObject(session_match).toString();
-			} else {
-				return JSONObject.fromObject(null).toString();
-			}*/
-			
 		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG":  case "POPULATE-HOWOUT":
 		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-PLAYERPROFILE": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
-				//Doad this_doad = new Doad();
-				
 				PrintWriter print_writer = new PrintWriter(session_socket.getOutputStream(), true);
-				vizScene = valueToProcess.split(",")[0];
-				viz_scene_path = vizScene;
-				
-				
+				viz_scene_path = valueToProcess.split(",")[0];
 				switch(whatToProcess.toUpperCase()) {
 				case"POPULATE-INFOBAR-BOTTOMLEFT": case"POPULATE-INFOBAR-BOTTOMRIGHT":
 					break;
 				default:
-					new Scene(vizScene).scene_load(new PrintWriter(session_socket.getOutputStream(),true),session_selected_broadcaster,vizScene);
+					new Scene(viz_scene_path).scene_load(new PrintWriter(session_socket.getOutputStream(),true),session_selected_broadcaster,viz_scene_path);
 					break;
 				}
-
-				
 				switch (whatToProcess.toUpperCase()) {
 				case "POPULATE-SCORECARD":
 					this_doad.populateScorecard(print_writer, valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), 
@@ -260,13 +205,11 @@ public class IndexController
 							Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-NAMESUPER":
-					this_doad.populatenamesuper(print_writer, valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],
+					this_doad.populateNameSuper(print_writer, valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],
 							Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-PLAYERPROFILE":
-					Player_id = Integer.valueOf(valueToProcess.split(",")[2]);
-					System.out.println(Player_id);
-					this_doad.populateplayerprofile(print_writer,valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),Integer.valueOf(valueToProcess.split(",")[2]), 
+					this_doad.populatePlayerProfile(print_writer,valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),Integer.valueOf(valueToProcess.split(",")[2]), 
 							session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-DOUBLETEAMS":
@@ -275,26 +218,18 @@ public class IndexController
 				case "POPULATE-INFOBAR":
 					info_bar_bottom_left = valueToProcess.split(",")[3];
 					info_bar_bottom_right = valueToProcess.split(",")[4];
-					//System.out.println(valueToProcess.split(",")[2]);
 					this_doad.populateInfobar(print_writer, valueToProcess.split(",")[0],valueToProcess.split(",")[1], valueToProcess.split(",")[2],valueToProcess.split(",")[3],
 							valueToProcess.split(",")[4], session_match, session_selected_broadcaster , session_event_file, viz_scene_path);
 					break;
 				case "POPULATE-INFOBAR-BOTTOMLEFT":
 					info_bar_bottom_left = valueToProcess;
 					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_Out CONTINUE;");
-
-					//this_doad.AnimationProcess(print_writer , "Section4_Out", "CONTINUE", session_selected_broadcaster);
-					//TimeUnit.SECONDS.sleep(1);
 					for(Inning inn : session_match.getInning()) {
 						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
 							this_doad.populateInfobarBottomLeft(print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
 						}
 					}
-					//TimeUnit.SECONDS.sleep(1);
 					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_In START;");
-
-					//this_doad.AnimationProcess(print_writer , "Section4_In", "START", session_selected_broadcaster);
-
 					break;
 				case "POPULATE-INFOBAR-BOTTOMRIGHT":
 					info_bar_bottom_right = valueToProcess;
@@ -484,22 +419,5 @@ public class IndexController
 		default:
 			return JSONObject.fromObject(null).toString();
 		}
-	}
-
-	@ModelAttribute("session_socket")
-	public Socket session_socket(){
-		return new Socket();
-	}
-	@ModelAttribute("session_selected_broadcaster")
-	public String session_selected_broadcaster(){
-		return new String();
-	}
-	@ModelAttribute("session_match")
-	public Match session_match(){
-		return new Match();
-	}
-	@ModelAttribute("session_event_file")
-	public EventFile session_event_file(){
-		return new EventFile();
 	}
 }
