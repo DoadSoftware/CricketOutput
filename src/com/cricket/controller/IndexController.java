@@ -20,12 +20,10 @@ import javax.xml.bind.JAXBException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.cricket.broadcaster.Doad;
 import com.cricket.containers.Configurations;
@@ -51,11 +49,11 @@ public class IndexController
 	public static Match session_match;
 	public static EventFile session_event_file;
 	public static Socket session_socket;
-
-	String session_selected_broadcaster, viz_scene_path, which_graphics_onscreen, info_bar_bottom_left, info_bar_bottom_right;
+	public static Doad this_doad;
+	public static PrintWriter print_writer;
+	String session_selected_broadcaster, viz_scene_path, which_graphics_onscreen, info_bar_bottom_left, info_bar_bottom_right, info_bar_bottom;
 	boolean is_Infobar_on_Screen = false;
 	List<Statistics> stats_to_send = new ArrayList<Statistics>();
-	Doad this_doad = new Doad();
 	
 	@RequestMapping(value = {"/","/initialise"}, method={RequestMethod.GET,RequestMethod.POST}) 
 	public String initialisePage(ModelMap model) throws JAXBException, IOException 
@@ -101,25 +99,29 @@ public class IndexController
 					throws UnknownHostException, IOException, JAXBException, IllegalAccessException, InvocationTargetException 
 	{
 		info_bar_bottom_left = "";
-		info_bar_bottom_right = "";	
+		info_bar_bottom_right = "";
+		info_bar_bottom = "";
 		which_graphics_onscreen = "";
 		is_Infobar_on_Screen = false;
+		this_doad = new Doad();
+		
 		session_selected_broadcaster = select_broadcaster;
 		session_socket = new Socket(vizIPAddresss, Integer.valueOf(vizPortNumber));
+		print_writer = new PrintWriter(session_socket.getOutputStream(), true);
 		session_Configurations = new Configurations(selectedMatch, select_broadcaster, select_sponsors, vizIPAddresss, vizPortNumber, vizScene);
 		
 		JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.CONFIGURATIONS_DIRECTORY + CricketUtil.OUTPUT_XML));
 
-		session_event_file = (EventFile) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
+		session_event_file = (EventFile) JAXBContext.newInstance(EventFile.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.EVENT_DIRECTORY + selectedMatch));
 		
 		session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + selectedMatch)));
-		session_match.setMatchFileName(selectedMatch);
+		//session_match.setMatchFileName(selectedMatch);
 		session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
 		
-		session_match.setEvents(session_event_file.getEvents());
+		//session_match.setEvents(session_event_file.getEvents());
 		
 		model.addAttribute("session_match", session_match);
 		model.addAttribute("session_socket", session_socket);
@@ -136,7 +138,7 @@ public class IndexController
 	{
 		switch (whatToProcess.toUpperCase()) {
 		case "BUG_GRAPHICS-OPTIONS": case "HOWOUT_GRAPHICS-OPTIONS": case "PLAYERSTATS_GRAPHICS-OPTIONS": case "NAMESUPER_GRAPHICS-OPTIONS": 
-		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "ANIMATE-OPTIONS": case "ANIMATE_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS":
+		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "ANIMATE-OPTIONS": case "ANIMATE_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS": case "ANIMATE_BOTTOM_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		case "GET_PROFILE-OPTION":
 			for(Statistics stats : cricketService.getPlayerStatistics(Integer.valueOf(valueToProcess))) {
@@ -144,32 +146,42 @@ public class IndexController
 				stats_to_send.add(stats);
 			}
 			return JSONArray.fromObject(stats_to_send).toString();
-		case "AUTO-UPDATE-GRAPHICS":
-			if(is_Infobar_on_Screen == true) {
-				
+		case "READ-MATCH-AND-POPULATE":
+			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
+					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified())))
+			{
 				session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName())));
-				session_event_file = (EventFile) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
+				session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
+						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified()));
+				session_event_file = (EventFile) JAXBContext.newInstance(EventFile.class).createUnmarshaller().unmarshal(
 						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.EVENT_DIRECTORY + session_match.getMatchFileName()));
-				session_match.setEvents(session_event_file.getEvents());
 				
-				this_doad.populateInfobarTeamScore(true, new PrintWriter(session_socket.getOutputStream(), true), session_match, session_selected_broadcaster);
-//				populateInfobarTeamScore(false, print_writer, match, session_selected_broadcaster);
-//				populateInfobarTopLeft(false, print_writer, TopLeftStats, match, session_selected_broadcaster);
-//				populateInfobarTopRight(false, print_writer, TopRightStats, match, session_selected_broadcaster);
-//				
-//				populateInfobarBottomLeft(false, print_writer, BottomLeftStats, match, session_selected_broadcaster);
-//				populateInfobarBottomRight(false, print_writer, BottomRightStats, match, session_selected_broadcaster);
+				session_match.setEvents(session_event_file.getEvents());
+				if(is_Infobar_on_Screen == true) {
+					this_doad.populateInfobarTeamScore(true, print_writer, session_match, session_selected_broadcaster);
+					this_doad.populateInfobarTeamScore(true, print_writer, session_match, session_selected_broadcaster);
+					this_doad.populateInfobarTopLeft(true, print_writer, "BATSMAN", session_match, session_selected_broadcaster);
+					this_doad.populateInfobarTopRight(true, print_writer, "BOWLER", session_match, session_selected_broadcaster);
+					this_doad.populateInfobarBottomLeft(true, print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
+					this_doad.populateInfobarBottomRight(true, print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
+					this_doad.populateInfobarBottom(true, print_writer, info_bar_bottom, session_match, session_selected_broadcaster);
+				}
+				return JSONObject.fromObject(session_match).toString();
 			}
-			return JSONObject.fromObject(session_match).toString();
+			else {
+				return JSONObject.fromObject(null).toString();
+			}
+		
 		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG":  case "POPULATE-HOWOUT":
-		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-PLAYERPROFILE": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT":
+		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-PLAYERPROFILE": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR": 
+		case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
-				PrintWriter print_writer = new PrintWriter(session_socket.getOutputStream(), true);
+	
 				viz_scene_path = valueToProcess.split(",")[0];
 				switch(whatToProcess.toUpperCase()) {
-				case"POPULATE-INFOBAR-BOTTOMLEFT": case"POPULATE-INFOBAR-BOTTOMRIGHT":
+				case"POPULATE-INFOBAR-BOTTOMLEFT": case"POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM":
 					break;
 				default:
 					new Scene(viz_scene_path).scene_load(new PrintWriter(session_socket.getOutputStream(),true),session_selected_broadcaster,viz_scene_path);
@@ -219,49 +231,45 @@ public class IndexController
 					info_bar_bottom_left = valueToProcess.split(",")[3];
 					info_bar_bottom_right = valueToProcess.split(",")[4];
 					this_doad.populateInfobar(print_writer, valueToProcess.split(",")[0],valueToProcess.split(",")[1], valueToProcess.split(",")[2],valueToProcess.split(",")[3],
-							valueToProcess.split(",")[4], session_match, session_selected_broadcaster , session_event_file, viz_scene_path);
+							valueToProcess.split(",")[4], session_match, session_selected_broadcaster);
 					break;
 				case "POPULATE-INFOBAR-BOTTOMLEFT":
-					info_bar_bottom_left = valueToProcess;
-					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_Out CONTINUE;");
+					
+					this_doad.processAnimation(print_writer, "Section4_Out", "CONTINUE", session_selected_broadcaster);
+					this_doad.processAnimation(print_writer, "Section6_Out", "CONTINUE", session_selected_broadcaster);
 					for(Inning inn : session_match.getInning()) {
 						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
-							this_doad.populateInfobarBottomLeft(print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
+							this_doad.populateInfobarBottomLeft(false,print_writer, valueToProcess, session_match, session_selected_broadcaster);
+							this_doad.populateInfobarBottomRight(false,print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
 						}
 					}
-					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_In START;");
+					this_doad.processAnimation(print_writer, "Section4_In", "START", session_selected_broadcaster);
+					info_bar_bottom_left = valueToProcess;
 					break;
 				case "POPULATE-INFOBAR-BOTTOMRIGHT":
-					info_bar_bottom_right = valueToProcess;
-					System.out.println(info_bar_bottom_right);
-					switch(info_bar_bottom_right.toUpperCase()) {
-					case"PARTNERSHIP":
-						print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_Out CONTINUE;");
-						break;
-					default:
-						//print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section4_In START;");
-						break;
-					}
-					//System.out.println(valueToProcess);
-					print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section5_Out CONTINUE;");
-
-					//this_doad.AnimationProcess(print_writer , "Section4_Out", "CONTINUE", session_selected_broadcaster);
-					//TimeUnit.SECONDS.sleep(1);
+					this_doad.processAnimation(print_writer, "Section5_Out", "CONTINUE", session_selected_broadcaster);
+					this_doad.processAnimation(print_writer, "Section6_Out", "CONTINUE", session_selected_broadcaster);
 					for(Inning inn : session_match.getInning()) {
 						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
-							this_doad.populateInfobarBottomRight(print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
+							this_doad.populateInfobarBottomLeft(false,print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
+							this_doad.populateInfobarBottomRight(false,print_writer, valueToProcess, session_match, session_selected_broadcaster);
 						}
 					}
-					//TimeUnit.SECONDS.sleep(1);
-					switch(info_bar_bottom_right.toUpperCase()) {
-					case"BOUNDARIES": case"PARTNERSHIP":
-						print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section6_In START;");
-						break;
-					default:
-						print_writer.println("LAYER1*EVEREST*STAGE*DIRECTOR*Section5_In START;");						
-						break;
+					this_doad.processAnimation(print_writer, "Section5_In", "START", session_selected_broadcaster);
+					info_bar_bottom_right = valueToProcess;
+
+					break;
+				case "POPULATE-INFOBAR-BOTTOM":
+					this_doad.processAnimation(print_writer, "Section4_Out", "CONTINUE", session_selected_broadcaster);
+					this_doad.processAnimation(print_writer, "Section5_Out", "CONTINUE", session_selected_broadcaster);
+					this_doad.processAnimation(print_writer, "Section6_Out", "CONTINUE", session_selected_broadcaster);
+					for(Inning inn : session_match.getInning()) {
+						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
+							this_doad.populateInfobarBottom(false, print_writer, valueToProcess, session_match, session_selected_broadcaster);
+						}
 					}
-					//this_doad.AnimationProcess(print_writer , "Section4_In", "START", session_selected_broadcaster);
+					this_doad.processAnimation(print_writer, "Section6_In", "START", session_selected_broadcaster);
+					info_bar_bottom = valueToProcess;
 
 					break;
 				}
@@ -272,142 +280,96 @@ public class IndexController
 		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR": case "ANIMATE-OUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
-				Doad this_doad = new Doad();
 				switch (whatToProcess.toUpperCase()) {
 				case "ANIMATE-IN-SCORECARD":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "SCORECARD");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "BATBALLSUMMARY_SCORECARD";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "SCORECARD";
 					break;
 				case "ANIMATE-IN-BOWLINGCARD":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BOWLINGCARD");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "BATBALLSUMMARY_BOWLINGCARD";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "BOWLINGCARD";
 					break;
 				case "ANIMATE-IN-PARTNERSHIP":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PARTNERSHIP");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "BATBALLSUMMARY_PARTNERSHIP";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "PARTNERSHIP";
 					break;
 				case "ANIMATE-IN-MATCHSUMARRY":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "SUMARRY");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "SUMARRY";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "SUMARRY";
 					break;
 				case "ANIMATE-IN-BUG":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BUG");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "BUG";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "BUG";
 					break;
 				case "ANIMATE-IN-HOWOUT":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "HOWOUT");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "HOWOUT";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "HOWOUT";
 					break;
 				case "ANIMATE-IN-PLAYERSTATS":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PLAYERSTATS");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "PLAYERSTATS";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "PLAYERSTATS";
 					break;
 				case "ANIMATE-IN-NAMESUPER":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "NAMESUPER");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "NAMESUPER";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "NAMESUPER";
 					break;
 				case "ANIMATE-IN-PLAYERPROFILE":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PLAYERPROFILE");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "PLAYERPROFILE";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "PLAYERPROFILE";
 					break;
 				case "ANIMATE-IN-DOUBLETEAMS":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "DOUBLETEAMS");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						which_graphics_onscreen = "DOUBLETEAMS";
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "DOUBLETEAMS";
 					break;
 				case "ANIMATE-IN-INFOBAR":
-					this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "INFOBAR");
-					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-						is_Infobar_on_Screen = true;
-					}
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					is_Infobar_on_Screen = true;
 					break;
 				case "ANIMATE-OUT":
 					switch(which_graphics_onscreen) {
 					case "INFOBAR":
-						System.out.println("Infobar animate out...");
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "INFOBAR");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							is_Infobar_on_Screen = false;
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						is_Infobar_on_Screen = false;
 						break;
 					case "BATBALLSUMMARY_SCORECARD":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BATBALLSUMMARY_SCORECARD");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "BATBALLSUMMARY_BOWLINGCARD":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BATBALLSUMMARY_BOWLINGCARD");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "BATBALLSUMMARY_PARTNERSHIP":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BATBALLSUMMARY_PARTNERSHIP");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "SUMARRY":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "SUMARRY");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "BUG":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BUG");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "HOWOUT":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "HOWOUT");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "PLAYERSTATS":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PLAYERSTATS");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "NAMESUPER":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "NAMESUPER");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "PLAYERPROFILE":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "PLAYERPROFILE");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					case "DOUBLETEAMS":
-						this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "DOUBLETEAMS");
-						if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
-							which_graphics_onscreen = "";
-						}
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
 						break;
 					}
 					break;

@@ -31,7 +31,7 @@ function processUserSelection(whichInput)
 		break;
 	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn':  case 'howout_graphic_btn':
 	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'playerprofile_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_bottom-left_graphic_btn': 
-	case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn': case 'playerprofile_graphic_btn':
+	case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn': case 'playerprofile_graphic_btn': case 'infobar_bottom_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -67,21 +67,21 @@ function processUserSelection(whichInput)
 			break;
 		case 'infobar_bottom-left_graphic_btn':
 			processCricketProcedures('ANIMATE-OPTIONS');
-			//processCricketProcedures('ANIMATE-BOTTOMLEFT-OPTIONS');
 			break;
 		case 'infobar_graphic_btn':
 			processCricketProcedures('INFOBAR_GRAPHICS-OPTIONS');
-			//processCricketProcedures('INFOBAR-OPTIONS');
 			break;
 		case 'infobar_bottom-right_graphic_btn':
 			processCricketProcedures('ANIMATE_GRAPHICS-OPTIONS');
-			//processCricketProcedures('ANIMATE-BOTTOMLEFT-OPTIONS');
+			break;
+		case 'infobar_bottom_graphic_btn':
+			processCricketProcedures('ANIMATE_BOTTOM_GRAPHICS-OPTIONS');
 			break;
 		}
 		break;
 	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn':
 	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_playerprofile_btn':  case 'populate_doubleteams_btn': case 'populate_infobar_bottom-left_btn': 
-	case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn':
+	case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn': case 'populate_infobar_bottom_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -122,6 +122,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_infobar_bottom-right_btn':
 			processCricketProcedures('POPULATE-INFOBAR-BOTTOMRIGHT');
+			break;
+		case 'populate_infobar_bottom_btn':
+			processCricketProcedures('POPULATE-INFOBAR-BOTTOM');
 			break;
 
 		}
@@ -186,50 +189,35 @@ function processCricketProcedures(whatToProcess)
 {
 	var valueToProcess;
 	switch(whatToProcess) {
+	
 	case 'READ-MATCH-AND-POPULATE':
 		valueToProcess = $('#matchFileTimeStamp').val();
 		break;
 	case 'POPULATE-SCORECARD': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			
-			//valueToProcess = $('#bowlingScene option:selected').val();
 			valueToProcess = $('#battingScene').val() + ',' + $('#selectInning option:selected').val() ;
-			//alert("Scene =" + $('#bowlingScene').val());
-			//alert("valueToProcess = " + valueToProcess);
 			break;	
 		}
 		break;
 	case 'POPULATE-BOWLINGCARD': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			
-			//valueToProcess = $('#bowlingScene option:selected').val();
 			valueToProcess = $('#bowlingScene').val() + ',' + $('#selectInning option:selected').val() ;
-			//alert("Scene =" + $('#bowlingScene').val());
-			//alert("valueToProcess = " + valueToProcess);
 			break;	
 		}
 		break;
 	case 'POPULATE-PARTNERSHIP':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			
-			//valueToProcess = $('#bowlingScene option:selected').val();
 			valueToProcess = $('#partnershipScene').val() + ',' + $('#selectInning option:selected').val() ;
-			//alert("Scene =" + $('#bowlingScene').val());
-			//alert("valueToProcess = " + valueToProcess);
 			break;	
 		}
 		break;
 	case 'POPULATE-MATCHSUMMARY': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			
-			//valueToProcess = $('#bowlingScene option:selected').val();
 			valueToProcess = $('#summaryScene').val() + ',' + $('#selectInning option:selected').val() ;
-			//alert("Scene =" + $('#bowlingScene').val());
-			//alert("valueToProcess = " + valueToProcess);
 			break;	
 		}
 		break;
@@ -290,6 +278,13 @@ function processCricketProcedures(whatToProcess)
 			break;
 		}
 		break;
+	case 'POPULATE-INFOBAR-BOTTOM':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#selectBottomStat option:selected').val() ;
+			break;
+		}
+		break;
 	
 	}
 
@@ -301,8 +296,11 @@ function processCricketProcedures(whatToProcess)
         success : function(data) {
         	switch(whatToProcess) {
 			case 'READ-MATCH-AND-POPULATE':
-				addItemsToList(whatToProcess,data);
-				$('#matchFileTimeStamp').val(data.matchFileTimeStamp);
+				if(data){
+					if($('#matchFileTimeStamp').val() != data.matchFileTimeStamp) {
+						document.getElementById('matchFileTimeStamp').value = data.matchFileTimeStamp;
+					}
+				}
 				break;
 			case 'BUG_GRAPHICS-OPTIONS':
 				addItemsToList('BUG-OPTIONS',data);
@@ -343,6 +341,10 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'INFOBAR_GRAPHICS-OPTIONS':
 				addItemsToList('INFOBAR-OPTIONS',data);
+				match_data = data;
+				break;
+			case 'ANIMATE_BOTTOM_GRAPHICS-OPTIONS':
+				addItemsToList('INFOBAR-BOTTOM-OPTIONS',data);
 				match_data = data;
 				break;
 			
@@ -1160,16 +1162,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 							option.text = 'Toss Winning';
 							select.appendChild(option);
 							
-							option = document.createElement('option');
-							option.value = 'boundaries';
-							option.text = 'Boundaries';
-							select.appendChild(option);
-							
-							option = document.createElement('option');
-							option.value = 'partnership';
-							option.text = 'Partnership';
-							select.appendChild(option);
-							
 							row.insertCell(cellCount).appendChild(select);
 							cellCount = cellCount + 1;
 						}
@@ -1188,21 +1180,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 							option.text = 'Equation';
 							select.appendChild(option);
 							
-							option = document.createElement('option');
-							option.value = 'boundaries';
-							option.text = 'Boundaries';
-							select.appendChild(option);
-							
-							option = document.createElement('option');
-							option.value = 'partnership';
-							option.text = 'Partnership';
-							select.appendChild(option);
-							
-							/*option = document.createElement('option');
-							option.value = 'comparision';
-							option.text = 'Comparision';
-							select.appendChild(option);*/
-							
 							row.insertCell(cellCount).appendChild(select);
 							cellCount = cellCount + 1;
 						}
@@ -1218,6 +1195,116 @@ function addItemsToList(whatToProcess, dataToProcess)
 			switch (whatToProcess) {
 			case'INFOBAR-BOTTOMRIGHT-OPTIONS':
 			    option.name = 'populate_infobar_bottom-right_btn';
+			    option.value = 'Change on Infobar';
+				break;
+			}
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}
+		break;
+	case'INFOBAR-BOTTOM-OPTIONS':
+	
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+			
+			switch(whatToProcess){
+			case'INFOBAR-BOTTOM-OPTIONS':
+				dataToProcess.inning.forEach(function(inn,index,arr){
+					if(inn.isCurrentInning == 'YES'){
+						if(inn.inningNumber == 1){
+							select = document.createElement('select');
+							select.id = 'selectBottomStat';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'boundaries';
+							option.text = 'Boundaries';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'partnership';
+							option.text = 'Partnership';
+							select.appendChild(option);
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+						}
+						else{
+							select = document.createElement('select');
+							select.id = 'selectBottomStat';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'boundaries';
+							option.text = 'Boundaries';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'partnership';
+							option.text = 'Partnership';
+							select.appendChild(option);
+							
+							/*option = document.createElement('option');
+							option.value = 'comparision';
+							option.text = 'Comparision';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'timeline';
+							option.text = 'Timeline';
+							select.appendChild(option);*/
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+							
+						}
+					}
+				});
+				
+				break;		
+				}
+
+			option = document.createElement('input');
+		    option.type = 'button';
+		    
+			switch (whatToProcess) {
+			case'INFOBAR-BOTTOM-OPTIONS':
+			    option.name = 'populate_infobar_bottom_btn';
 			    option.value = 'Change on Infobar';
 				break;
 			}
@@ -1298,10 +1385,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 			option.text = 'Bowler';
 			select.appendChild(option);
 			
-			/*option = document.createElement('option');
+			option = document.createElement('option');
 			option.value = 'this_over';
 			option.text = 'This Over';
-			select.appendChild(option);*/
+			select.appendChild(option);
 			
 			row.insertCell(cellCount).appendChild(select);
 			cellCount = cellCount + 1;
