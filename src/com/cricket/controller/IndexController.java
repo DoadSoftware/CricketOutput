@@ -138,7 +138,8 @@ public class IndexController
 	{
 		switch (whatToProcess.toUpperCase()) {
 		case "BUG_GRAPHICS-OPTIONS": case "HOWOUT_GRAPHICS-OPTIONS": case "PLAYERSTATS_GRAPHICS-OPTIONS": case "NAMESUPER_GRAPHICS-OPTIONS": 
-		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "ANIMATE-OPTIONS": case "ANIMATE_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS": case "ANIMATE_BOTTOM_GRAPHICS-OPTIONS":
+		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "ANIMATE-OPTIONS": case "ANIMATE_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS": 
+		case "ANIMATE_BOTTOM_GRAPHICS-OPTIONS": case "ANIMATE_PLAYINGXI-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		case "GET_PROFILE-OPTION":
 			for(Statistics stats : cricketService.getPlayerStatistics(Integer.valueOf(valueToProcess))) {
@@ -175,7 +176,7 @@ public class IndexController
 		
 		case "POPULATE-SCORECARD": case "POPULATE-BOWLINGCARD": case "POPULATE-PARTNERSHIP": case "POPULATE-MATCHSUMMARY": case "POPULATE-BUG":  case "POPULATE-HOWOUT":
 		case "POPULATE-PLAYERSTATS": case "POPULATE-NAMESUPER": case "POPULATE-PLAYERPROFILE": case "POPULATE-DOUBLETEAMS": case "POPULATE-INFOBAR": 
-		case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM":
+		case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM": case "POPULATE-MATCHID": case "POPULATE-PLAYINGXI":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 	
@@ -234,7 +235,6 @@ public class IndexController
 							valueToProcess.split(",")[4], session_match, session_selected_broadcaster);
 					break;
 				case "POPULATE-INFOBAR-BOTTOMLEFT":
-					
 					this_doad.processAnimation(print_writer, "Section4_Out", "CONTINUE", session_selected_broadcaster);
 					this_doad.processAnimation(print_writer, "Section6_Out", "CONTINUE", session_selected_broadcaster);
 					for(Inning inn : session_match.getInning()) {
@@ -244,6 +244,7 @@ public class IndexController
 						}
 					}
 					this_doad.processAnimation(print_writer, "Section4_In", "START", session_selected_broadcaster);
+					//this_doad.processAnimation(print_writer, "Section5_In", "START", session_selected_broadcaster);
 					info_bar_bottom_left = valueToProcess;
 					break;
 				case "POPULATE-INFOBAR-BOTTOMRIGHT":
@@ -255,13 +256,13 @@ public class IndexController
 							this_doad.populateInfobarBottomRight(false,print_writer, valueToProcess, session_match, session_selected_broadcaster);
 						}
 					}
+					//this_doad.processAnimation(print_writer, "Section4_In", "START", session_selected_broadcaster);
 					this_doad.processAnimation(print_writer, "Section5_In", "START", session_selected_broadcaster);
 					info_bar_bottom_right = valueToProcess;
-
 					break;
 				case "POPULATE-INFOBAR-BOTTOM":
-					this_doad.processAnimation(print_writer, "Section4_Out", "CONTINUE", session_selected_broadcaster);
-					this_doad.processAnimation(print_writer, "Section5_Out", "CONTINUE", session_selected_broadcaster);
+					//this_doad.processAnimation(print_writer, "Section4_Out", "CONTINUE", session_selected_broadcaster);
+					//this_doad.processAnimation(print_writer, "Section5_Out", "CONTINUE", session_selected_broadcaster);
 					this_doad.processAnimation(print_writer, "Section6_Out", "CONTINUE", session_selected_broadcaster);
 					for(Inning inn : session_match.getInning()) {
 						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
@@ -272,12 +273,20 @@ public class IndexController
 					info_bar_bottom = valueToProcess;
 
 					break;
+				case "POPULATE-MATCHID":
+					this_doad.populateMatchId(print_writer,valueToProcess, session_match, session_selected_broadcaster , viz_scene_path);
+					break;
+				case "POPULATE-PLAYINGXI":
+					this_doad.populatePlayingXI(print_writer, valueToProcess.split(",")[0], Integer.valueOf(valueToProcess.split(",")[1]), 
+							session_match, session_selected_broadcaster, viz_scene_path);
+					break;
 				}
 				
 				return JSONObject.fromObject(this_doad).toString();
 			}
 		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMARRY": case "ANIMATE-IN-BUG": case "ANIMATE-IN-HOWOUT": 
-		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR": case "ANIMATE-OUT":
+		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR": case "ANIMATE-OUT": 
+		case "ANIMATE-IN-MATCHID": case "ANIMATE-IN-PLAYINGXI":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 				switch (whatToProcess.toUpperCase()) {
@@ -325,21 +334,29 @@ public class IndexController
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
 					is_Infobar_on_Screen = true;
 					break;
+				case "ANIMATE-IN-MATCHID":
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "MATCHID";
+					break;
+				case "ANIMATE-IN-PLAYINGXI":
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "PLAYINGXI";
+					break;
 				case "ANIMATE-OUT":
 					switch(which_graphics_onscreen) {
 					case "INFOBAR":
 						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
 						is_Infobar_on_Screen = false;
 						break;
-					case "BATBALLSUMMARY_SCORECARD":
+					case "SCORECARD":
 						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
-					case "BATBALLSUMMARY_BOWLINGCARD":
+					case "BOWLINGCARD":
 						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
-					case "BATBALLSUMMARY_PARTNERSHIP":
+					case "PARTNERSHIP":
 						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
@@ -368,6 +385,14 @@ public class IndexController
 						which_graphics_onscreen = "";
 						break;
 					case "DOUBLETEAMS":
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
+						break;
+					case "MATCHID":
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
+						break;
+					case "PLAYINGXI":
 						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
