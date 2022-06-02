@@ -32,7 +32,7 @@ function processUserSelection(whichInput)
 	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn':  case 'howout_graphic_btn':
 	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'playerprofile_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_bottom-left_graphic_btn': 
 	case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn': case 'playerprofile_graphic_btn': case 'infobar_bottom_graphic_btn': case 'matchid_graphic_btn':
-	case 'playingxi_graphic_btn':
+	case 'playingxi_graphic_btn': case 'leaderboard_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn': 
@@ -61,28 +61,30 @@ function processUserSelection(whichInput)
 			break;
 		case 'playerprofile_graphic_btn':
 			processCricketProcedures('PLAYERPROFILE_GRAPHICS-OPTIONS');
-			processCricketProcedures('GET_PROFILE-OPTIONS');
 			break;
 		case 'doubleteams_graphic_btn':
 			addItemsToList('DOUBLETEAMS-OPTIONS',null);
 			break;
 		case 'infobar_bottom-left_graphic_btn':
-			processCricketProcedures('ANIMATE-OPTIONS');
+			processCricketProcedures('BOTTOMLEFT_GRAPHICS-OPTIONS');
 			break;
 		case 'infobar_graphic_btn':
 			processCricketProcedures('INFOBAR_GRAPHICS-OPTIONS');
 			break;
 		case 'infobar_bottom-right_graphic_btn':
-			processCricketProcedures('ANIMATE_GRAPHICS-OPTIONS');
+			processCricketProcedures('BOTTOMRIGHT_GRAPHICS-OPTIONS');
 			break;
 		case 'infobar_bottom_graphic_btn':
-			processCricketProcedures('ANIMATE_BOTTOM_GRAPHICS-OPTIONS');
+			processCricketProcedures('BOTTOM_GRAPHICS-OPTIONS');
 			break;
 		case 'matchid_graphic_btn':
 			addItemsToList('MATCHID-OPTIONS',null);
 			break;
 		case 'playingxi_graphic_btn':
 			processCricketProcedures('ANIMATE_PLAYINGXI-OPTIONS');
+			break;
+		case 'leaderboard_graphic_btn':
+			processCricketProcedures('ANIMATE_LEADERBOARD-OPTIONS');
 			break;
 		}
 		break;
@@ -265,7 +267,7 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-PLAYERPROFILE':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			valueToProcess = $('#playerprofileScene').val() + ',' + $('#selectTeams option:selected').val() + ',' + $('#selectPlayerName option:selected').val() ;
+			valueToProcess = $('#playerprofileScene').val() + ',' + $('#selectPlayerName option:selected').val()+ ',' + $('#selectProfile option:selected').val() + ',' + $('#selectTypeOfProfile option:selected').val() ;
 			break;
 		}
 		break;
@@ -354,15 +356,11 @@ function processCricketProcedures(whatToProcess)
 				addItemsToList('POPULATE-PROFILE',data);
 				match_data = data;
 				break;
-			case 'GET_PROFILE-OPTION':
-				addItemsToList('POPULATE-PROFILE',data);
-				match_data = data;
-				break;
-			case 'ANIMATE-OPTIONS':
+			case 'BOTTOMLEFT_GRAPHICS-OPTIONS':
 				addItemsToList('INFOBAR-BOTTOMLEFT-OPTIONS',data);
 				match_data = data;
 				break;
-			case 'ANIMATE_GRAPHICS-OPTIONS':
+			case 'BOTTOMRIGHT_GRAPHICS-OPTIONS':
 				addItemsToList('INFOBAR-BOTTOMRIGHT-OPTIONS',data);
 				match_data = data;
 				break;
@@ -370,7 +368,7 @@ function processCricketProcedures(whatToProcess)
 				addItemsToList('INFOBAR-OPTIONS',data);
 				match_data = data;
 				break;
-			case 'ANIMATE_BOTTOM_GRAPHICS-OPTIONS':
+			case 'BOTTOM_GRAPHICS-OPTIONS':
 				addItemsToList('INFOBAR-BOTTOM-OPTIONS',data);
 				match_data = data;
 				break;
@@ -477,32 +475,27 @@ function addItemsToList(whatToProcess, dataToProcess)
 		
 		break;
 	case 'POPULATE-PROFILE' :
-	
-		$('#selectProfile').empty();
 
-			if(dataToProcess.homeTeamId ==  $('#selectTeams option:selected').val()){
-				dataToProcess.homeSquad.forEach(function(hs,index,arr){
-					//if(hs.role == $('#PlayerType option:selected').val()){
-						$('#selectProfile').append(
-							$(document.createElement('option')).prop({
-			                value: hs.playerId,
-			                text: hs.full_name
-				        }))	
-					//}				
-				});
-			}
-			else{
-				dataToProcess.awaySquad.forEach(function(as,index,arr){
-					//if(as.role == $('#PlayerType option:selected').val()){
-						$('#selectProfile').append(
-							$(document.createElement('option')).prop({
-			                value: as.playerId,
-			                text: as.full_name
-				        }))	
-					//}				
-				});
-			}
-			
+		$('#selectPlayerName').empty();
+		
+		if(dataToProcess.homeTeamId == $('#selectTeams option:selected').val()){
+			dataToProcess.homeSquad.forEach(function(hs,index,arr){
+				$('#selectPlayerName').append(
+					$(document.createElement('option')).prop({
+					value: hs.playerId,
+					text: hs.full_name
+				}))
+			});
+		}
+		else{
+			dataToProcess.awaySquad.forEach(function(as,index,arr){
+				$('#selectPlayerName').append(
+					$(document.createElement('option')).prop({
+					value: as.playerId,
+					text: as.full_name
+				}))
+			});
+		}
 		break;
 	case 'POPULATE-PLAYER' :
 		$('#selectPlayer').empty();
@@ -901,9 +894,14 @@ function addItemsToList(whatToProcess, dataToProcess)
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
 				
-				/*select = document.createElement('select');
+				select = document.createElement('select');
 				select.id = 'selectProfile';
 				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'DT20';
+				option.text = 'DT20';
+				select.appendChild(option);
 				
 				option = document.createElement('option');
 				option.value = 'ODI';
@@ -916,13 +914,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select.appendChild(option);
 				
 				option = document.createElement('option');
-				option.value = 'T20';
-				option.text = 'T20';
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = 'It20.';
-				option.text = 'It20';
+				option.value = 'IT20.';
+				option.text = 'IT20';
 				select.appendChild(option);
 				
 				select.setAttribute('onchange',"processUserSelection(this)");
@@ -945,7 +938,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select.appendChild(option);
 				
 				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;*/
+				cellCount = cellCount + 1;
 				
 				select = document.createElement('input');
 				select.type = "text";

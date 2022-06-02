@@ -138,15 +138,9 @@ public class IndexController
 	{
 		switch (whatToProcess.toUpperCase()) {
 		case "BUG_GRAPHICS-OPTIONS": case "HOWOUT_GRAPHICS-OPTIONS": case "PLAYERSTATS_GRAPHICS-OPTIONS": case "NAMESUPER_GRAPHICS-OPTIONS": 
-		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "ANIMATE-OPTIONS": case "ANIMATE_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS": 
-		case "ANIMATE_BOTTOM_GRAPHICS-OPTIONS": case "ANIMATE_PLAYINGXI-OPTIONS":
+		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "BOTTOMLEFT_GRAPHICS-OPTIONS": case "BOTTOMRIGHT_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS": 
+		case "BOTTOM_GRAPHICS-OPTIONS": case "ANIMATE_PLAYINGXI-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
-		case "GET_PROFILE-OPTION":
-			for(Statistics stats : cricketService.getPlayerStatistics(Integer.valueOf(valueToProcess))) {
-				stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
-				stats_to_send.add(stats);
-			}
-			return JSONArray.fromObject(stats_to_send).toString();
 		case "READ-MATCH-AND-POPULATE":
 			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
 					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified())))
@@ -222,8 +216,13 @@ public class IndexController
 							Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster , viz_scene_path);
 					break;
 				case "POPULATE-PLAYERPROFILE":
-					this_doad.populatePlayerProfile(print_writer,valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),Integer.valueOf(valueToProcess.split(",")[2]), 
-							session_match, session_selected_broadcaster , viz_scene_path);
+					for(Statistics stats : cricketService.getPlayerStatistics(Integer.valueOf(valueToProcess.split(",")[1]))) {
+						stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
+						if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(valueToProcess.split(",")[2])) {
+							this_doad.populatePlayerProfile(print_writer,valueToProcess.split(",")[0],Integer.valueOf(valueToProcess.split(",")[1]),
+									valueToProcess.split(",")[2],valueToProcess.split(",")[3],stats,session_match, session_selected_broadcaster , viz_scene_path);
+						}
+					}
 					break;
 				case "POPULATE-DOUBLETEAMS":
 					this_doad.populateDoubleteams(print_writer,valueToProcess.split(",")[0], session_match, session_selected_broadcaster , viz_scene_path);
