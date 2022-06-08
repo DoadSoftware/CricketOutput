@@ -84,13 +84,13 @@ function processUserSelection(whichInput)
 			processCricketProcedures('ANIMATE_PLAYINGXI-OPTIONS');
 			break;
 		case 'leaderboard_graphic_btn':
-			processCricketProcedures('ANIMATE_LEADERBOARD-OPTIONS');
+			addItemsToList('LEADERBOARD-OPTIONS',null);
 			break;
 		}
 		break;
 	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn':
 	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_playerprofile_btn':  case 'populate_doubleteams_btn': case 'populate_infobar_bottom-left_btn': 
-	case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn': case 'populate_infobar_bottom_btn': case 'populate_matchid_btn': case 'populate_playingxi_btn':
+	case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn': case 'populate_infobar_bottom_btn': case 'populate_matchid_btn': case 'populate_playingxi_btn': case 'populate_leaderboard_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -140,6 +140,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_playingxi_btn':
 			processCricketProcedures('POPULATE-PLAYINGXI');
+			break;
+		case 'populate_leaderboard_btn':
+			processCricketProcedures('POPULATE-LEADERBOARD');
 			break;
 
 		}
@@ -314,6 +317,13 @@ function processCricketProcedures(whatToProcess)
 			break;	
 		}
 		break;
+	case 'POPULATE-LEADERBOARD': 
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#leaderboardScene').val() + ',' + $('#selectPlayer1').val() + ',' + $('#selectPlayer2').val() ;
+			break;	
+		}
+		break;
 	
 	}
 
@@ -379,7 +389,7 @@ function processCricketProcedures(whatToProcess)
 			
 			case 'POPULATE-SCORECARD': case 'POPULATE-BOWLINGCARD': case 'POPULATE-PARTNERSHIP': case 'POPULATE-MATCHSUMMARY': case 'POPULATE-BUG':  case 'POPULATE-HOWOUT':
 			case 'POPULATE-PLAYERSTATS': case 'POPULATE-NAMESUPER': case 'POPULATE-PLAYERPROFILE': case 'POPULATE-DOUBLETEAMS': case 'POPULATE-INFOBAR': case 'POPULATE-MATCHID':
-			case 'POPULATE-PLAYINGXI':
+			case 'POPULATE-PLAYINGXI': case 'POPULATE-LEADERBOARD':
 				if (data.status.toUpperCase() == 'SUCCESSFUL') {
 					if(confirm('Animate In?') == true){
 						     
@@ -426,6 +436,9 @@ function processCricketProcedures(whatToProcess)
 							break;
 						case 'POPULATE-PLAYINGXI':
 							processCricketProcedures('ANIMATE-IN-PLAYINGXI');					
+							break;
+						case 'POPULATE-LEADERBOARD':
+							processCricketProcedures('ANIMATE-IN-LEADERBOARD');					
 							break;
 					}
 					}
@@ -597,7 +610,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'bugScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_BUG.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_BUG.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -633,7 +646,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'howoutScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -672,7 +685,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'playerstatsScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -689,7 +702,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'battingScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Batting_Card.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Batting_Card.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -701,7 +714,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'bowlingScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Bowling_Card.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Bowling_Card.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -713,7 +726,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'partnershipScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Bowling_Card.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Bowling_Card.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -725,7 +738,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'summaryScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Summary.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Summary.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -860,7 +873,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'namesuperScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_NameSuper.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_NameSuper.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -914,7 +927,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select.appendChild(option);
 				
 				option = document.createElement('option');
-				option.value = 'IT20.';
+				option.value = 'IT20';
 				option.text = 'IT20';
 				select.appendChild(option);
 				
@@ -943,7 +956,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'playerprofileScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_PlayerProfile.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_PlayerProfile.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -1018,7 +1031,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'doubleteamScene';
-				select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
+				select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_LT_Batsman_Out.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -1388,7 +1401,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			select = document.createElement('input');
 			select.type = "text";
 			select.id = 'infobarScene';
-			select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Scorebug.sum';
+			select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Scorebug.sum';
 			
 			
 			row.insertCell(cellCount).appendChild(select);
@@ -1593,7 +1606,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			select = document.createElement('input');
 			select.type = "text";
 			select.id = 'playingxiScene';
-			select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_PlayingXI.sum';
+			select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_PlayingXI.sum';
 			
 			row.insertCell(cellCount).appendChild(select);
 			cellCount = cellCount + 1;
@@ -1649,7 +1662,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			select = document.createElement('input');
 			select.type = "text";
 			select.id = 'matchidScene';
-			select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_MatchID.sum';
+			select.value = 'D:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_MatchID.sum';
 			
 			row.insertCell(cellCount).appendChild(select);
 			cellCount = cellCount + 1;
@@ -1681,6 +1694,159 @@ function addItemsToList(whatToProcess, dataToProcess)
 
 			break;
 		}
+	break;
+	/*case'LEADERBOARD-OPTIONS':
+	
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+		    
+			select = document.createElement('input');
+			select.type = "text";
+			select.id = 'leaderboardScene';
+			select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Top_Five.sum';
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('input');
+			select.type = "text";
+			select.id = 'selectPlayer1';
+			select.value = '';
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('input');
+			select.type = "text";
+			select.id = 'selectPlayer2';
+			select.value = '';
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			option = document.createElement('input');
+		    option.type = 'button';
+		   	option.name = 'populate_leaderboard_btn';
+		    option.value = 'Populate LeaderBoard';
+				
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}
+	break;*/
+	
+	/*case'LEADERBOARD-OPTIONS':
+	
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			for (var i = 1; i <= 11; i++){
+				row = tbody.insertRow(tbody.rows.length);
+				for (var j = 1; j <= count; j++){
+					
+				} 
+			}
+			
+		    
+			select = document.createElement('input');
+			select.type = "text";
+			select.id = 'leaderboardScene';
+			select.value = 'C:/Everest_Scenes/Mumbai_Indians/Final/Layers/MI_Top_Five.sum';
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('input');
+			select.type = "text";
+			select.id = 'selectPlayer1';
+			select.value = '';
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('input');
+			select.type = "text";
+			select.id = 'selectPlayer2';
+			select.value = '';
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			option = document.createElement('input');
+		    option.type = 'button';
+		   	option.name = 'populate_leaderboard_btn';
+		    option.value = 'Populate LeaderBoard';
+				
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}
+	break;*/
 	}
 	
 }
