@@ -499,6 +499,13 @@ function addItemsToList(whatToProcess, dataToProcess)
 					text: hs.full_name
 				}))
 			});
+			dataToProcess.homeOtherSquad.forEach(function(hos,index,arr){
+				$('#selectPlayerName').append(
+					$(document.createElement('option')).prop({
+					value: hos.playerId,
+					text: hos.full_name + ' (OTHER)'
+				}))
+			});
 		}
 		else{
 			dataToProcess.awaySquad.forEach(function(as,index,arr){
@@ -506,6 +513,13 @@ function addItemsToList(whatToProcess, dataToProcess)
 					$(document.createElement('option')).prop({
 					value: as.playerId,
 					text: as.full_name
+				}))
+			});
+			dataToProcess.awayOtherSquad.forEach(function(aos,index,arr){
+				$('#selectPlayerName').append(
+					$(document.createElement('option')).prop({
+					value: aos.playerId,
+					text: aos.full_name + ' (OTHER)'
 				}))
 			});
 		}
