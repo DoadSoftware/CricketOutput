@@ -36,7 +36,8 @@ function processUserSelection(whichInput)
 	case 'l3playerprofile_graphic_btn': case 'comparision_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
-		case 'scorecard_graphic_btn': 
+		case 'scorecard_graphic_btn':
+			//alert($('#select_broadcaster').val()); 
 			addItemsToList('SCORECARD-OPTIONS',null);
 			break;
 		case 'bowlingcard_graphic_btn':
@@ -134,6 +135,7 @@ function processUserSelection(whichInput)
 			processCricketProcedures('POPULATE-L3-BUG');
 			break;
 		case 'populate_howout_btn':
+			
 			processCricketProcedures('POPULATE-L3-HOWOUT');
 			break;
 		case 'populate_playerstats_btn':
@@ -462,7 +464,7 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'HOWOUT_GRAPHICS-OPTIONS':
 				addItemsToList('HOWOUT-OPTIONS',data);
-				addItemsToList('POPULATE-PLAYERS',data);
+				addItemsToList('POPULATE-HOWOUT-PLAYERS',data);
 				match_data = data;
 				break;
 			case 'PLAYERSTATS_GRAPHICS-OPTIONS':
@@ -638,6 +640,39 @@ function addItemsToList(whatToProcess, dataToProcess)
 			            }))					
 					});
 				} else{
+					inn.bowlingCard.forEach(function(boc,boc_index,boc_arr){
+			            $('#selectPlayers').append(
+							$(document.createElement('option')).prop({
+			                value: boc.playerId,
+			                text: boc.player.full_name
+			            }))
+			            						
+					});
+				}	
+			}
+		});
+		
+		
+		break;
+	
+	case 'POPULATE-HOWOUT-PLAYERS' :
+	
+		$('#selectPlayers').empty();
+
+		dataToProcess.inning.forEach(function(inn,index,arr){
+			if(inn.inningNumber == $('#selectInning option:selected').val()){
+				if($('#selectStatsType option:selected').val() == 'Batsman'){
+					inn.battingCard.forEach(function(bc,bc_index,bc_arr){
+						if(bc.status != 'NOT OUT' && bc.status != 'STILLTOBAT'){
+							$('#selectPlayers').append(
+							$(document.createElement('option')).prop({
+			                value: bc.playerId,
+			                text: bc.player.full_name
+			            	}))
+			            }					
+					});
+				}
+			     else{
 					inn.bowlingCard.forEach(function(boc,boc_index,boc_arr){
 			            $('#selectPlayers').append(
 							$(document.createElement('option')).prop({
@@ -1865,15 +1900,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 							option.text = 'Toss Winning';
 							select.appendChild(option);
 							
-							option = document.createElement('option');
-							option.value = 'boundaries';
-							option.text = 'Boundaries';
-							select.appendChild(option);
-							
-							option = document.createElement('option');
-							option.value = 'partnership';
-							option.text = 'Partnership';
-							select.appendChild(option);
 							row.insertCell(cellCount).appendChild(select);
 							cellCount = cellCount + 1;
 						
@@ -1914,20 +1940,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 						option.text = 'Equation';
 						select.appendChild(option);
 						
-						option = document.createElement('option');
-						option.value = 'comparision';
-						option.text = 'Comparision';
-						select.appendChild(option);
-						
-						option = document.createElement('option');
-						option.value = 'boundaries';
-						option.text = 'Boundaries';
-						select.appendChild(option);
-						
-						option = document.createElement('option');
-						option.value = 'partnership';
-						option.text = 'Partnership';
-						select.appendChild(option);
 						row.insertCell(cellCount).appendChild(select);
 						cellCount = cellCount + 1;
 					}

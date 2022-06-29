@@ -42,9 +42,9 @@
 			  </div>
 			  
 			  <div id="captions_div" class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
-			    <label class="col-sm-4 col-form-label text-left">Match: ${session_selected_match} </label>
-			    <label class="col-sm-4 col-form-label text-left">IP Address: ${session_viz_ip_address} </label>
-			    <label class="col-sm-4 col-form-label text-left">Port Number: ${session_viz_port_number} </label>
+			    <label class="col-sm-4 col-form-label text-left">Match: ${session_match.matchFileName} </label>
+			    <label class="col-sm-4 col-form-label text-left">IP Address: ${session_vizIPAddress} </label>
+			    <label class="col-sm-4 col-form-label text-left">Port Number: ${session_port} </label>
 			    <label class="col-sm-4 col-form-label text-left">Broadcaster: ${session_selected_broadcaster} </label>
 			    <label class="col-sm-4 col-form-label text-left">Home Team: ${session_match.homeTeam.fullname} </label>
 			    <label class="col-sm-4 col-form-label text-left">Away Team: ${session_match.awayTeam.fullname} </label>

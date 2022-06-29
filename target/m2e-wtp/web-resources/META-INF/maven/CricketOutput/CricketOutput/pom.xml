@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>CricketOutput</groupId>
   <artifactId>CricketOutput</artifactId>
-  <version>1.0.b44</version>
+  <version>1.3.b47</version>
   <packaging>war</packaging>
   <name>CricketOutput</name>
   <properties>
@@ -17,7 +17,7 @@
 	<groupId>com.cricket</groupId>
 	<artifactId>CricketLibrary</artifactId>
 	<scope>compile</scope>
-	<version>1.41</version>
+	<version>1.42</version>
 </dependency>
 <!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
 <dependency>
