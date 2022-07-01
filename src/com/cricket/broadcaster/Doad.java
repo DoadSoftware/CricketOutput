@@ -14,6 +14,7 @@ import com.cricket.model.Player;
 import com.cricket.model.Statistics;
 import com.cricket.model.Inning;
 import com.cricket.model.Match;
+import com.cricket.model.NameSuper;
 import com.cricket.model.FallOfWicket;
 import com.cricket.containers.Scene;
 import com.cricket.util.CricketFunctions;
@@ -693,7 +694,26 @@ public class Doad extends Scene{
 		}
 	}
 	
-	public void populateNameSuper(PrintWriter print_writer,String viz_scene, int TeamId, String captainWicketKeeper, int playerId, Match match, String session_selected_broadcaster)
+	public void populateNameSuper(PrintWriter print_writer,String viz_scene, NameSuper ns ,Match match, String session_selected_broadcaster)
+	{
+		if (match == null) {
+			this.status = "ERROR: Match is null";
+		} else {
+			
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHeader " + ns.getFirstname() + " " + ns.getSurname() + ";");
+			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + ns.getSubLine() + ";");
+			
+
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/NameSuper.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+			
+			this.status = CricketUtil.SUCCESSFUL;	
+		}
+	}
+	
+	public void populateNameSuperPlayer(PrintWriter print_writer,String viz_scene, int TeamId, String captainWicketKeeper, int playerId, Match match, String session_selected_broadcaster)
 	{
 		if (match == null) {
 			this.status = "ERROR: Match is null";
@@ -740,6 +760,7 @@ public class Doad extends Scene{
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
 	}
+	
 	public void populatePlayerProfile(PrintWriter print_writer,String viz_scene, int playerId,String Profile,String TypeofProfile,Statistics stats, Match match, String session_selected_broadcaster) {
 		if (match == null) {
 			this.status = "ERROR: Match is null";
@@ -1290,7 +1311,7 @@ public class Doad extends Scene{
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio5_data_GRP$EquationGRP*CONTAINER SET ACTIVE 0;");
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio5_data_GRP$FreeTextGRP*CONTAINER SET ACTIVE 1;");
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Section4_5_6GRP$Sectio5_data_GRP$FreeTextGRP$FreeTExt*CONTAINER SET ACTIVE 1;");
-				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tFreeTextSmallText " + "Last Wicket : " +CricketFunctions.getLastWicket(match) + ";");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tFreeTextSmallText " + "Last Wicket : " + CricketFunctions.getLastWicket(match) + ";");
 				
 				break;
 			case"COMPARISION":

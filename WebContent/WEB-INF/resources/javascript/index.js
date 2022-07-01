@@ -30,9 +30,10 @@ function processUserSelection(whichInput)
 		}
 		break;
 	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn':  case 'howout_graphic_btn':
-	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'playerprofile_graphic_btn': case 'doubleteams_graphic_btn': case 'infobar_bottom-left_graphic_btn': 
-	case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn': case 'playerprofile_graphic_btn': case 'infobar_bottom_graphic_btn': case 'matchid_graphic_btn': case 'fallofwicket_graphic_btn':
-	case 'playingxi_graphic_btn': case 'leaderboard_graphic_btn': case 'projected_graphic_btn': case 'target_graphic_btn': case 'teamsummary_graphic_btn': case 'playersummary_graphic_btn':
+	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'namesuper_player_graphic_btn':  case 'playerprofile_graphic_btn': case 'doubleteams_graphic_btn': 
+	case 'infobar_bottom-left_graphic_btn': case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn': case 'playerprofile_graphic_btn': 
+	case 'infobar_bottom_graphic_btn': case 'matchid_graphic_btn': case 'fallofwicket_graphic_btn':case 'playingxi_graphic_btn': case 'leaderboard_graphic_btn': 
+	case 'projected_graphic_btn': case 'target_graphic_btn': case 'teamsummary_graphic_btn': case 'playersummary_graphic_btn':
 	case 'l3playerprofile_graphic_btn': case 'comparision_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
@@ -60,6 +61,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'namesuper_graphic_btn':
 			processCricketProcedures('NAMESUPER_GRAPHICS-OPTIONS');
+			break;
+		case 'namesuper_player_graphic_btn':
+			processCricketProcedures('NAMESUPER_PLAYER_GRAPHICS-OPTIONS');
 			break;
 		case 'playerprofile_graphic_btn':
 			processCricketProcedures('PLAYERPROFILE_GRAPHICS-OPTIONS');
@@ -113,10 +117,10 @@ function processUserSelection(whichInput)
 		}
 		break;
 	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn':
-	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_playerprofile_btn':  case 'populate_doubleteams_btn': case 'populate_infobar_bottom-left_btn': 
-	case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn': case 'populate_infobar_bottom_btn': case 'populate_matchid_btn': case 'populate_playingxi_btn': case 'populate_leaderboard_btn':
-	case 'populate_projected_btn': case 'populate_target_btn': case 'populate_teamsummary_btn': case 'populate_playersummary_btn': case 'populate_l3playerprofile_btn': case 'populate_fow_btn':
-	case 'populate_comparision_btn':
+	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_namesuper_player_btn': case 'populate_playerprofile_btn':  case 'populate_doubleteams_btn': 
+	case 'populate_infobar_bottom-left_btn': case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn': case 'populate_infobar_bottom_btn': case 'populate_matchid_btn': 
+	case 'populate_playingxi_btn': case 'populate_leaderboard_btn': case 'populate_projected_btn': case 'populate_target_btn': case 'populate_teamsummary_btn': case 'populate_playersummary_btn': 
+	case 'populate_l3playerprofile_btn': case 'populate_fow_btn': case 'populate_comparision_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -135,7 +139,6 @@ function processUserSelection(whichInput)
 			processCricketProcedures('POPULATE-L3-BUG');
 			break;
 		case 'populate_howout_btn':
-			
 			processCricketProcedures('POPULATE-L3-HOWOUT');
 			break;
 		case 'populate_playerstats_btn':
@@ -143,6 +146,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_namesuper_btn':
 			processCricketProcedures('POPULATE-L3-NAMESUPER');
+			break;
+		case 'populate_namesuper_player_btn':
+			processCricketProcedures('POPULATE-L3-NAMESUPER-PLAYER');
 			break;
 		case 'populate_playerprofile_btn':
 			processCricketProcedures('POPULATE-FF-PLAYERPROFILE');
@@ -324,10 +330,19 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-L3-NAMESUPER':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			valueToProcess = $('#namesuperScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + $('#selectCaptainWicketKeeper option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
+			valueToProcess = $('#namesuperScene').val() + ',' + $('#selectNameSuper option:selected').val() ;
 			break;
 		}
 		break;
+	case 'POPULATE-L3-NAMESUPER-PLAYER':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#namesuperplayerScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + 
+				$('#selectCaptainWicketKeeper option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
+			break;
+		}
+		break;
+		
 	case 'POPULATE-FF-PLAYERPROFILE':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -479,6 +494,11 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'NAMESUPER_GRAPHICS-OPTIONS':
 				addItemsToList('NAMESUPER-OPTIONS',data);
+				//addItemsToList('POPULATE-NameSuper',data);
+				match_data = data;
+				break;
+			case 'NAMESUPER_PLAYER_GRAPHICS-OPTIONS':
+				addItemsToList('NAMESUPER_PLAYER-OPTIONS',data);
 				addItemsToList('POPULATE-PLAYER',data);
 				match_data = data;
 				break;
@@ -526,9 +546,9 @@ function processCricketProcedures(whatToProcess)
 				break;
 			
 			case 'POPULATE-FF-SCORECARD': case 'POPULATE-FF-BOWLINGCARD': case 'POPULATE-FF-PARTNERSHIP': case 'POPULATE-FF-MATCHSUMMARY': case 'POPULATE-L3-BUG':  case 'POPULATE-L3-HOWOUT':
-			case 'POPULATE-L3-PLAYERSTATS': case 'POPULATE-L3-NAMESUPER': case 'POPULATE-FF-PLAYERPROFILE': case 'POPULATE-FF-DOUBLETEAMS': case 'POPULATE-L3-INFOBAR': case 'POPULATE-FF-MATCHID':
-			case 'POPULATE-FF-PLAYINGXI': case 'POPULATE-FF-LEADERBOARD': case 'POPULATE-L3-PROJECTED': case 'POPULATE-L3-TARGET': case 'POPULATE-L3-TEAMSUMMARY': case 'POPULATE-L3-PLAYERSUMMARY':
-			case 'POPULATE-L3-PLAYERPROFILE': case 'POPULATE-L3-FALLOFWICKET': case 'POPULATE-L3-COMPARISION':
+			case 'POPULATE-L3-PLAYERSTATS': case 'POPULATE-L3-NAMESUPER': case 'POPULATE-L3-NAMESUPER-PLAYER': case 'POPULATE-FF-PLAYERPROFILE': case 'POPULATE-FF-DOUBLETEAMS': 
+			case 'POPULATE-L3-INFOBAR': case 'POPULATE-FF-MATCHID': case 'POPULATE-FF-PLAYINGXI': case 'POPULATE-FF-LEADERBOARD': case 'POPULATE-L3-PROJECTED': case 'POPULATE-L3-TARGET': 
+			case 'POPULATE-L3-TEAMSUMMARY': case 'POPULATE-L3-PLAYERSUMMARY': case 'POPULATE-L3-PLAYERPROFILE': case 'POPULATE-L3-FALLOFWICKET': case 'POPULATE-L3-COMPARISION':
 				if (data.status.toUpperCase() == 'SUCCESSFUL') {
 					if(confirm('Animate In?') == true){
 						     
@@ -560,6 +580,9 @@ function processCricketProcedures(whatToProcess)
 							break;
 						case 'POPULATE-L3-NAMESUPER':
 							processCricketProcedures('ANIMATE-IN-NAMESUPER');				
+							break;
+						case 'POPULATE-L3-NAMESUPER-PLAYER':
+							processCricketProcedures('ANIMATE-IN-NAMESUPER-PLAYER');
 							break;
 						case 'POPULATE-FF-PLAYERPROFILE':
 							processCricketProcedures('ANIMATE-IN-PLAYERPROFILE');				
@@ -651,8 +674,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 				}	
 			}
 		});
-		
-		
 		break;
 	
 	case 'POPULATE-HOWOUT-PLAYERS' :
@@ -684,9 +705,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 				}	
 			}
 		});
-		
-		
 		break;
+		
 	case 'POPULATE-PLAYERS_DATA' :
 	
 		$('#selectPlayerData').empty();
@@ -703,6 +723,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 		});
 		
 		break;
+		
 	case 'POPULATE-PROFILE' :
 
 		$('#selectPlayerName').empty();
@@ -1135,7 +1156,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 		}
 		break;
 		
-	case'NAMESUPER-OPTIONS': case'PLAYERPROFILE-OPTIONS': case'L3PLAYERPROFILE-OPTIONS':
+	case'NAMESUPER-OPTIONS': case 'NAMESUPER_PLAYER-OPTIONS':  case'PLAYERPROFILE-OPTIONS': case'L3PLAYERPROFILE-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -1161,6 +1182,33 @@ function addItemsToList(whatToProcess, dataToProcess)
 				case'NAMESUPER-OPTIONS':
 				
 				select = document.createElement('select');
+				select.style = 'width:130px';
+				select.id = 'selectNameSuper';
+				select.name = select.id;
+				
+				dataToProcess.forEach(function(ns,index,arr1){
+					option = document.createElement('option');
+					option.value = ns.namesuperId;
+					option.text = ns.firstname + ' ' + ns.surname ;
+					select.appendChild(option);
+				});
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'namesuperScene';
+				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/Mumbai_Indians/Everes_Scenes/Scenes/MI_LT_NameSuper.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				break;
+				
+			case 'NAMESUPER_PLAYER-OPTIONS':
+				
+				select = document.createElement('select');
 				select.id = 'selectTeam';
 				select.name = select.id;
 				
@@ -1179,6 +1227,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				cellCount = cellCount + 1;
 
 				select = document.createElement('select');
+				select.style = 'width:100px';
 				select.id = 'selectCaptainWicketKeeper';
 				select.name = select.id;
 				
@@ -1213,6 +1262,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				cellCount = cellCount + 1;
 				
 				select = document.createElement('select');
+				select.style = 'width:100px';
 				select.id = 'selectPlayer';
 				select.name = select.id;
 				
@@ -1222,7 +1272,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 				select = document.createElement('input');
 				select.type = "text";
-				select.id = 'namesuperScene';
+				select.id = 'namesuperplayerScene';
 				select.value = 'D:/DOAD_In_House_Everest/Everest_Scenes/APL2022/Scenes/MI_LT_NameSuper.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
@@ -1406,6 +1456,11 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.name = 'populate_namesuper_btn';
 			    option.value = 'Populate Namesuper';
 				break;
+			case 'NAMESUPER_PLAYER-OPTIONS':	
+				option.name = 'populate_namesuper_player_btn';
+			    option.value = 'Populate Namesuper-Player';
+				break;
+			
 			case'PLAYERPROFILE-OPTIONS':
 			    option.name = 'populate_playerprofile_btn';
 			    option.value = 'Populate Playerprofile';

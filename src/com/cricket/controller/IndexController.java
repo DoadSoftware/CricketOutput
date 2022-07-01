@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cricket.broadcaster.Doad;
 import com.cricket.containers.Configurations;
+import com.cricket.model.NameSuper;
 //import com.cricket.containers.Configurations;
 import com.cricket.containers.Scene;
 import com.cricket.model.BattingCard;
@@ -40,6 +41,7 @@ import com.cricket.service.CricketService;
 import com.cricket.util.CricketFunctions;
 import com.cricket.util.CricketUtil;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Controller
@@ -56,8 +58,11 @@ public class IndexController
 	
 	List<BattingCard> last_infobar_batsman;
 	List<Match> tournament_matches = new ArrayList<Match>();
+	
+	List<NameSuper> namesuper = new ArrayList<NameSuper>();
+	
 	BowlingCard last_infobar_bowler;
-	int whichInning,player_id,session_port;
+	int whichInning,player_id,team_id,session_port;
 	String session_selected_broadcaster, viz_scene_path, which_graphics_onscreen, info_bar_bottom_left, info_bar_bottom_right, 
 	info_bar_bottom,stats_type,top_left_stats,top_right_stats,type_of_profile;
 	boolean is_Infobar_on_Screen = false;
@@ -120,6 +125,7 @@ public class IndexController
 		type_of_profile = "";
 		whichInning = 0;
 		player_id = 0;
+		team_id = 0;
 		is_Infobar_on_Screen = false;
 		this_doad = new Doad();
 		last_infobar_batsman = new ArrayList<BattingCard>();
@@ -136,18 +142,11 @@ public class IndexController
 		        return name.endsWith(".xml") && pathname.isFile();
 		    }
 		});
-		//System.out.println("File_Length = " + new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY).listFiles().length);
 		for(File file : files) {
-			//System.out.println(file.getName());
-			//System.out.println(selectedMatch);
 			if(file.getName() != selectedMatch) {
 				tournament_matches.add(CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + file.getName()))));
 			}
-		}
-		System.out.println("Size = " + tournament_matches.size());
-		for(Match match : tournament_matches) {
-			System.out.println(match.getMatchFileName());
 		}
 		
 		JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
@@ -174,7 +173,7 @@ public class IndexController
 						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.EVENT_DIRECTORY + session_match.getMatchFileName()));
 				
 				session_match.setEvents(session_event_file.getEvents());
-				//System.out.println("Inning ="+ whichInning);
+				
 				return JSONObject.fromObject(session_match).toString();
 			}
 			else {
@@ -182,7 +181,6 @@ public class IndexController
 			}
 		}
 	
-		//session_match.setEvents(session_event_file.getEvents());
 		
 		model.addAttribute("session_match", session_match);
 		model.addAttribute("session_port", session_port);
@@ -199,11 +197,17 @@ public class IndexController
 	{
 		
 		switch (whatToProcess.toUpperCase()) {
-		case "BUG_GRAPHICS-OPTIONS": case "HOWOUT_GRAPHICS-OPTIONS": case "PLAYERSTATS_GRAPHICS-OPTIONS": case "NAMESUPER_GRAPHICS-OPTIONS": case "L3PLAYERPROFILE_GRAPHICS-OPTIONS":
+		case "BUG_GRAPHICS-OPTIONS": case "HOWOUT_GRAPHICS-OPTIONS": case "PLAYERSTATS_GRAPHICS-OPTIONS": case "NAMESUPER_PLAYER_GRAPHICS-OPTIONS": case "L3PLAYERPROFILE_GRAPHICS-OPTIONS":
 		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "BOTTOMLEFT_GRAPHICS-OPTIONS": case "BOTTOMRIGHT_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS": case "COMPARISION-GRAPHICS-OPTIONS":
 		case "BOTTOM_GRAPHICS-OPTIONS": case "ANIMATE_PLAYINGXI-OPTIONS": case "PROJECTED_GRAPHICS-OPTIONS": case "TARGET_GRAPHICS-OPTIONS": case "PLAYERSUMMARY_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
+		
+		case "NAMESUPER_GRAPHICS-OPTIONS": 
+			namesuper = cricketService.getNameSupers();
+			return JSONArray.fromObject(namesuper).toString();
+			
 		case "READ-MATCH-AND-POPULATE":
+			
 			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
 					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified())))
 			{
@@ -215,16 +219,13 @@ public class IndexController
 						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.EVENT_DIRECTORY + session_match.getMatchFileName()));
 				
 				session_match.setEvents(session_event_file.getEvents());
-				//System.out.println("Inning ="+ whichInning);
 				switch(which_graphics_onscreen) {
 				case "INFOBAR":
 					String Bow=top_right_stats.toUpperCase();
 					last_infobar_batsman = this_doad.populateInfobarTopLeft(true, print_writer, top_left_stats.toUpperCase(), session_match, session_selected_broadcaster, last_infobar_batsman);
 					last_infobar_bowler = this_doad.populateInfobarTopRight(true, print_writer, Bow, session_match, session_selected_broadcaster,last_infobar_bowler);
-					//System.out.println(top_right_stats.toUpperCase());
 					this_doad.populateInfobarTopLeft(true, print_writer, top_left_stats.toUpperCase(), session_match, session_selected_broadcaster,last_infobar_batsman);
 					this_doad.populateInfobarTeamScore(true, print_writer, session_match, session_selected_broadcaster);
-					//this_doad.populateInfobarTopRight(true, print_writer, top_right_stats.toUpperCase() , session_match, session_selected_broadcaster,last_infobar_bowler);
 					this_doad.populateInfobarBottomLeft(true, print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
 					this_doad.populateInfobarBottomRight(true, print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
 					this_doad.populateInfobarBottom(true, print_writer, info_bar_bottom, session_match, session_selected_broadcaster);
@@ -253,9 +254,10 @@ public class IndexController
 			}
 		
 		case "POPULATE-FF-SCORECARD": case "POPULATE-FF-BOWLINGCARD": case "POPULATE-FF-PARTNERSHIP": case "POPULATE-FF-MATCHSUMMARY": case "POPULATE-L3-BUG":  case "POPULATE-L3-HOWOUT":
-		case "POPULATE-L3-PLAYERSTATS": case "POPULATE-L3-NAMESUPER": case "POPULATE-FF-PLAYERPROFILE": case "POPULATE-FF-DOUBLETEAMS": case "POPULATE-L3-INFOBAR": case "POPULATE-FF-LEADERBOARD":
-		case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM": case "POPULATE-FF-MATCHID": case "POPULATE-FF-PLAYINGXI": case "POPULATE-L3-PROJECTED":
-		case "POPULATE-L3-TARGET": case "POPULATE-L3-TEAMSUMMARY": case "POPULATE-L3-PLAYERSUMMARY": case "POPULATE-L3-PLAYERPROFILE": case "POPULATE-L3-FALLOFWICKET": case "POPULATE-L3-COMPARISION":
+		case "POPULATE-L3-PLAYERSTATS": case "POPULATE-L3-NAMESUPER": case "POPULATE-L3-NAMESUPER-PLAYER": case "POPULATE-FF-PLAYERPROFILE": case "POPULATE-FF-DOUBLETEAMS": case "POPULATE-L3-INFOBAR": 
+		case "POPULATE-FF-LEADERBOARD": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM": case "POPULATE-FF-MATCHID": case "POPULATE-FF-PLAYINGXI": 
+		case "POPULATE-L3-PROJECTED": case "POPULATE-L3-TARGET": case "POPULATE-L3-TEAMSUMMARY": case "POPULATE-L3-PLAYERSUMMARY": case "POPULATE-L3-PLAYERPROFILE": case "POPULATE-L3-FALLOFWICKET": 
+		case "POPULATE-L3-COMPARISION":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			
 			case "DOAD_IN_HOUSE_VIZ":
@@ -274,7 +276,6 @@ public class IndexController
 				switch (whatToProcess.toUpperCase()) {
 				case "POPULATE-FF-SCORECARD":
 					whichInning = Integer.valueOf(valueToProcess.split(",")[1]);
-					
 					this_doad.populateScorecard(print_writer, viz_scene_path, whichInning, 
 							session_match, session_selected_broadcaster);
 					break;
@@ -316,9 +317,22 @@ public class IndexController
 							player_id, session_match, session_selected_broadcaster);
 					break;
 				case "POPULATE-L3-NAMESUPER":
-					this_doad.populateNameSuper(print_writer, viz_scene_path,Integer.valueOf(valueToProcess.split(",")[1]),valueToProcess.split(",")[2],
-							Integer.valueOf(valueToProcess.split(",")[3]), session_match, session_selected_broadcaster);
+					for(NameSuper ns : namesuper) {
+					  player_id = Integer.valueOf(valueToProcess.split(",")[1]);
+					  
+					  if(ns.getNamesuperId() == player_id) {
+						  this_doad.populateNameSuper(print_writer, viz_scene_path, ns, session_match, session_selected_broadcaster);
+					  }
+					}
 					break;
+				case "POPULATE-L3-NAMESUPER-PLAYER":
+					team_id = Integer.valueOf(valueToProcess.split(",")[1]);
+					stats_type = valueToProcess.split(",")[2];
+					player_id = Integer.valueOf(valueToProcess.split(",")[3]);
+					
+					this_doad.populateNameSuperPlayer(print_writer, viz_scene_path, team_id, stats_type, player_id, session_match, session_selected_broadcaster);
+					break;
+					
 				case "POPULATE-FF-PLAYERPROFILE":
 					player_id = Integer.valueOf(valueToProcess.split(",")[1]);
 					stats_type = valueToProcess.split(",")[2];
@@ -438,9 +452,9 @@ public class IndexController
 				return JSONObject.fromObject(this_doad).toString();
 			}
 		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMARRY": case "ANIMATE-IN-BUG": case "ANIMATE-IN-HOWOUT": 
-		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR": case "ANIMATE-OUT": 
+		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-NAMESUPER-PLAYER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR":  
 		case "ANIMATE-IN-MATCHID": case "ANIMATE-IN-PLAYINGXI": case "ANIMATE-IN-LEADERBOARD": case "ANIMATE-IN-PROJECTED": case "ANIMATE-IN-TARGET": case "ANIMATE-IN-TEAMSUMMARY":
-		case "ANIMATE-IN-PLAYERSUMMARY": case "ANIMATE-IN-L3PLAYERPROFILE": case "ANIMATE-IN-FALLOFWICKET": case "ANIMATE-IN-COMPARISION":
+		case "ANIMATE-IN-PLAYERSUMMARY": case "ANIMATE-IN-L3PLAYERPROFILE": case "ANIMATE-IN-FALLOFWICKET": case "ANIMATE-IN-COMPARISION": case "ANIMATE-OUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 				switch (whatToProcess.toUpperCase()) {
@@ -475,6 +489,10 @@ public class IndexController
 				case "ANIMATE-IN-NAMESUPER":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
 					which_graphics_onscreen = "NAMESUPER";
+					break;
+				case "ANIMATE-IN-NAMESUPER-PLAYER":
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "NAMESUPER-PLAYER";
 					break;
 				case "ANIMATE-IN-PLAYERPROFILE":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
@@ -568,6 +586,10 @@ public class IndexController
 						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
+					case "NAMESUPER-PLAYER":
+						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						which_graphics_onscreen = "";
+						break;
 					case "PLAYERPROFILE":
 						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
 						which_graphics_onscreen = "";
@@ -627,6 +649,7 @@ public class IndexController
 			return JSONObject.fromObject(null).toString();
 		}
 	}
+	
 	public Statistics updateTournamentDataWithStats(Statistics stat,String typeOfProfile ) 
 	{
 		boolean player_found = false;
