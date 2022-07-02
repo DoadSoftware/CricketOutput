@@ -62,7 +62,7 @@ public class Doad extends Scene{
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET lgTeamLogo " + logo_path + inn.getBatting_team().getFullname() + CricketUtil.PNG_EXTENSION + ";");						
 						
 						//inn.getBattingCard().sort();
-						//Collections.sort(match.getInning().get(whichInning).getBattingCard(),new CricketFunctions.BatsmenPositionComparator());
+						Collections.sort(inn.getBattingCard());
 						for (BattingCard bc : inn.getBattingCard()) {
 							
 							row_id = row_id + 1;
@@ -160,7 +160,7 @@ public class Doad extends Scene{
 		}
 				
 				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Batting_Card.bmp;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 				
@@ -248,7 +248,7 @@ public class Doad extends Scene{
 			//print_writer.println("LAYER1*EVEREST*GLOBAL TEMPLATE_SAVE D:/MyFile.txt;");
 			//print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH D:\\Temp\\preview.jpg;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH D:\\Temp\\Preview.bmp;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
@@ -367,7 +367,10 @@ public class Doad extends Scene{
 				}
 			}
 			
-			print_writer.println("-1 RENDERER PREVIEW SCENE*" + viz_scene + " C:/Temp/partnership.png In 1.400 PartnershipIn 2.800 \0");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH D:\\Temp\\Preview.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
 			this.status = CricketUtil.SUCCESSFUL;
 		}
@@ -501,7 +504,7 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tResult " + CricketFunctions.generateMatchSummaryStatus(whichInning, match, CricketUtil.FULL) + ";");
 			
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Summary.jpg;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
@@ -561,7 +564,7 @@ public class Doad extends Scene{
 				}
 			}
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Bug.jpg;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
@@ -606,7 +609,7 @@ public class Doad extends Scene{
 				}
 			}
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/HowOut.jpg;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
@@ -686,7 +689,7 @@ public class Doad extends Scene{
 				}
 			}
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/PlayerStats.jpg;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
@@ -705,7 +708,7 @@ public class Doad extends Scene{
 			
 
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/NameSuper.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
@@ -753,7 +756,7 @@ public class Doad extends Scene{
 			}
 
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/NameSuper.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
@@ -796,7 +799,7 @@ public class Doad extends Scene{
 		print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tEventName " + stats.getStats_type().getStats_short_name() + ";");
 		
 		print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-		print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/PlayerProfile.jpg;");
+		print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 		print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 		print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 
@@ -841,7 +844,7 @@ public class Doad extends Scene{
 		print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tSubHeader " + stats.getStats_type().getStats_short_name() + ";");
 		
 		print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
-		print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/L3PlayerProfile.jpg;");
+		print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
 		print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
 		print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 
@@ -945,7 +948,12 @@ public class Doad extends Scene{
 						}
 					}
 				}
-			}			
+			}		
+			
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
 	}
@@ -1470,6 +1478,11 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET lgAwayTeamLogo " + logo_path + match.getAwayTeam().getFullname() + CricketUtil.PNG_EXTENSION + ";");
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tFooter " + "LIVE FROM "+ match.getVenueName().toUpperCase() + ";");
 			
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+			
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
 	}
@@ -1563,6 +1576,11 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tResult " + CricketFunctions.generateTossResult(match, "", "", CricketUtil.SHORT).toUpperCase() + ";");
 			}
 			
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+			
 			this.status = CricketUtil.SUCCESSFUL;
 	}
 	public void populateProjectedScore(PrintWriter print_writer,String viz_scene, Match match, String session_selected_broadcaster)
@@ -1597,6 +1615,11 @@ public class Doad extends Scene{
 					}
 				}
 				
+				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+				
 				this.status = CricketUtil.SUCCESSFUL;
 			}
 			break;
@@ -1625,6 +1648,11 @@ public class Doad extends Scene{
 					}
 				}
 			}
+			
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
 			
 			this.status = CricketUtil.SUCCESSFUL;
 			
@@ -1659,6 +1687,12 @@ public class Doad extends Scene{
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue6 " + inn.getTotalSixes() + ";");
 					}
 				}
+				
+				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+				
 				this.status = CricketUtil.SUCCESSFUL;
 			}
 			break;
@@ -1695,6 +1729,12 @@ public class Doad extends Scene{
 						}
 					}
 				}
+				
+				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+				
 				this.status = CricketUtil.SUCCESSFUL;
 			}
 			break;
@@ -1740,6 +1780,12 @@ public class Doad extends Scene{
 					}
 				}
 			}
+			
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+			
 			this.status = CricketUtil.SUCCESSFUL;	
 		}
 	}
@@ -1762,6 +1808,12 @@ public class Doad extends Scene{
 						
 					}
 				}
+				
+				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+				print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+				
 				this.status = CricketUtil.SUCCESSFUL;
 			}
 			break;
@@ -1778,7 +1830,13 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tTeamName01 " + SecondPlayer + ";");
 
 		}
-			this.status = CricketUtil.SUCCESSFUL;
+			
+		print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+		print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+		print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+		print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+		
+		this.status = CricketUtil.SUCCESSFUL;
 	}
 
 	public void processAnimation(PrintWriter print_writer, String animationName,String animationCommand, String which_broadcaster)

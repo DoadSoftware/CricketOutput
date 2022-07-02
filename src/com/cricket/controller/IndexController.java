@@ -219,34 +219,20 @@ public class IndexController
 						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.EVENT_DIRECTORY + session_match.getMatchFileName()));
 				
 				session_match.setEvents(session_event_file.getEvents());
-				switch(which_graphics_onscreen) {
-				case "INFOBAR":
+				
+				if(is_Infobar_on_Screen == true) {
 					String Bow=top_right_stats.toUpperCase();
 					last_infobar_batsman = this_doad.populateInfobarTopLeft(true, print_writer, top_left_stats.toUpperCase(), session_match, session_selected_broadcaster, last_infobar_batsman);
 					last_infobar_bowler = this_doad.populateInfobarTopRight(true, print_writer, Bow, session_match, session_selected_broadcaster,last_infobar_bowler);
+					
 					this_doad.populateInfobarTopLeft(true, print_writer, top_left_stats.toUpperCase(), session_match, session_selected_broadcaster,last_infobar_batsman);
 					this_doad.populateInfobarTeamScore(true, print_writer, session_match, session_selected_broadcaster);
 					this_doad.populateInfobarBottomLeft(true, print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
 					this_doad.populateInfobarBottomRight(true, print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
 					this_doad.populateInfobarBottom(true, print_writer, info_bar_bottom, session_match, session_selected_broadcaster);
-					break;
 					
 				}
 				
-				//if(is_Infobar_on_Screen == true) {
-				/*String Bow=top_right_stats.toUpperCase();
-				last_infobar_batsman = this_doad.populateInfobarTopLeft(true, print_writer, top_left_stats.toUpperCase(), session_match, session_selected_broadcaster, last_infobar_batsman);
-				last_infobar_bowler = this_doad.populateInfobarTopRight(true, print_writer, Bow, session_match, session_selected_broadcaster,last_infobar_bowler);
-				System.out.println(top_right_stats.toUpperCase());
-				this_doad.populateInfobarTopLeft(true, print_writer, top_left_stats.toUpperCase(), session_match, session_selected_broadcaster,last_infobar_batsman);
-				this_doad.populateInfobarTeamScore(true, print_writer, session_match, session_selected_broadcaster);
-				//this_doad.populateInfobarTopRight(true, print_writer, top_right_stats.toUpperCase() , session_match, session_selected_broadcaster,last_infobar_bowler);
-				this_doad.populateInfobarBottomLeft(true, print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
-				this_doad.populateInfobarBottomRight(true, print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
-				this_doad.populateInfobarBottom(true, print_writer, info_bar_bottom, session_match, session_selected_broadcaster);*/
-					
-					
-				//}
 				return JSONObject.fromObject(session_match).toString();
 			}
 			else {
@@ -504,7 +490,7 @@ public class IndexController
 					break;
 				case "ANIMATE-IN-INFOBAR":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
-					//is_Infobar_on_Screen = true;
+					is_Infobar_on_Screen = true;
 					which_graphics_onscreen = "INFOBAR";
 					break;
 				case "ANIMATE-IN-MATCHID":
@@ -550,9 +536,9 @@ public class IndexController
 				case "ANIMATE-OUT":
 					switch(which_graphics_onscreen) {
 					case "INFOBAR":
-						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						this_doad.processAnimation(print_writer, "In", "CONTINUE_REVERSE", session_selected_broadcaster);
 						which_graphics_onscreen = "";
-						//is_Infobar_on_Screen = false;
+						is_Infobar_on_Screen = false;
 						break;
 					case "SCORECARD":
 						this_doad.processAnimation(print_writer, "Out", "START", session_selected_broadcaster);
