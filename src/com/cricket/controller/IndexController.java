@@ -34,6 +34,7 @@ import com.cricket.containers.Scene;
 import com.cricket.model.BattingCard;
 import com.cricket.model.BowlingCard;
 import com.cricket.model.EventFile;
+import com.cricket.model.InfobarStats;
 import com.cricket.model.Inning;
 import com.cricket.model.Match;
 import com.cricket.model.Statistics;
@@ -58,8 +59,9 @@ public class IndexController
 	
 	List<BattingCard> last_infobar_batsman;
 	List<Match> tournament_matches = new ArrayList<Match>();
-	
 	List<NameSuper> namesuper = new ArrayList<NameSuper>();
+	
+	List<InfobarStats> infobarstats = new ArrayList<InfobarStats>();
 	
 	BowlingCard last_infobar_bowler;
 	int whichInning,player_id,team_id,session_port;
@@ -158,29 +160,7 @@ public class IndexController
 		session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 				new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + selectedMatch)));
 		//session_match.setMatchFileName(selectedMatch);
-		session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
-		System.out.println(whatToProcess);
-		switch (whatToProcess.toUpperCase()) {
-		case "READ-MATCH-AND-POPULATE":
-			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
-					new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified())))
-			{
-				session_match = CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
-						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + selectedMatch)));
-				session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
-						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + session_match.getMatchFileName()).lastModified()));
-				session_event_file = (EventFile) JAXBContext.newInstance(EventFile.class).createUnmarshaller().unmarshal(
-						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.EVENT_DIRECTORY + session_match.getMatchFileName()));
-				
-				session_match.setEvents(session_event_file.getEvents());
-				
-				return JSONObject.fromObject(session_match).toString();
-			}
-			else {
-				return JSONObject.fromObject(null).toString();
-			}
-		}
-	
+		session_match.setMatchFileTimeStamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));	
 		
 		model.addAttribute("session_match", session_match);
 		model.addAttribute("session_port", session_port);
@@ -206,6 +186,10 @@ public class IndexController
 			namesuper = cricketService.getNameSupers();
 			return JSONArray.fromObject(namesuper).toString();
 			
+		case "PROMPT_GRAPHICS-OPTIONS":
+			infobarstats = cricketService.getInfobarStats();
+			return JSONArray.fromObject(infobarstats).toString();
+			
 		case "READ-MATCH-AND-POPULATE":
 			
 			if(!valueToProcess.equalsIgnoreCase(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(
@@ -230,6 +214,7 @@ public class IndexController
 					this_doad.populateInfobarBottomLeft(true, print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
 					this_doad.populateInfobarBottomRight(true, print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
 					this_doad.populateInfobarBottom(true, print_writer, info_bar_bottom, session_match, session_selected_broadcaster);
+					//this_doad.populateInfobarPrompt(true, print_writer, info_bar_bottom_right, session_match, session_selected_broadcaster);
 					
 				}
 				
@@ -243,7 +228,7 @@ public class IndexController
 		case "POPULATE-L3-PLAYERSTATS": case "POPULATE-L3-NAMESUPER": case "POPULATE-L3-NAMESUPER-PLAYER": case "POPULATE-FF-PLAYERPROFILE": case "POPULATE-FF-DOUBLETEAMS": case "POPULATE-L3-INFOBAR": 
 		case "POPULATE-FF-LEADERBOARD": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM": case "POPULATE-FF-MATCHID": case "POPULATE-FF-PLAYINGXI": 
 		case "POPULATE-L3-PROJECTED": case "POPULATE-L3-TARGET": case "POPULATE-L3-TEAMSUMMARY": case "POPULATE-L3-PLAYERSUMMARY": case "POPULATE-L3-PLAYERPROFILE": case "POPULATE-L3-FALLOFWICKET": 
-		case "POPULATE-L3-COMPARISION":
+		case "POPULATE-L3-COMPARISION": case "POPULATE-INFOBAR-PROMPT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			
 			case "DOAD_IN_HOUSE_VIZ":
@@ -252,7 +237,7 @@ public class IndexController
 			case "DOAD_IN_HOUSE_EVEREST":
 				
 				switch(whatToProcess.toUpperCase()) {
-				case"POPULATE-INFOBAR-BOTTOMLEFT": case"POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM":
+				case"POPULATE-INFOBAR-BOTTOMLEFT": case"POPULATE-INFOBAR-BOTTOMRIGHT": case"POPULATE-INFOBAR-PROMPT": case "POPULATE-INFOBAR-BOTTOM":
 					break;
 				default:
 					viz_scene_path = valueToProcess.split(",")[0];
@@ -371,6 +356,26 @@ public class IndexController
 					this_doad.processAnimation(print_writer, "Section5_In", "START", session_selected_broadcaster);
 					info_bar_bottom_right = valueToProcess;
 					break;
+					
+				case "POPULATE-INFOBAR-PROMPT":
+					this_doad.processAnimation(print_writer, "Section5_Out", "CONTINUE", session_selected_broadcaster);
+					this_doad.processAnimation(print_writer, "Section6_Out", "CONTINUE", session_selected_broadcaster);
+					for(Inning inn : session_match.getInning()) {
+						if(inn.getIsCurrentInning().equalsIgnoreCase(CricketUtil.YES)) {
+							this_doad.populateInfobarBottomLeft(false,print_writer, info_bar_bottom_left, session_match, session_selected_broadcaster);
+							
+							for(InfobarStats ibs : infobarstats ) {
+								player_id = Integer.valueOf(valueToProcess);
+								  
+								  if(ibs.getOrder() == player_id) {
+									  this_doad.populateInfobarPrompt(false,print_writer, ibs, session_match, session_selected_broadcaster);
+								  }
+							}
+						}
+					}
+					this_doad.processAnimation(print_writer, "Section5_In", "START", session_selected_broadcaster);
+					break;
+					
 				case "POPULATE-INFOBAR-BOTTOM":
 					this_doad.processAnimation(print_writer, "Section6_Out", "CONTINUE", session_selected_broadcaster);
 					for(Inning inn : session_match.getInning()) {

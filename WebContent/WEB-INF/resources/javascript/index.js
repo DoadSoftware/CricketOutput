@@ -24,6 +24,15 @@ function initialisePage(whatToProcess)
 function processUserSelection(whichInput)
 {	
 	switch ($(whichInput).attr('name')) {
+		
+	case 'selectBottomStat':
+		switch ($('#selectBottomStat :selected').val().toUpperCase()) {
+		case 'STATISTICS':
+			processCricketProcedures('PROMPT_GRAPHICS-OPTIONS')
+			break;
+		}
+		break;
+	
 	case 'animateout_graphic_btn':
 		if(confirm('It will Also Delete Your Preview from Directory...\r\n \r\nAre You Sure To Animate Out? ') == true){
 			processCricketProcedures('ANIMATE-OUT');	
@@ -33,8 +42,8 @@ function processUserSelection(whichInput)
 	case 'playerstats_graphic_btn': case 'namesuper_graphic_btn': case 'namesuper_player_graphic_btn':  case 'playerprofile_graphic_btn': case 'doubleteams_graphic_btn': 
 	case 'infobar_bottom-left_graphic_btn': case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn': case 'playerprofile_graphic_btn': 
 	case 'infobar_bottom_graphic_btn': case 'matchid_graphic_btn': case 'fallofwicket_graphic_btn':case 'playingxi_graphic_btn': case 'leaderboard_graphic_btn': 
-	case 'projected_graphic_btn': case 'target_graphic_btn': case 'teamsummary_graphic_btn': case 'playersummary_graphic_btn':
-	case 'l3playerprofile_graphic_btn': case 'comparision_graphic_btn':
+	case 'projected_graphic_btn': case 'target_graphic_btn': case 'teamsummary_graphic_btn': case 'playersummary_graphic_btn': case 'l3playerprofile_graphic_btn': 
+	case 'comparision_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn':
@@ -120,7 +129,7 @@ function processUserSelection(whichInput)
 	case 'populate_playerstats_btn': case 'populate_namesuper_btn': case 'populate_namesuper_player_btn': case 'populate_playerprofile_btn':  case 'populate_doubleteams_btn': 
 	case 'populate_infobar_bottom-left_btn': case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn': case 'populate_infobar_bottom_btn': case 'populate_matchid_btn': 
 	case 'populate_playingxi_btn': case 'populate_leaderboard_btn': case 'populate_projected_btn': case 'populate_target_btn': case 'populate_teamsummary_btn': case 'populate_playersummary_btn': 
-	case 'populate_l3playerprofile_btn': case 'populate_fow_btn': case 'populate_comparision_btn':
+	case 'populate_l3playerprofile_btn': case 'populate_fow_btn': case 'populate_comparision_btn': case 'populate_infobar_prompt_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -164,6 +173,10 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_infobar_bottom-right_btn':
 			processCricketProcedures('POPULATE-INFOBAR-BOTTOMRIGHT');
+			break;
+		case 'populate_infobar_prompt_btn':
+			processCricketProcedures('POPULATE-INFOBAR-PROMPT');
+			processCricketProcedures('BOTTOM_GRAPHICS-OPTIONS');
 			break;
 		case 'populate_infobar_bottom_btn':
 			processCricketProcedures('POPULATE-INFOBAR-BOTTOM');
@@ -372,6 +385,13 @@ function processCricketProcedures(whatToProcess)
 			break;
 		}
 		break;
+	case 'POPULATE-INFOBAR-PROMPT':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#selectPrompt option:selected').val() ;
+			break;
+		}
+		break;
 	case 'POPULATE-INFOBAR-BOTTOM':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -494,7 +514,6 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'NAMESUPER_GRAPHICS-OPTIONS':
 				addItemsToList('NAMESUPER-OPTIONS',data);
-				//addItemsToList('POPULATE-NameSuper',data);
 				match_data = data;
 				break;
 			case 'NAMESUPER_PLAYER_GRAPHICS-OPTIONS':
@@ -513,6 +532,10 @@ function processCricketProcedures(whatToProcess)
 				break;
 			case 'BOTTOMRIGHT_GRAPHICS-OPTIONS':
 				addItemsToList('INFOBAR-BOTTOMRIGHT-OPTIONS',data);
+				match_data = data;
+				break;
+			case 'PROMPT_GRAPHICS-OPTIONS':
+				addItemsToList('INFOBAR-PROMPT-OPTIONS',data);
 				match_data = data;
 				break;
 			case 'INFOBAR_GRAPHICS-OPTIONS':
@@ -693,16 +716,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 			            }					
 					});
 				}
-			     else{
-					inn.bowlingCard.forEach(function(boc,boc_index,boc_arr){
-			            $('#selectPlayers').append(
-							$(document.createElement('option')).prop({
-			                value: boc.playerId,
-			                text: boc.player.full_name
-			            }))
-			            						
-					});
-				}	
 			}
 		});
 		break;
@@ -1086,7 +1099,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'summaryScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Scenes/APL2022/Scenes/MI_Summary.sum';
+				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/Mumbai_Indians/Everes_Scenes/Scenes/MI_Summary.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
@@ -1604,7 +1617,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			break;
 		}
 		break;
-	case'INFOBAR-BOTTOMRIGHT-OPTIONS':
+	case'INFOBAR-BOTTOMRIGHT-OPTIONS': 
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -1659,6 +1672,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 								option.text = 'Toss Winning';
 								select.appendChild(option);
 								
+								
 								row.insertCell(cellCount).appendChild(select);
 								cellCount = cellCount + 1;
 							}
@@ -1688,6 +1702,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 								option.value = 'comparision';
 								option.text = 'Comparision';
 								select.appendChild(option);
+								
 								
 								row.insertCell(cellCount).appendChild(select);
 								cellCount = cellCount + 1;
@@ -1720,7 +1735,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 					}
 				});
 				
-				break;		
+				break;	
+					
 				}
 
 			option = document.createElement('input');
@@ -1731,6 +1747,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.name = 'populate_infobar_bottom-right_btn';
 			    option.value = 'Change on Infobar';
 				break;
+			
+			
 			}
 		    option.id = option.name;
 		    option.setAttribute('onclick',"processUserSelection(this)");
@@ -1755,7 +1773,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			break;
 		}
 		break;
-	case'INFOBAR-BOTTOM-OPTIONS':
+	case'INFOBAR-BOTTOM-OPTIONS': case 'INFOBAR-PROMPT-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -1800,6 +1818,13 @@ function addItemsToList(whatToProcess, dataToProcess)
 							option.text = 'Projected_Score';
 							select.appendChild(option);
 							
+							option = document.createElement('option');
+							option.value = 'statistics';
+							option.text = 'Statistics';
+							select.appendChild(option);
+							
+							select.setAttribute('onclick','processUserSelection(this);');
+							
 							row.insertCell(cellCount).appendChild(select);
 							cellCount = cellCount + 1;
 						}
@@ -1823,6 +1848,13 @@ function addItemsToList(whatToProcess, dataToProcess)
 							option.text = 'Timeline';
 							select.appendChild(option);*/
 							
+							option = document.createElement('option');
+							option.value = 'statistics';
+							option.text = 'Statistics';
+							select.appendChild(option);
+							
+							select.setAttribute('onclick','processUserSelection(this);');
+							
 							row.insertCell(cellCount).appendChild(select);
 							cellCount = cellCount + 1;
 							
@@ -1830,7 +1862,26 @@ function addItemsToList(whatToProcess, dataToProcess)
 					}
 				});
 				
-				break;		
+				break;	
+				
+			case 'INFOBAR-PROMPT-OPTIONS':
+				
+				select = document.createElement('select');
+				select.id = 'selectPrompt';
+				select.name = select.id;
+				
+				dataToProcess.forEach(function(pro,index,arr1){
+					option = document.createElement('option');
+					option.value = pro.order;
+					option.text = pro.order + '-' + pro.prompt ;
+					select.appendChild(option);
+				});
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+					
+				break;
+
 				}
 
 			option = document.createElement('input');
@@ -1840,21 +1891,35 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case'INFOBAR-BOTTOM-OPTIONS':
 			    option.name = 'populate_infobar_bottom_btn';
 			    option.value = 'Change on Infobar';
+				
+				option.id = option.name;
+			    option.setAttribute('onclick',"processUserSelection(this)");
+			    
+			    div = document.createElement('div');
+			    div.append(option);
+				break;
+			
+			}
+			
+			switch (whatToProcess) {
+			case 'INFOBAR-PROMPT-OPTIONS':
+				option.name = 'populate_infobar_prompt_btn';
+			    option.value = 'Change on Infobar';
+				
+				option.id = option.name;
+			    option.setAttribute('onclick',"processUserSelection(this)");
+			    
+			    div = document.createElement('div');
+			    div.append(option);			
 				break;
 			}
-		    option.id = option.name;
-		    option.setAttribute('onclick',"processUserSelection(this)");
 		    
-		    div = document.createElement('div');
-		    div.append(option);
-
-			option = document.createElement('input');
+		    option = document.createElement('input');
 			option.type = 'button';
 			option.name = 'cancel_graphics_btn';
 			option.id = option.name;
 			option.value = 'Cancel';
 			option.setAttribute('onclick','processUserSelection(this)');
-	
 		    div.append(option);
 		    
 		    row.insertCell(cellCount).appendChild(div);
