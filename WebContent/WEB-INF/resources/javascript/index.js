@@ -1369,7 +1369,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 				select = document.createElement('input');
 				select.type = "text";
 				select.id = 'playerprofileScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Scenes/APL2022/Scenes/MI_PlayerProfile.sum';
+				//select.value = 'D:/DOAD_In_House_Everest/Everest_Scenes/APL2022/Scenes/MI_PlayerProfile.sum';
+				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/Mumbai_Indians/Everes_Scenes/Scenes/MI_PlayerProfile.sum';
 				
 				row.insertCell(cellCount).appendChild(select);
 				cellCount = cellCount + 1;
