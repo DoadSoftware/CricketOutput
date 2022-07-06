@@ -43,7 +43,7 @@ function processUserSelection(whichInput)
 	case 'infobar_bottom-left_graphic_btn': case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn': case 'playerprofile_graphic_btn': 
 	case 'infobar_bottom_graphic_btn': case 'matchid_graphic_btn': case 'l3matchid_graphic_btn': case 'fallofwicket_graphic_btn':case 'playingxi_graphic_btn': case 'leaderboard_graphic_btn': 
 	case 'projected_graphic_btn': case 'target_graphic_btn': case 'teamsummary_graphic_btn': case 'playersummary_graphic_btn': case 'l3playerprofile_graphic_btn': 
-	case 'comparision_graphic_btn':
+	case 'comparision_graphic_btn': case 'bug_dismissal_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn':
@@ -129,13 +129,16 @@ function processUserSelection(whichInput)
 		case 'comparision_graphic_btn':
 			processCricketProcedures('COMPARISION-GRAPHICS-OPTIONS');
 			break;
+		case 'bug_dismissal_graphic_btn':
+			processCricketProcedures('BUG_DISMISSAL_GRAPHICS-OPTIONS');
+			break;
 		}
 		break;
 	case 'populate_scorecard_btn': case 'populate_bowlingcard_btn': case 'populate_partnership_btn': case 'populate_matchsummary_btn': case 'populate_bug_btn': case 'populate_howout_btn':
 	case 'populate_batsmanstats_btn': case 'populate_bowlerstats_btn': case 'populate_namesuper_btn': case 'populate_namesuper_player_btn': case 'populate_playerprofile_btn':  case 'populate_doubleteams_btn': 
 	case 'populate_infobar_bottom-left_btn': case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn': case 'populate_infobar_bottom_btn': case 'populate_matchid_btn': 
 	case 'populate_playingxi_btn': case 'populate_leaderboard_btn': case 'populate_projected_btn': case 'populate_target_btn': case 'populate_teamsummary_btn': case 'populate_playersummary_btn': 
-	case 'populate_l3playerprofile_btn': case 'populate_fow_btn': case 'populate_comparision_btn': case 'populate_infobar_prompt_btn': case 'populate_l3matchid_btn':
+	case 'populate_l3playerprofile_btn': case 'populate_fow_btn': case 'populate_comparision_btn': case 'populate_infobar_prompt_btn': case 'populate_l3matchid_btn': case 'populate_bug_dismissal_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -150,8 +153,8 @@ function processUserSelection(whichInput)
 		case 'populate_matchsummary_btn':
 			processCricketProcedures('POPULATE-FF-MATCHSUMMARY');
 			break;
-		case 'populate_bug_btn':
-			processCricketProcedures('POPULATE-L3-BUG');
+		case 'populate_bug_dismissal_btn':
+			processCricketProcedures('POPULATE-L3-BUG-DISMISSAL');
 			break;
 		case 'populate_howout_btn':
 			processCricketProcedures('POPULATE-L3-HOWOUT');
@@ -222,6 +225,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_comparision_btn':
 			processCricketProcedures('POPULATE-L3-COMPARISION');
+			break;
+		case 'populate_bug_btn':
+			processCricketProcedures('POPULATE-L3-BUG');
 			break;
 		}
 		break;
@@ -331,6 +337,13 @@ function processCricketProcedures(whatToProcess)
 			break;	
 		}
 		break;
+	case 'POPULATE-L3-BUG-DISMISSAL':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_EVEREST':
+			valueToProcess = $('#bugdismissalScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
+			break;
+		}
+		break;	
 	case 'POPULATE-L3-BUG':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -511,9 +524,14 @@ function processCricketProcedures(whatToProcess)
 					}
 				}
 				break;
+			case 'BUG_DISMISSAL_GRAPHICS-OPTIONS':
+				addItemsToList('BUG-DISMISSAL-OPTIONS',data);
+				addItemsToList('POPULATE-HOWOUT-PLAYERS',data);
+				match_data = data;
+				break;
 			case 'BUG_GRAPHICS-OPTIONS':
 				addItemsToList('BUG-OPTIONS',data);
-				addItemsToList('POPULATE-HOWOUT-PLAYERS',data);
+				addItemsToList('POPULATE-PLAYERS',data);
 				match_data = data;
 				break;
 			case 'HOWOUT_GRAPHICS-OPTIONS':
@@ -596,7 +614,7 @@ function processCricketProcedures(whatToProcess)
 			case 'POPULATE-L3-BATSMANSTATS': case 'POPULATE-L3-NAMESUPER': case 'POPULATE-L3-NAMESUPER-PLAYER': case 'POPULATE-FF-PLAYERPROFILE': case 'POPULATE-FF-DOUBLETEAMS': 
 			case 'POPULATE-L3-INFOBAR': case 'POPULATE-FF-MATCHID': case 'POPULATE-FF-PLAYINGXI': case 'POPULATE-FF-LEADERBOARD': case 'POPULATE-L3-PROJECTED': case 'POPULATE-L3-TARGET': 
 			case 'POPULATE-L3-TEAMSUMMARY': case 'POPULATE-L3-PLAYERSUMMARY': case 'POPULATE-L3-PLAYERPROFILE': case 'POPULATE-L3-FALLOFWICKET': case 'POPULATE-L3-COMPARISION':
-			case 'POPULATE-LT-MATCHID': case 'POPULATE-L3-BOWLERSTATS':
+			case 'POPULATE-LT-MATCHID': case 'POPULATE-L3-BOWLERSTATS': case 'POPULATE-L3-BUG-DISMISSAL':
 				if (data.status.toUpperCase() == 'SUCCESSFUL') {
 					if(confirm('Animate In?') == true){
 						     
@@ -676,6 +694,9 @@ function processCricketProcedures(whatToProcess)
 							break;
 						case 'POPULATE-L3-COMPARISION':
 							processCricketProcedures('ANIMATE-IN-COMPARISION');				
+							break;
+						case 'POPULATE-L3-BUG-DISMISSAL':
+							processCricketProcedures('ANIMATE-IN-BUG');				
 							break;
 					}
 					}
@@ -922,8 +943,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 		break;
 	
  	
-	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-OPTIONS': case'HOWOUT-OPTIONS': 
-	case'BATSMANSTATS-OPTIONS': case 'BOWLERSTATS-OPTIONS': case'TEAMSUMMARY-OPTIONS': case'FOW-OPTIONS':
+	case 'SCORECARD-OPTIONS': case'BOWLINGCARD-OPTIONS': case'PARTNERSHIP-OPTIONS': case'MATCHSUMMARY-OPTIONS': case'BUG-DISMISSAL-OPTIONS': case'HOWOUT-OPTIONS': 
+	case'BATSMANSTATS-OPTIONS': case 'BOWLERSTATS-OPTIONS': case'TEAMSUMMARY-OPTIONS': case'FOW-OPTIONS': case'BUG-OPTIONS':
 	
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
@@ -964,6 +985,42 @@ function addItemsToList(whatToProcess, dataToProcess)
 			cellCount = cellCount + 1;
 			
 			switch(whatToProcess){
+			case'BUG-DISMISSAL-OPTIONS':	
+
+			    select.setAttribute('onchange',"processUserSelection(this)");
+
+				select = document.createElement('select');
+				select.id = 'selectStatsType';
+				select.name = select.id;
+				
+				option = document.createElement('option');
+				option.value = 'Batsman';
+				option.text = 'Batsman';
+				select.appendChild(option);
+				
+			    select.setAttribute('onchange',"processUserSelection(this)");
+				row.insertCell(cellCount).appendChild(select);
+				
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('select');
+				select.id = 'selectPlayers';
+				select.name = select.id;
+				
+				row.insertCell(cellCount).appendChild(select);
+
+				cellCount = cellCount + 1;
+				
+				select = document.createElement('input');
+				select.type = "text";
+				select.id = 'bugdismissalScene';
+				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Bug_SingleLine.sum';
+				
+				row.insertCell(cellCount).appendChild(select);
+				cellCount = cellCount + 1;
+				
+				break;
+			
 			case'BUG-OPTIONS':	
 
 			    select.setAttribute('onchange',"processUserSelection(this)");
@@ -1184,6 +1241,10 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 			    option.name = 'populate_fow_btn';
 			    option.value = 'Populate FallofWicket';
+				break;
+			case'BUG-DISMISSAL-OPTIONS':
+			    option.name = 'populate_bug_dismissal_btn';
+			    option.value = 'Populate Bug-Dismissal';
 				break;
 			case'BUG-OPTIONS':
 			    option.name = 'populate_bug_btn';
