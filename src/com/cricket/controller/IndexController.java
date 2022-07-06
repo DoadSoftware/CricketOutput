@@ -177,9 +177,10 @@ public class IndexController
 	{
 		
 		switch (whatToProcess.toUpperCase()) {
-		case "BUG_GRAPHICS-OPTIONS": case "HOWOUT_GRAPHICS-OPTIONS": case "PLAYERSTATS_GRAPHICS-OPTIONS": case "NAMESUPER_PLAYER_GRAPHICS-OPTIONS": case "L3PLAYERPROFILE_GRAPHICS-OPTIONS":
-		case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "BOTTOMLEFT_GRAPHICS-OPTIONS": case "BOTTOMRIGHT_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS": case "COMPARISION-GRAPHICS-OPTIONS":
-		case "BOTTOM_GRAPHICS-OPTIONS": case "ANIMATE_PLAYINGXI-OPTIONS": case "PROJECTED_GRAPHICS-OPTIONS": case "TARGET_GRAPHICS-OPTIONS": case "PLAYERSUMMARY_GRAPHICS-OPTIONS":
+		case "BUG_GRAPHICS-OPTIONS": case "HOWOUT_GRAPHICS-OPTIONS": case "BATSMANSTATS_GRAPHICS-OPTIONS": case "BOWLERSTATS_GRAPHICS-OPTIONS": case "NAMESUPER_PLAYER_GRAPHICS-OPTIONS": 
+		case "L3PLAYERPROFILE_GRAPHICS-OPTIONS": case "PLAYERPROFILE_GRAPHICS-OPTIONS": case "BOTTOMLEFT_GRAPHICS-OPTIONS": case "BOTTOMRIGHT_GRAPHICS-OPTIONS": case "INFOBAR_GRAPHICS-OPTIONS": 
+		case "COMPARISION-GRAPHICS-OPTIONS": case "BOTTOM_GRAPHICS-OPTIONS": case "ANIMATE_PLAYINGXI-OPTIONS": case "PROJECTED_GRAPHICS-OPTIONS": case "TARGET_GRAPHICS-OPTIONS": 
+		case "PLAYERSUMMARY_GRAPHICS-OPTIONS":
 			return JSONObject.fromObject(session_match).toString();
 		
 		case "NAMESUPER_GRAPHICS-OPTIONS": 
@@ -225,10 +226,10 @@ public class IndexController
 			}
 		
 		case "POPULATE-FF-SCORECARD": case "POPULATE-FF-BOWLINGCARD": case "POPULATE-FF-PARTNERSHIP": case "POPULATE-FF-MATCHSUMMARY": case "POPULATE-L3-BUG":  case "POPULATE-L3-HOWOUT":
-		case "POPULATE-L3-PLAYERSTATS": case "POPULATE-L3-NAMESUPER": case "POPULATE-L3-NAMESUPER-PLAYER": case "POPULATE-FF-PLAYERPROFILE": case "POPULATE-FF-DOUBLETEAMS": case "POPULATE-L3-INFOBAR": 
+		case "POPULATE-L3-BATSMANSTATS": case "POPULATE-L3-NAMESUPER": case "POPULATE-L3-NAMESUPER-PLAYER": case "POPULATE-FF-PLAYERPROFILE": case "POPULATE-FF-DOUBLETEAMS": case "POPULATE-L3-INFOBAR": 
 		case "POPULATE-FF-LEADERBOARD": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM": case "POPULATE-FF-MATCHID": case "POPULATE-FF-PLAYINGXI": 
 		case "POPULATE-L3-PROJECTED": case "POPULATE-L3-TARGET": case "POPULATE-L3-TEAMSUMMARY": case "POPULATE-L3-PLAYERSUMMARY": case "POPULATE-L3-PLAYERPROFILE": case "POPULATE-L3-FALLOFWICKET": 
-		case "POPULATE-L3-COMPARISION": case "POPULATE-INFOBAR-PROMPT":
+		case "POPULATE-L3-COMPARISION": case "POPULATE-INFOBAR-PROMPT": case "POPULATE-LT-MATCHID": case "POPULATE-L3-BOWLERSTATS":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			
 			case "DOAD_IN_HOUSE_VIZ":
@@ -279,13 +280,19 @@ public class IndexController
 					
 					this_doad.populateHowout(print_writer, viz_scene_path,whichInning, stats_type, player_id, session_match, session_selected_broadcaster);
 					break;
-				case "POPULATE-L3-PLAYERSTATS":
+				case "POPULATE-L3-BATSMANSTATS":
 					whichInning = Integer.valueOf(valueToProcess.split(",")[1]);
 					stats_type = valueToProcess.split(",")[2];
 					player_id = Integer.valueOf(valueToProcess.split(",")[3]);
 					
-					this_doad.populatePlayerstats(print_writer, viz_scene_path,whichInning, stats_type, 
-							player_id, session_match, session_selected_broadcaster);
+					this_doad.populateBatsmanstats(print_writer, viz_scene_path,whichInning, stats_type, player_id, session_match, session_selected_broadcaster);
+					break;
+				case "POPULATE-L3-BOWLERSTATS":
+					whichInning = Integer.valueOf(valueToProcess.split(",")[1]);
+					stats_type = valueToProcess.split(",")[2];
+					player_id = Integer.valueOf(valueToProcess.split(",")[3]);
+					
+					this_doad.populateBowlerstats(print_writer, viz_scene_path,whichInning, stats_type, player_id, session_match, session_selected_broadcaster);
 					break;
 				case "POPULATE-L3-NAMESUPER":
 					for(NameSuper ns : namesuper) {
@@ -391,6 +398,9 @@ public class IndexController
 				case "POPULATE-FF-MATCHID":
 					this_doad.populateMatchId(print_writer,viz_scene_path, session_match, session_selected_broadcaster);
 					break;
+				case "POPULATE-LT-MATCHID":
+					this_doad.populateLTMatchId(print_writer,viz_scene_path, session_match, session_selected_broadcaster);
+					break;
 				case "POPULATE-FF-PLAYINGXI":
 					this_doad.populatePlayingXI(print_writer, viz_scene_path, Integer.valueOf(valueToProcess.split(",")[1]), 
 							session_match, session_selected_broadcaster);
@@ -443,9 +453,10 @@ public class IndexController
 				return JSONObject.fromObject(this_doad).toString();
 			}
 		case "ANIMATE-IN-SCORECARD": case "ANIMATE-IN-BOWLINGCARD": case "ANIMATE-IN-PARTNERSHIP": case "ANIMATE-IN-MATCHSUMARRY": case "ANIMATE-IN-BUG": case "ANIMATE-IN-HOWOUT": 
-		case "ANIMATE-IN-PLAYERSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-NAMESUPER-PLAYER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR":  
+		case "ANIMATE-IN-BATSMANSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-NAMESUPER-PLAYER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR":  
 		case "ANIMATE-IN-MATCHID": case "ANIMATE-IN-PLAYINGXI": case "ANIMATE-IN-LEADERBOARD": case "ANIMATE-IN-PROJECTED": case "ANIMATE-IN-TARGET": case "ANIMATE-IN-TEAMSUMMARY":
-		case "ANIMATE-IN-PLAYERSUMMARY": case "ANIMATE-IN-L3PLAYERPROFILE": case "ANIMATE-IN-FALLOFWICKET": case "ANIMATE-IN-COMPARISION": case "ANIMATE-OUT":
+		case "ANIMATE-IN-PLAYERSUMMARY": case "ANIMATE-IN-L3PLAYERPROFILE": case "ANIMATE-IN-FALLOFWICKET": case "ANIMATE-IN-COMPARISION": case "ANIMATE-IN-L3MATCHID": 
+		case "ANIMATE-IN-BOWLERSTATS": case "ANIMATE-OUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 				switch (whatToProcess.toUpperCase()) {
@@ -473,9 +484,13 @@ public class IndexController
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
 					which_graphics_onscreen = "HOWOUT";
 					break;
-				case "ANIMATE-IN-PLAYERSTATS":
+				case "ANIMATE-IN-BATSMANSTATS":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
-					which_graphics_onscreen = "PLAYERSTATS";
+					which_graphics_onscreen = "BATSMANSTATS";
+					break;
+				case "ANIMATE-IN-BOWLERSTATS":
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "BOWLERSTATS";
 					break;
 				case "ANIMATE-IN-NAMESUPER":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
@@ -501,6 +516,10 @@ public class IndexController
 				case "ANIMATE-IN-MATCHID":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
 					which_graphics_onscreen = "MATCHID";
+					break;
+				case "ANIMATE-IN-L3MATCHID":
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "L3MATCHID";
 					break;
 				case "ANIMATE-IN-PLAYINGXI":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
@@ -562,14 +581,18 @@ public class IndexController
 						which_graphics_onscreen = "";
 						break;
 					case "BUG":
-						this_doad.processAnimation(print_writer, "In", "CONTINUE", session_selected_broadcaster);
+						this_doad.processAnimation(print_writer, "Out", "START", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
 					case "HOWOUT":
 						this_doad.processAnimation(print_writer, "In", "RESET", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
-					case "PLAYERSTATS":
+					case "BATSMANSTATS":
+						this_doad.processAnimation(print_writer, "Out", "START", session_selected_broadcaster);
+						which_graphics_onscreen = "";
+						break;
+					case "BOWLERSTATS":
 						this_doad.processAnimation(print_writer, "Out", "START", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
@@ -590,6 +613,10 @@ public class IndexController
 						which_graphics_onscreen = "";
 						break;
 					case "MATCHID":
+						this_doad.processAnimation(print_writer, "Out", "START", session_selected_broadcaster);
+						which_graphics_onscreen = "";
+						break;
+					case "L3MATCHID":
 						this_doad.processAnimation(print_writer, "Out", "START", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
