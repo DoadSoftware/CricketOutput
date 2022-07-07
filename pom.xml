@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>CricketOutput</groupId>
   <artifactId>CricketOutput</artifactId>
-  <version>1.5.b49</version>
+  <version>1.7.b49</version>
   <packaging>war</packaging>
   <name>CricketOutput</name>
   <properties>

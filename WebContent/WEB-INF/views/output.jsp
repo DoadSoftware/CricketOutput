@@ -137,6 +137,9 @@
 			  		name="fallofwicket_graphic_btn" id="fallofwicket_graphic_btn" onclick="processUserSelection(this)"> FallOfWicket </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="comparision_graphic_btn" id="comparision_graphic_btn" onclick="processUserSelection(this)"> Comparision </button>
+			  		
+			  <!--  <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="split_graphic_btn" id="split_graphic_btn" onclick="processUserSelection(this)"> 30-50-Split </button> -->
 			  	<button style="background-color:#f44336;color:#FEFEFE;;" class="btn btn-sm" type="button"
 			  		name="animateout_graphic_btn" id="animateout_graphic_btn" onclick="processUserSelection(this)"> AnimateOut </button>
 			  </div>
