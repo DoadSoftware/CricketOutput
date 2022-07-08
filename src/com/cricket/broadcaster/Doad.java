@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.cricket.model.BattingCard;
 import com.cricket.model.BowlingCard;
+import com.cricket.model.Bugs;
 import com.cricket.model.Event;
 import com.cricket.model.Partnership;
 import com.cricket.model.Player;
@@ -69,15 +70,6 @@ public class Doad extends Scene{
 						
 							row_id = row_id + 1;
 
-							/*if(bc.getStatus().toUpperCase().equalsIgnoreCase(CricketUtil.STILL_TO_BAT)){
-								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPlayerName0" + row_id + " " + bc.getPlayer().getFirstname() + ";");
-								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$HowOut_GRP*CONTAINER SET ACTIVE 0;");
-								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$Runs*CONTAINER SET ACTIVE 0;");
-								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$Balls*CONTAINER SET ACTIVE 0;");
-								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vHighlight_DeHighlight0" + row_id + " " + "0" + ";");
-								//print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$Highlight*CONTAINER SET ACTIVE 0;");
-							}
-							else {*/
 							switch (bc.getStatus().toUpperCase()) {
 	
 							case CricketUtil.OUT:
@@ -110,38 +102,12 @@ public class Doad extends Scene{
 							break;
 							
 							case CricketUtil.STILL_TO_BAT:
-								/*System.out.println("status = "+bc.getHowOut());
-								if(bc.getStatus().toUpperCase() != CricketUtil.STILL_TO_BAT || bc.getHowOut().trim() != "") {
-									if(bc.getHowOut().toUpperCase().equalsIgnoreCase(CricketUtil.RETIRED_HURT)) {
-										System.out.println("if");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$Out*CONTAINER SET ACTIVE 1;");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$NotOut*CONTAINER SET ACTIVE 0;");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$Details*CONTAINER SET ACTIVE 0;");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$HowOut_GRP*CONTAINER SET ACTIVE 1;");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$Runs*CONTAINER SET ACTIVE 1;");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$"+row_id+"$Balls*CONTAINER SET ACTIVE 1;");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPlayerName0" +row_id + " " +bc.getPlayer().getTicker_name() + ";");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vHighlight_DeHighlight0" + row_id + " " + "1" + ";");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHowOut0"+ row_id + "A" + " " + bc.getHowOutPartOne() + ";");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHowOut0"+ row_id + "B" + " " + bc.getHowOutPartTwo() + ";");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tRun0" + row_id + " " + bc.getRuns() + ";");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tBalls0" + row_id + " " + bc.getBalls() + ";");
-									}
-									else{
-										System.out.println("else");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPlayerName0" + row_id + " " + bc.getPlayer().getTicker_name() + ";");
-										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vHighlight_DeHighlight0" + row_id + " " + "0" + ";");
-									}
-									
-								}*/
+								
 								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPlayerName0" + row_id + " " + bc.getPlayer().getTicker_name() + ";");
 								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vHighlight_DeHighlight0" + row_id + " " + "0" + ";");
 								
-								
 								break;
 						}
-							
-						//}
 					}
 					print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tExtras " + inn.getTotalExtras() + ";");
 					print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tOvers "+ CricketFunctions.OverBalls(inn.getTotalOvers(),inn.getTotalBalls()) + ";");
@@ -166,7 +132,7 @@ public class Doad extends Scene{
 		}
 		
 	}
-	public void populateBowlingcard(PrintWriter print_writer,String viz_scene, int whichInning,   Match match, String session_selected_broadcaster) 
+	public void populateBowlingcard(PrintWriter print_writer,String viz_scene,boolean is_this_updating, int whichInning,   Match match, String session_selected_broadcaster) 
 	{
 		if (match == null) {
 			this.status = "ERROR: Match is null";
@@ -211,21 +177,23 @@ public class Doad extends Scene{
 					}
 					row_id= 0 ;
 					if(inn.getBowlingCard().size()<=8) {
-						if(inn.getFallsOfWickets() == null || inn.getFallsOfWickets().size() <= 0) {
-							//System.out.println(inn.getFallsOfWickets());
-							print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$DataAll$BAtting$Bowling_Card$10*CONTAINER SET ACTIVE 0;");
-							print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$DataAll$BAtting$Bowling_Card$11*CONTAINER SET ACTIVE 0;");
-						}
-						else if(inn.getFallsOfWickets() != null || inn.getFallsOfWickets().size() > 0) {
-							for(FallOfWicket fow : inn.getFallsOfWickets()) {								
-								if(inn.getTotalWickets()>=0 && inn.getTotalWickets() <= 10) {
-									row_id = row_id + 1;
-									//System.out.println("row3="+row_id);
-									print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$DataAll$BAtting$Bowling_Card$10*CONTAINER SET ACTIVE 1;");
-									print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$DataAll$BAtting$Bowling_Card$11*CONTAINER SET ACTIVE 1;");
-									print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vWKTS "+ fow.getFowNumber() + ";");
-									print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tWKTRun0" + row_id + " "  + fow.getFowRuns() + ";");
-								}		
+						if(is_this_updating == false) {
+							if(inn.getFallsOfWickets() == null || inn.getFallsOfWickets().size() <= 0) {
+								//System.out.println(inn.getFallsOfWickets());
+								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$DataAll$BAtting$Bowling_Card$10*CONTAINER SET ACTIVE 0;");
+								print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$DataAll$BAtting$Bowling_Card$11*CONTAINER SET ACTIVE 0;");
+							}
+							else if(inn.getFallsOfWickets() != null || inn.getFallsOfWickets().size() > 0) {
+								for(FallOfWicket fow : inn.getFallsOfWickets()) {								
+									if(inn.getTotalWickets()>=0 && inn.getTotalWickets() <= 10) {
+										row_id = row_id + 1;
+										//System.out.println("row3="+row_id);
+										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$DataAll$BAtting$Bowling_Card$10*CONTAINER SET ACTIVE 1;");
+										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$DataAll$BAtting$Bowling_Card$11*CONTAINER SET ACTIVE 1;");
+										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vWKTS "+ fow.getFowNumber() + ";");
+										print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tWKTRun0" + row_id + " "  + fow.getFowRuns() + ";");
+									}		
+								}
 							}
 						}
 					}
@@ -768,6 +736,41 @@ public class Doad extends Scene{
 		}
 	}
 	
+	public void populateBugsDB(PrintWriter print_writer,String viz_scene, Bugs bug ,Match match, String session_selected_broadcaster)
+	{
+		if (match == null) {
+			this.status = "ERROR: Match is null";
+		} else {
+			
+			if(bug.getText1() != null && bug.getText2() != null) {
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPlayerName01 " + bug.getText1().toUpperCase() +";");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$All$Lft_Grp$Data$Info1*CONTAINER SET ACTIVE 0;");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tInfo1B " + bug.getText2().toUpperCase() +";");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$All$Lft_Grp$Data$Info3*CONTAINER SET ACTIVE 0;");
+			}else if(bug.getText1() != null) {
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPlayerName01 " + bug.getText1().toUpperCase() +";");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$All$Lft_Grp$Data$Info1*CONTAINER SET ACTIVE 0;");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$All$Lft_Grp$Data$Info2*CONTAINER SET ACTIVE 0;");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$All$Lft_Grp$Data$Info3*CONTAINER SET ACTIVE 0;");
+			}else {
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPlayerName01 " + bug.getText2().toUpperCase() +";");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$All$Lft_Grp$Data$Info1*CONTAINER SET ACTIVE 0;");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$All$Lft_Grp$Data$Info2*CONTAINER SET ACTIVE 0;");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$All$Lft_Grp$Data$Info3*CONTAINER SET ACTIVE 0;");
+			}
+			
+			
+			
+			
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW ON;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT_PATH C:/Temp/Preview.bmp;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL SNAPSHOT 1920 1080;");
+			print_writer.println("LAYER1*EVEREST*GLOBAL PREVIEW OFF;");
+			
+			this.status = CricketUtil.SUCCESSFUL;	
+		}
+	}
+	
 	public void populateNameSuper(PrintWriter print_writer,String viz_scene, NameSuper ns ,Match match, String session_selected_broadcaster)
 	{
 		if (match == null) {
@@ -878,7 +881,7 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStatValue02 "+stats.getWickets() + ";");
 			if(stats.getBest_figures() == null) {
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStatsHead03 "+"Best Figures"+";");
-				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStatValue03 "+ " " +";");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStatValue03 "+ "-" +";");
 			}else {
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStatsHead03 "+"Best Figures"+";");
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStatValue03 "+stats.getBest_figures() +";");
@@ -923,7 +926,12 @@ public class Doad extends Scene{
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateHead2 " + "50s/100s" + ";");
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue2 " + stats.getFifties()+"/"+stats.getHundreds()+";");
 			}
-			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue3 " + stats.getBest_score() +";");
+			if(stats.getBest_score() == null) {
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue2 " + "-" + ";");
+			}else {
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue3 " + stats.getBest_score() +";");
+			}
+			
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$BigBandGrp$Data$5*CONTAINER SET ACTIVE 0;");
 			break;
 		case CricketUtil.BOWLER:
@@ -932,7 +940,7 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue1 "+stats.getWickets() + ";");
 			if(stats.getBest_figures() == null) {
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateHead2 "+"Best Figures"+";");
-				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue2 "+ " " +";");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue2 "+ "-" +";");
 			}else {
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateHead2 "+"Best Figures"+";");
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tStateValue2 "+stats.getBest_figures() +";");
@@ -1071,23 +1079,18 @@ public class Doad extends Scene{
 			for(Inning inn : match.getInning()) {
 				if (inn.getIsCurrentInning().toUpperCase().equalsIgnoreCase(CricketUtil.YES)) {
 					if(is_this_updating == false) {
-						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$TOPGRP$BatingScoreGrp*CONTAINER SET ACTIVE 1;");
-						print_writer.println("LAYER1*EVEREST*TREEVIEW*PowerPlay*CONTAINER SET ACTIVE 0;");
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET lgBatTeamLogo " + logo_path + inn.getBatting_team().getFullname() + CricketUtil.PNG_EXTENSION + ";");
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET lgBallTeamLogo " + logo_path + inn.getBowling_team().getFullname() + CricketUtil.PNG_EXTENSION + ";");
 					}
 					int cuEcoent_over = inn.getTotalOvers();
 				    if (inn.getTotalBalls() > 0) {
 				      cuEcoent_over += 1;
+				      System.out.println();
 				    }
-				    if((inn.getFirstPowerplayEndOver() >= cuEcoent_over)) {
-				    	
+				    if(inn.getFirstPowerplayEndOver() >= cuEcoent_over) {
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vPowerPlay_DL " + "1" + ";");
-				    	print_writer.println("LAYER1*EVEREST*TREEVIEW*Powerplay*CONTAINER SET ACTIVE 1;");
-				    	print_writer.println("LAYER1*EVEREST*TREEVIEW*DL_Powerplay*CONTAINER SET ACTIVE 0;");
 				    }
 				    else {
-				    	
 				    	print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vPowerPlay_DL " + "0" + ";");
 				    }
 					print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tBatTeamName " + inn.getBatting_team().getShortname().toUpperCase() + ";");
@@ -1366,6 +1369,8 @@ public class Doad extends Scene{
 				}
 				else{
 					print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tNeedRun " + CricketFunctions.getRequiredRuns(match) + ";");
+					print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tNeedRun " + CricketFunctions.getRequiredRuns(match) + ";");
+					print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tNeedRun " + CricketFunctions.getRequiredRuns(match) + ";");
 					print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tNeedBall " + CricketFunctions.getRequiredBalls(match) + ";");
 				}
 				break;
@@ -1387,7 +1392,6 @@ public class Doad extends Scene{
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tCompHead " + "AT THIS STAGE :" + ";");
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tBallTeamName " + match.getInning().get(0).getBatting_team().getFullname().toUpperCase() + ";");
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tBallTeamScore " + CricketFunctions.compareInningData(match,"/", 1 , match.getEvents()) + ";");
-						//System.out.println("Compare1 = " + compareInningData(match,"/", 1 , match.getEvents()));
 					}
 				}
 				break;
@@ -1441,7 +1445,6 @@ public class Doad extends Scene{
 							print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vSection4Selection " + "4" + ";");
 							print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vSection5Selection " + "4" + ";");
 							print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET vSection6Selection " + "1" + ";");
-							
 						}
 						print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tPartnershiplPlayer1Runs " + 
 								inn.getPartnerships().get(inn.getPartnerships().size() - 1).getFirstBatterRuns() + ";");
@@ -1471,7 +1474,6 @@ public class Doad extends Scene{
 			    for (int i = 0; i < projectedScore(match).size(); i++) {
 			    	proj_score_rate[i] = projectedScore(match).get(i);
 		        }
-			    
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tProjectedHead1 " + "@" + proj_score_rate[0] +" (CRR)" + ";");
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tProjectedValue1 " + proj_score_rate[1] + ";");
 				print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tProjectedHead2 " + "@" + proj_score_rate[2] + " (RPO)"+ ";");
@@ -1481,9 +1483,7 @@ public class Doad extends Scene{
 				break;	
 			}
 			break;
-		
 		}
-		
 	}
 	public void populateMatchId(PrintWriter print_writer,String viz_scene, Match match, String session_selected_broadcaster)
 	{
@@ -1520,8 +1520,6 @@ public class Doad extends Scene{
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET lgHomeTeamLogo " + logo_path + match.getHomeTeam().getFullname().toUpperCase() + CricketUtil.PNG_EXTENSION + ";");
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET lgAwayTeamLogo " + logo_path + match.getAwayTeam().getFullname().toUpperCase() + CricketUtil.PNG_EXTENSION + ";");
 			
-			//System.out.println("Home Team -" + match.getHomeTeam().getFullname().toUpperCase());
-			//System.out.println("Away Team -" + match.getAwayTeam().getFullname().toUpperCase());
 			
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main$Data$HomeTeamName$FirstNAme*CONTAINER SET ACTIVE 0;");
 			print_writer.println("LAYER1*EVEREST*TREEVIEW*Main*FUNCTION*TAG_CONTROL SET tHomeTeamLastName " + match.getHomeTeam().getShortname() + ";");
@@ -1957,9 +1955,9 @@ public class Doad extends Scene{
 		String PS_1 = "",PS_2 = "",RR_1 = "",RR_2 = "",CRR = "";
 		//DecimalFormat df = new DecimalFormat("0.00");
 		
-		int remaining_overs = (match.getMaxOvers()*6 - (match.getInning().get(0).getTotalOvers()*6 + match.getInning().get(0).getTotalBalls()));
+		int remaining_balls = (match.getMaxOvers()*6 - (match.getInning().get(0).getTotalOvers()*6 + match.getInning().get(0).getTotalBalls()));
 		
-		PS_Curr = (int) ((match.getInning().get(0).getTotalRuns() + remaining_overs * Double.valueOf((match.getInning().get(0).getRunRate())))/6);
+		PS_Curr = (int) ((match.getInning().get(0).getTotalRuns() + (remaining_balls * Double.valueOf(match.getInning().get(0).getRunRate())))/6);
 		CRR = match.getInning().get(0).getRunRate();
 		
 		proj_score.add(CRR);
@@ -1971,14 +1969,14 @@ public class Doad extends Scene{
 	  
 		for(int i=2;i<=4;i=i+2) {
 			if(i==2) {
-				PS_1 = String.valueOf(((match.getInning().get(0).getTotalRuns()) + remaining_overs * (intArr[0] + i))/6);
+				PS_1 = String.valueOf(((match.getInning().get(0).getTotalRuns()) + (remaining_balls * (intArr[0] + i)))/6);
 				RR_1 = String.valueOf((intArr[0] + i));
 				
 				proj_score.add(RR_1);
 				proj_score.add(PS_1);
 			}
 			else if(i==4) {
-				PS_2 = String.valueOf(((match.getInning().get(0).getTotalRuns()) + remaining_overs * (intArr[0] + i))/6);
+				PS_2 = String.valueOf(((match.getInning().get(0).getTotalRuns()) + (remaining_balls * (intArr[0] + i)))/6);
 				RR_2 = String.valueOf((intArr[0] + i));
 				
 				proj_score.add(RR_2);

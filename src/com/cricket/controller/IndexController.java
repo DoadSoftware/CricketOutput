@@ -29,11 +29,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cricket.broadcaster.Doad;
 import com.cricket.containers.Configurations;
 import com.cricket.model.NameSuper;
-//import com.cricket.containers.Configurations;
 import com.cricket.containers.Scene;
 import com.cricket.model.BattingCard;
 import com.cricket.model.BowlingCard;
-import com.cricket.model.Event;
+import com.cricket.model.Bugs;
 import com.cricket.model.EventFile;
 import com.cricket.model.InfobarStats;
 import com.cricket.model.Inning;
@@ -63,6 +62,8 @@ public class IndexController
 	List<NameSuper> namesuper = new ArrayList<NameSuper>();
 	
 	List<InfobarStats> infobarstats = new ArrayList<InfobarStats>();
+	
+	List<Bugs> bugs = new ArrayList<Bugs>();
 	
 	BowlingCard last_infobar_bowler;
 	int whichInning,player_id,team_id,session_port;
@@ -191,6 +192,10 @@ public class IndexController
 		case "PROMPT_GRAPHICS-OPTIONS":
 			infobarstats = cricketService.getInfobarStats();
 			return JSONArray.fromObject(infobarstats).toString();
+		
+		case "BUG_DB_GRAPHICS-OPTIONS":
+			bugs = cricketService.getBugs();
+			return JSONArray.fromObject(bugs).toString();
 			
 		case "READ-MATCH-AND-POPULATE":
 			
@@ -233,6 +238,7 @@ public class IndexController
 		case "POPULATE-FF-LEADERBOARD": case "POPULATE-INFOBAR-BOTTOMLEFT": case "POPULATE-INFOBAR-BOTTOMRIGHT": case "POPULATE-INFOBAR-BOTTOM": case "POPULATE-FF-MATCHID": case "POPULATE-FF-PLAYINGXI": 
 		case "POPULATE-L3-PROJECTED": case "POPULATE-L3-TARGET": case "POPULATE-L3-TEAMSUMMARY": case "POPULATE-L3-PLAYERSUMMARY": case "POPULATE-L3-PLAYERPROFILE": case "POPULATE-L3-FALLOFWICKET": 
 		case "POPULATE-L3-COMPARISION": case "POPULATE-INFOBAR-PROMPT": case "POPULATE-LT-MATCHID": case "POPULATE-L3-BOWLERSTATS": case "POPULATE-L3-BUG-DISMISSAL": case "POPULATE-L3-SPLIT":
+		case "POPULATE-L3-BUG-DB":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			
 			case "DOAD_IN_HOUSE_VIZ":
@@ -257,8 +263,7 @@ public class IndexController
 				case "POPULATE-FF-BOWLINGCARD":
 					whichInning = Integer.valueOf(valueToProcess.split(",")[1]);
 					
-					this_doad.populateBowlingcard(print_writer, viz_scene_path, whichInning, 
-							session_match, session_selected_broadcaster);
+					this_doad.populateBowlingcard(print_writer, viz_scene_path, false, whichInning, session_match, session_selected_broadcaster);
 					break;
 				case "POPULATE-FF-PARTNERSHIP":
 					whichInning = Integer.valueOf(valueToProcess.split(",")[1]);
@@ -301,6 +306,15 @@ public class IndexController
 					
 					this_doad.populateBowlerstats(print_writer, viz_scene_path,whichInning, stats_type, player_id, session_match, session_selected_broadcaster);
 					break;
+				case "POPULATE-L3-BUG-DB":
+					for(Bugs bug : bugs) {
+						  player_id = Integer.valueOf(valueToProcess.split(",")[1]);
+						  
+						  if(bug.getBugId() == player_id) {
+							  this_doad.populateBugsDB(print_writer, viz_scene_path, bug, session_match, session_selected_broadcaster);
+						  }
+						}
+						break;
 				case "POPULATE-L3-NAMESUPER":
 					for(NameSuper ns : namesuper) {
 					  player_id = Integer.valueOf(valueToProcess.split(",")[1]);
@@ -467,7 +481,7 @@ public class IndexController
 		case "ANIMATE-IN-BATSMANSTATS":	case "ANIMATE-IN-NAMESUPER": case "ANIMATE-IN-NAMESUPER-PLAYER": case "ANIMATE-IN-PLAYERPROFILE": case "ANIMATE-IN-DOUBLETEAMS": case "ANIMATE-IN-INFOBAR":  
 		case "ANIMATE-IN-MATCHID": case "ANIMATE-IN-PLAYINGXI": case "ANIMATE-IN-LEADERBOARD": case "ANIMATE-IN-PROJECTED": case "ANIMATE-IN-TARGET": case "ANIMATE-IN-TEAMSUMMARY":
 		case "ANIMATE-IN-PLAYERSUMMARY": case "ANIMATE-IN-L3PLAYERPROFILE": case "ANIMATE-IN-FALLOFWICKET": case "ANIMATE-IN-COMPARISION": case "ANIMATE-IN-L3MATCHID": 
-		case "ANIMATE-IN-BOWLERSTATS": case "ANIMATE-IN-SPLIT": case "ANIMATE-OUT":
+		case "ANIMATE-IN-BOWLERSTATS": case "ANIMATE-IN-SPLIT": case "ANIMATE-IN-BUG-DB": case "ANIMATE-OUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
 			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
 				switch (whatToProcess.toUpperCase()) {
@@ -502,6 +516,10 @@ public class IndexController
 				case "ANIMATE-IN-BOWLERSTATS":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
 					which_graphics_onscreen = "BOWLERSTATS";
+					break;
+				case "ANIMATE-IN-BUG-DB":
+					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
+					which_graphics_onscreen = "BUG-DB";
 					break;
 				case "ANIMATE-IN-NAMESUPER":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
@@ -608,6 +626,10 @@ public class IndexController
 						which_graphics_onscreen = "";
 						break;
 					case "BOWLERSTATS":
+						this_doad.processAnimation(print_writer, "Out", "START", session_selected_broadcaster);
+						which_graphics_onscreen = "";
+						break;
+					case "BUG-DB":
 						this_doad.processAnimation(print_writer, "Out", "START", session_selected_broadcaster);
 						which_graphics_onscreen = "";
 						break;
