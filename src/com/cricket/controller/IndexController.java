@@ -60,10 +60,9 @@ public class IndexController
 	List<BattingCard> last_infobar_batsman;
 	List<Match> tournament_matches = new ArrayList<Match>();
 	List<NameSuper> namesuper = new ArrayList<NameSuper>();
-	
 	List<InfobarStats> infobarstats = new ArrayList<InfobarStats>();
-	
 	List<Bugs> bugs = new ArrayList<Bugs>();
+	List<Statistics> session_statistics = new ArrayList<Statistics>();
 	
 	BowlingCard last_infobar_bowler;
 	int whichInning,player_id,team_id,session_port;
@@ -139,6 +138,7 @@ public class IndexController
 		print_writer = new PrintWriter(session_socket.getOutputStream(), true);
 		
 		session_Configurations = new Configurations(selectedMatch, select_broadcaster, select_sponsors, vizIPAddresss, vizPortNumber, vizScene);
+		
 		File files[] = new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY).listFiles(new FileFilter() {
 			@Override
 		    public boolean accept(File pathname) {
@@ -146,10 +146,12 @@ public class IndexController
 		        return name.endsWith(".xml") && pathname.isFile();
 		    }
 		});
+		
 		for(File file : files) {
-			if(file.getName() != selectedMatch) {
+			if(!file.getName().equals(selectedMatch)) {
 				tournament_matches.add(CricketFunctions.populateMatchVariables(cricketService, (Match) JAXBContext.newInstance(Match.class).createUnmarshaller().unmarshal(
 						new File(CricketUtil.CRICKET_DIRECTORY + CricketUtil.MATCHES_DIRECTORY + file.getName()))));
+				
 			}
 		}
 		
@@ -242,6 +244,12 @@ public class IndexController
 			switch (session_selected_broadcaster.toUpperCase()) {
 			
 			case "DOAD_IN_HOUSE_VIZ":
+				switch (whatToProcess.toUpperCase()) {
+				case "POPULATE-FF-SCORECARD":
+					whichInning = Integer.valueOf(valueToProcess);
+					this_doad.populateScorecard(print_writer, viz_scene_path, whichInning, session_match, session_selected_broadcaster);
+					break;
+				}
 				break;
 				
 			case "DOAD_IN_HOUSE_EVEREST":
@@ -333,17 +341,20 @@ public class IndexController
 					break;
 					
 				case "POPULATE-FF-PLAYERPROFILE":
+					session_statistics = cricketService.getAllStats();
 					player_id = Integer.valueOf(valueToProcess.split(",")[1]);
 					stats_type = valueToProcess.split(",")[2];
 					type_of_profile = valueToProcess.split(",")[3];
 					
-					for(Statistics stats : cricketService.getPlayerStatistics(player_id)) {
-						stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
-						stats = updateTournamentDataWithStats(stats, type_of_profile);
-						//stats = updateStatisticsWithMatchData(stats, session_match, type_of_profile);
-						if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(stats_type)) {
-							this_doad.populatePlayerProfile(print_writer,viz_scene_path,player_id,
-									stats_type,type_of_profile,stats,session_match, session_selected_broadcaster);
+					for(Statistics stats : session_statistics) {
+						if(stats.getPlayer_id() == player_id) {
+							stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
+							stats = updateTournamentDataWithStats(stats, type_of_profile);
+							stats = updateStatisticsWithMatchData(stats, session_match, type_of_profile);
+							if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(stats_type)) {
+								this_doad.populatePlayerProfile(print_writer,viz_scene_path,player_id,
+										stats_type,type_of_profile,stats,session_match, session_selected_broadcaster);
+							}
 						}
 					}
 					break;
@@ -447,18 +458,21 @@ public class IndexController
 							session_match, session_selected_broadcaster);
 					break;
 				case "POPULATE-L3-PLAYERPROFILE":
+					session_statistics = cricketService.getAllStats();
 					player_id = Integer.valueOf(valueToProcess.split(",")[1]);
 					stats_type = valueToProcess.split(",")[2];
 					type_of_profile = valueToProcess.split(",")[3];
 					
-					for(Statistics stats : cricketService.getPlayerStatistics(player_id)) {
-						stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
-						stats = updateTournamentDataWithStats(stats, type_of_profile);
-						//stats = updateStatisticsWithMatchData(stats, session_match, type_of_profile);
-						
-						if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(stats_type)) {
-							this_doad.populateLTPlayerProfile(print_writer,viz_scene_path,
-									stats_type,type_of_profile,stats,session_match, session_selected_broadcaster);
+					for(Statistics stats : session_statistics) {
+						if(stats.getPlayer_id() == player_id) {
+							stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
+							stats = updateTournamentDataWithStats(stats, type_of_profile);
+							stats = updateStatisticsWithMatchData(stats, session_match, type_of_profile);
+							
+							if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(stats_type)) {
+								this_doad.populateLTPlayerProfile(print_writer,viz_scene_path,
+										stats_type,type_of_profile,stats,session_match, session_selected_broadcaster);
+							}
 						}
 					}
 					break;
@@ -483,7 +497,27 @@ public class IndexController
 		case "ANIMATE-IN-PLAYERSUMMARY": case "ANIMATE-IN-L3PLAYERPROFILE": case "ANIMATE-IN-FALLOFWICKET": case "ANIMATE-IN-COMPARISION": case "ANIMATE-IN-L3MATCHID": 
 		case "ANIMATE-IN-BOWLERSTATS": case "ANIMATE-IN-SPLIT": case "ANIMATE-IN-BUG-DB": case "ANIMATE-OUT":
 			switch (session_selected_broadcaster.toUpperCase()) {
-			case "DOAD_IN_HOUSE_EVEREST": case "DOAD_IN_HOUSE_VIZ":
+			case "DOAD_IN_HOUSE_VIZ":
+			case "ANIMATE-IN-SCORECARD":
+				this_doad.AnimateInGraphics(new PrintWriter(session_socket.getOutputStream(), true), "SCORECARD");
+				if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+					which_graphics_onscreen = "BATBALLSUMMARY_SCORECARD";
+				}
+				break;
+				
+			case "ANIMATE-OUT":
+				switch(which_graphics_onscreen) {
+				case "BATBALLSUMMARY_SCORECARD":
+					this_doad.AnimateOutGraphics(new PrintWriter(session_socket.getOutputStream(), true), "BATBALLSUMMARY_SCORECARD");
+					if(this_doad.getStatus().equalsIgnoreCase(CricketUtil.SUCCESSFUL)) {
+						which_graphics_onscreen = "";
+					}
+					break;
+				}
+				break;
+			
+			
+			case "DOAD_IN_HOUSE_EVEREST": 
 				switch (whatToProcess.toUpperCase()) {
 				case "ANIMATE-IN-SCORECARD":
 					this_doad.processAnimation(print_writer, "In", "START", session_selected_broadcaster);
@@ -699,6 +733,8 @@ public class IndexController
 						break;
 					}
 					break;
+					
+				
 				}
 				return JSONObject.fromObject(this_doad).toString();
 			}
@@ -726,7 +762,9 @@ public class IndexController
 								if(bc.getBatsmanInningStarted() == CricketUtil.YES) {
 									stat.setInnings(stat.getInnings() + 1);
 								}
+								
 								stat.setRuns(stat.getRuns() + bc.getRuns());
+								
 								if(bc.getRuns() < 100 && bc.getRuns() >= 50) {
 									stat.setFifties(stat.getFifties() + 1);
 								}else if(bc.getRuns() >= 100){
@@ -757,28 +795,25 @@ public class IndexController
 		return stat;
 	}
 	
-	/*public Statistics updateStatisticsWithMatchData(Statistics stat, Match match, String typeOfProfile)
+	public Statistics updateStatisticsWithMatchData(Statistics stat, Match match, String typeOfProfile)
 	{
 		boolean player_found = false;
 		
 		player_found = false;
-		System.out.println(stat.getStats_type().getStats_short_name() +"-"+  match.getMatchType());
+		
 		if(stat.getStats_type().getStats_short_name().equalsIgnoreCase(match.getMatchType())) {
 			for(Inning inn : match.getInning())
 			{
-				System.out.println("Type of profile" + typeOfProfile);
 				switch(typeOfProfile.toUpperCase()) {
 				case CricketUtil.BATSMAN:
 					for(BattingCard bc : inn.getBattingCard()) {
 						if(bc.getPlayerId() == stat.getPlayer_id()) {
-							System.out.println("Stat PLayer- true" + stat.getPlayer_id());
 							player_found = true;
 							if(bc.getBatsmanInningStarted() == CricketUtil.YES) {
 								stat.setInnings(stat.getInnings() + 1);
 							}
-							stat.setRuns(stat.getRuns());
-							//stat.setRuns(stat.getRuns() + bc.getRuns());
-							System.out.println("Statistics Runs-" + stat.getRuns());
+							stat.setRuns(stat.getRuns() + bc.getRuns());
+							
 							if(bc.getRuns() < 100 && bc.getRuns() >= 50) {
 								stat.setFifties(stat.getFifties() + 1);
 							}else if(bc.getRuns() >= 100){
@@ -802,11 +837,10 @@ public class IndexController
 			}
 		}
 		if(player_found == true){
-			stat.setMatches(stat.getMatches());
-			System.out.println("Statistics match-" + stat.getMatches());
+			stat.setMatches(stat.getMatches() + 1);
 		}
 		return stat;
-	}*/
+	}
 	
 
 }

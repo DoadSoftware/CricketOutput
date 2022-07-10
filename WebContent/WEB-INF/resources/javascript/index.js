@@ -253,7 +253,8 @@ function processUserSelection(whichInput)
 		switch ($('#select_broadcaster :selected').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_VIZ':
 			$('#vizPortNumber').attr('value','6100');
-			$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
+			$('#vizScene').attr('value','/Default/APL/BatBallSummary');
+			//$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Lt_HowOut');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/TeamLineUpSingles');
@@ -324,8 +325,11 @@ function processCricketProcedures(whatToProcess)
 		break;
 	case 'POPULATE-FF-SCORECARD': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': 
 			valueToProcess = $('#battingScene').val() + ',' + $('#selectInning option:selected').val() ;
+			break;
+		case 'DOAD_IN_HOUSE_VIZ':
+			valueToProcess = $('#selectInning option:selected').val();
 			break;	
 		}
 		break;
@@ -990,7 +994,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': 
 
 			$('#select_graphic_options_div').empty();
 	
@@ -1220,17 +1224,26 @@ function addItemsToList(whatToProcess, dataToProcess)
 		    
 			switch (whatToProcess) {
 			case 'SCORECARD-OPTIONS':
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'battingScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Batting_Card.sum';
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+				case 'DOAD_IN_HOUSE_EVEREST':
+					select = document.createElement('input');
+					select.type = "text";
+					select.id = 'battingScene';
+					select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Batting_Card.sum';
+					
+					row.insertCell(cellCount).appendChild(select);
+					cellCount = cellCount + 1;
+					 
+				    option.name = 'populate_scorecard_btn';
+				    option.value = 'Populate Scorecard';
+					break;
 				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				 
-			    option.name = 'populate_scorecard_btn';
-			    option.value = 'Populate Scorecard';
-				break;
+				case 'DOAD_IN_HOUSE_VIZ':
+					option.name = 'populate_scorecard_btn';
+				    option.value = 'Populate Scorecard';
+					break;
+				}
+				
 			case'BOWLINGCARD-OPTIONS':
 				select = document.createElement('input');
 				select.type = "text";
@@ -1314,6 +1327,72 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case 'SPLIT-OPTIONS':
 				option.name = 'populate_split_btn';
 			    option.value = 'Populate 30-50 Split';
+				break;
+			}
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		
+		case 'DOAD_IN_HOUSE_VIZ':
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+
+			select = document.createElement('select');
+			select.id = 'selectInning';
+			select.name = select.id;
+			
+			if(document.getElementById('selected_match_max_overs').value > 0) {
+				max_cols = 2;
+			} else {
+				max_cols = 4;
+			}
+			for(var i=1; i<=max_cols; i++) {
+				option = document.createElement('option');
+				option.value = i;
+			    option.text = 'Inning ' + i;
+			    select.appendChild(option);
+			}
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			option = document.createElement('input');
+		    option.type = 'button';
+		    
+			switch (whatToProcess) {
+			case 'SCORECARD-OPTIONS': 
+			    option.name = 'populate_scorecard_btn';
+			    option.value = 'Populate Scorecard';
 				break;
 			}
 		    option.id = option.name;
