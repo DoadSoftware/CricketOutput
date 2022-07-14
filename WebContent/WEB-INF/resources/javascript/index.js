@@ -13,11 +13,40 @@ function processWaitingButtonSpinner(whatToProcess)
 	}
 	
 }
-function initialisePage(whatToProcess)
+function initialiseForm(whatToProcess,dataToProcess)
 {
 	switch (whatToProcess) {
 	case 'initialise':
 		processUserSelection($('#select_broadcaster'));
+		break;
+	case 'UPDATE-MATCH-ON-OUTPUT-FORM':
+	//dataToProcess.inning.forEach(function(inn,index,arr){
+	//	$('label[id=inning_totalruns_lbl], input#inning_totalruns_lbl').val(inn.totalRuns);
+		//inn.totalRuns;
+		//inn.totalOvers;
+		//$("label['Total Runs:']").val(inn.totalRuns);
+		//$('#captions_div').
+		
+		//alert(inn.totalRuns);
+			/*inn.battingCard.forEach(function(bc,bc_index,bc_arr){
+	            $('#selectPlayers').append(
+					$(document.createElement('option')).prop({
+	                value: bc.playerId,
+	                text: bc.player.full_name
+	            }))					
+			});
+					inn.bowlingCard.forEach(function(boc,boc_index,boc_arr){
+			            $('#selectPlayers').append(
+							$(document.createElement('option')).prop({
+			                value: boc.playerId,
+			                text: boc.player.full_name
+			            }))
+			            						
+					});*/
+		//});
+		//alert(dataToProcess.inning.totalRuns.val());
+		//dataToProcess.inning.totalRuns;
+		
 		break;
 	}
 }
@@ -37,6 +66,9 @@ function processUserSelection(whichInput)
 		if(confirm('It will Also Delete Your Preview from Directory...\r\n \r\nAre You Sure To Animate Out? ') == true){
 			processCricketProcedures('ANIMATE-OUT');	
 		}
+		break;
+	case 'clearall_graphic_btn':
+		processCricketProcedures('CLEAR-ALL');
 		break;
 	case 'scorecard_graphic_btn': case 'bowlingcard_graphic_btn': case 'partnership_graphic_btn': case 'matchsummary_graphic_btn': case 'bug_graphic_btn': case 'howout_graphic_btn':
 	case 'batsmanstats_graphic_btn': case 'bowlerstats_graphic_btn': case 'namesuper_graphic_btn': case 'namesuper_player_graphic_btn':  case 'playerprofile_graphic_btn': case 'doubleteams_graphic_btn': 
@@ -253,7 +285,7 @@ function processUserSelection(whichInput)
 		switch ($('#select_broadcaster :selected').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_VIZ':
 			$('#vizPortNumber').attr('value','6100');
-			$('#vizScene').attr('value','/Default/APL/BatBallSummary');
+			$('#vizScene').attr('value','/Default/AbuDhabiT10/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Lt_HowOut');
@@ -338,6 +370,9 @@ function processCricketProcedures(whatToProcess)
 		case 'DOAD_IN_HOUSE_EVEREST':
 			valueToProcess = $('#bowlingScene').val() + ',' + $('#selectInning option:selected').val() ;
 			break;	
+		case 'DOAD_IN_HOUSE_VIZ':
+			valueToProcess = $('#selectInning option:selected').val();
+			break;
 		}
 		break;
 	case 'POPULATE-FF-PARTNERSHIP':
@@ -351,6 +386,9 @@ function processCricketProcedures(whatToProcess)
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
 			valueToProcess = $('#summaryScene').val() + ',' + $('#selectInning option:selected').val() ;
+			break;
+		case 'DOAD_IN_HOUSE_VIZ':
+			valueToProcess = $('#selectInning option:selected').val();
 			break;	
 		}
 		break;
@@ -528,7 +566,7 @@ function processCricketProcedures(whatToProcess)
 	case 'POPULATE-L3-SPLIT':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
-			valueToProcess = $('#splitScene').val() + ',' + $('#selectInning option:selected').val() ;
+			valueToProcess = $('#splitScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectSplitValue option:selected').val() ;
 			break;
 		}
 		break;
@@ -554,11 +592,15 @@ function processCricketProcedures(whatToProcess)
         data : 'whatToProcess=' + whatToProcess + '&valueToProcess=' + valueToProcess, 
         dataType : 'json',
         success : function(data) {
+			
         	switch(whatToProcess) {
 			case 'READ-MATCH-AND-POPULATE':
 				if(data){
+					//alert("match = " + $('#matchFileTimeStamp').val() + "Data = "+ data.matchFileTimeStamp)
 					if($('#matchFileTimeStamp').val() != data.matchFileTimeStamp) {
 						document.getElementById('matchFileTimeStamp').value = data.matchFileTimeStamp;
+						initialiseForm("UPDATE-MATCH-ON-OUTPUT-FORM",data);
+						
 					}
 				}
 				break;
@@ -994,7 +1036,8 @@ function addItemsToList(whatToProcess, dataToProcess)
 	
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST': 
+		
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 
 			$('#select_graphic_options_div').empty();
 	
@@ -1210,6 +1253,26 @@ function addItemsToList(whatToProcess, dataToProcess)
 					cellCount = cellCount + 1;
 					break;
 				case 'SPLIT-OPTIONS':
+
+					select = document.createElement('select');
+					select.id = 'selectSplitValue';
+					select.name = select.id;
+					
+					option = document.createElement('option');
+					option.value = '30';
+					option.text = '30 Split';
+					select.appendChild(option);
+					
+					option = document.createElement('option');
+					option.value = '50';
+					option.text = '50 Split';
+					select.appendChild(option);
+					
+				    select.setAttribute('onchange',"processUserSelection(this)");
+					row.insertCell(cellCount).appendChild(select);
+					
+					cellCount = cellCount + 1;
+				
 					select = document.createElement('input');
 					select.type = "text";
 					select.id = 'splitScene';
@@ -1225,7 +1288,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			switch (whatToProcess) {
 			case 'SCORECARD-OPTIONS':
 				switch ($('#selected_broadcaster').val().toUpperCase()) {
-				case 'DOAD_IN_HOUSE_EVEREST':
+				case 'DOAD_IN_HOUSE_EVEREST': 
 					select = document.createElement('input');
 					select.type = "text";
 					select.id = 'battingScene';
@@ -1236,26 +1299,39 @@ function addItemsToList(whatToProcess, dataToProcess)
 					 
 				    option.name = 'populate_scorecard_btn';
 				    option.value = 'Populate Scorecard';
+				    
+				    break;
+			    
+			    case 'DOAD_IN_HOUSE_VIZ':
+			    	option.name = 'populate_scorecard_btn';
+				    option.value = 'Populate Scorecard';
+				    break;
+				}	
+				break;
+				
+			case'BOWLINGCARD-OPTIONS':
+				
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+				case 'DOAD_IN_HOUSE_EVEREST': 
+					select = document.createElement('input');
+					select.type = "text";
+					select.id = 'bowlingScene';
+					select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/BowlingCard.sum';
+					
+					row.insertCell(cellCount).appendChild(select);
+					cellCount = cellCount + 1;
+					
+				    option.name = 'populate_bowlingcard_btn';
+				    option.value = 'Populate Bowlingcard';
 					break;
 				
 				case 'DOAD_IN_HOUSE_VIZ':
-					option.name = 'populate_scorecard_btn';
-				    option.value = 'Populate Scorecard';
-					break;
-				}
-				
-			case'BOWLINGCARD-OPTIONS':
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'bowlingScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/BowlingCard.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-			    option.name = 'populate_bowlingcard_btn';
-			    option.value = 'Populate Bowlingcard';
+			    	option.name = 'populate_bowlingcard_btn';
+				    option.value = 'Populate Bowlingcard';
+				    break;
+				}		    
 				break;
+				
 			case'PARTNERSHIP-OPTIONS':
 				select = document.createElement('input');
 				select.type = "text";
@@ -1268,18 +1344,29 @@ function addItemsToList(whatToProcess, dataToProcess)
 			    option.name = 'populate_partnership_btn';
 			    option.value = 'Populate Partnership';
 				break;
+				
 			case'MATCHSUMMARY-OPTIONS':
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'summaryScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/Mumbai_Indians/Everes_Scenes/Scenes/MI_Summary.sum';
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+				case 'DOAD_IN_HOUSE_EVEREST':
+					select = document.createElement('input');
+					select.type = "text";
+					select.id = 'summaryScene';
+					select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/Mumbai_Indians/Everes_Scenes/Scenes/MI_Summary.sum';
+					
+					row.insertCell(cellCount).appendChild(select);
+					cellCount = cellCount + 1;
+					
+				    option.name = 'populate_matchsummary_btn';
+				    option.value = 'Populate Matchsummary';
+				   	break;
 				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-			    option.name = 'populate_matchsummary_btn';
-			    option.value = 'Populate Matchsummary';
+				case 'DOAD_IN_HOUSE_VIZ':
+			    	option.name = 'populate_matchsummary_btn';
+				    option.value = 'Populate Matchsummary';
+				    break;
+				}
 				break;
+				
 			case'TEAMSUMMARY-OPTIONS':
 				select = document.createElement('input');
 				select.type = "text";
@@ -1327,72 +1414,6 @@ function addItemsToList(whatToProcess, dataToProcess)
 			case 'SPLIT-OPTIONS':
 				option.name = 'populate_split_btn';
 			    option.value = 'Populate 30-50 Split';
-				break;
-			}
-		    option.id = option.name;
-		    option.setAttribute('onclick',"processUserSelection(this)");
-		    
-		    div = document.createElement('div');
-		    div.append(option);
-
-			option = document.createElement('input');
-			option.type = 'button';
-			option.name = 'cancel_graphics_btn';
-			option.id = option.name;
-			option.value = 'Cancel';
-			option.setAttribute('onclick','processUserSelection(this)');
-	
-		    div.append(option);
-		    
-		    row.insertCell(cellCount).appendChild(div);
-		    cellCount = cellCount + 1;
-		    
-			document.getElementById('select_graphic_options_div').style.display = '';
-
-			break;
-		
-		case 'DOAD_IN_HOUSE_VIZ':
-			$('#select_graphic_options_div').empty();
-	
-			header_text = document.createElement('h6');
-			header_text.innerHTML = 'Select Graphic Options';
-			document.getElementById('select_graphic_options_div').appendChild(header_text);
-			
-			table = document.createElement('table');
-			table.setAttribute('class', 'table table-bordered');
-					
-			tbody = document.createElement('tbody');
-	
-			table.appendChild(tbody);
-			document.getElementById('select_graphic_options_div').appendChild(table);
-			
-			row = tbody.insertRow(tbody.rows.length);
-
-			select = document.createElement('select');
-			select.id = 'selectInning';
-			select.name = select.id;
-			
-			if(document.getElementById('selected_match_max_overs').value > 0) {
-				max_cols = 2;
-			} else {
-				max_cols = 4;
-			}
-			for(var i=1; i<=max_cols; i++) {
-				option = document.createElement('option');
-				option.value = i;
-			    option.text = 'Inning ' + i;
-			    select.appendChild(option);
-			}
-			row.insertCell(cellCount).appendChild(select);
-			cellCount = cellCount + 1;
-			
-			option = document.createElement('input');
-		    option.type = 'button';
-		    
-			switch (whatToProcess) {
-			case 'SCORECARD-OPTIONS': 
-			    option.name = 'populate_scorecard_btn';
-			    option.value = 'Populate Scorecard';
 				break;
 			}
 		    option.id = option.name;
