@@ -599,7 +599,7 @@ function processCricketProcedures(whatToProcess)
 					//alert("match = " + $('#matchFileTimeStamp').val() + "Data = "+ data.matchFileTimeStamp)
 					if($('#matchFileTimeStamp').val() != data.matchFileTimeStamp) {
 						document.getElementById('matchFileTimeStamp').value = data.matchFileTimeStamp;
-						initialiseForm("UPDATE-MATCH-ON-OUTPUT-FORM",data);
+						//initialiseForm("UPDATE-MATCH-ON-OUTPUT-FORM",data);
 						
 					}
 				}
