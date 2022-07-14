@@ -60,10 +60,9 @@ public class IndexController
 	List<BattingCard> last_infobar_batsman;
 	List<Match> tournament_matches = new ArrayList<Match>();
 	List<NameSuper> namesuper = new ArrayList<NameSuper>();
-	
 	List<InfobarStats> infobarstats = new ArrayList<InfobarStats>();
-	
 	List<Bugs> bugs = new ArrayList<Bugs>();
+	List<Statistics> session_statistics = new ArrayList<Statistics>();
 	
 	BowlingCard last_infobar_bowler;
 	int whichInning,player_id,team_id,session_port;
@@ -352,17 +351,20 @@ public class IndexController
 					break;
 					
 				case "POPULATE-FF-PLAYERPROFILE":
+					session_statistics = cricketService.getAllStats();
 					player_id = Integer.valueOf(valueToProcess.split(",")[1]);
 					stats_type = valueToProcess.split(",")[2];
 					type_of_profile = valueToProcess.split(",")[3];
 					
-					for(Statistics stats : cricketService.getPlayerStatistics(player_id)) {
-						stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
-						stats = updateTournamentDataWithStats(stats, type_of_profile);
-						stats = updateStatisticsWithMatchData(stats, session_match, type_of_profile);
-						if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(stats_type)) {
-							this_doad.populatePlayerProfile(print_writer,viz_scene_path,player_id,
-									stats_type,type_of_profile,stats,session_match, session_selected_broadcaster);
+					for(Statistics stats : session_statistics) {
+						if(stats.getPlayer_id() == player_id) {
+							stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
+							stats = updateTournamentDataWithStats(stats, type_of_profile);
+							stats = updateStatisticsWithMatchData(stats, session_match, type_of_profile);
+							if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(stats_type)) {
+								this_doad.populatePlayerProfile(print_writer,viz_scene_path,player_id,
+										stats_type,type_of_profile,stats,session_match, session_selected_broadcaster);
+							}
 						}
 					}
 					break;
@@ -466,18 +468,21 @@ public class IndexController
 							session_match, session_selected_broadcaster);
 					break;
 				case "POPULATE-L3-PLAYERPROFILE":
+					session_statistics = cricketService.getAllStats();
 					player_id = Integer.valueOf(valueToProcess.split(",")[1]);
 					stats_type = valueToProcess.split(",")[2];
 					type_of_profile = valueToProcess.split(",")[3];
 					
-					for(Statistics stats : cricketService.getPlayerStatistics(player_id)) {
-						stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
-						stats = updateTournamentDataWithStats(stats, type_of_profile);
-						stats = updateStatisticsWithMatchData(stats, session_match, type_of_profile);
-						
-						if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(stats_type)) {
-							this_doad.populateLTPlayerProfile(print_writer,viz_scene_path,
-									stats_type,type_of_profile,stats,session_match, session_selected_broadcaster);
+					for(Statistics stats : session_statistics) {
+						if(stats.getPlayer_id() == player_id) {
+							stats.setStats_type(cricketService.getStatsType(stats.getStats_type_id()));
+							stats = updateTournamentDataWithStats(stats, type_of_profile);
+							stats = updateStatisticsWithMatchData(stats, session_match, type_of_profile);
+							
+							if(stats.getStats_type().getStats_short_name().equalsIgnoreCase(stats_type)) {
+								this_doad.populateLTPlayerProfile(print_writer,viz_scene_path,
+										stats_type,type_of_profile,stats,session_match, session_selected_broadcaster);
+							}
 						}
 					}
 					break;
