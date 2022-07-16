@@ -285,7 +285,8 @@ function processUserSelection(whichInput)
 		switch ($('#select_broadcaster :selected').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_VIZ':
 			$('#vizPortNumber').attr('value','6100');
-			$('#vizScene').attr('value','/Default/AbuDhabiT10/BatBallSummary');
+			$('label[for=vizScene], input#vizScene').hide();
+			//$('#vizScene').attr('value','/Default/APL/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Lt_HowOut');
@@ -357,22 +358,16 @@ function processCricketProcedures(whatToProcess)
 		break;
 	case 'POPULATE-FF-SCORECARD': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST': 
+		case 'DOAD_IN_HOUSE_EVEREST':  case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#battingScene').val() + ',' + $('#selectInning option:selected').val() ;
-			break;
-		case 'DOAD_IN_HOUSE_VIZ':
-			valueToProcess = $('#selectInning option:selected').val();
 			break;	
 		}
 		break;
 	case 'POPULATE-FF-BOWLINGCARD': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#bowlingScene').val() + ',' + $('#selectInning option:selected').val() ;
 			break;	
-		case 'DOAD_IN_HOUSE_VIZ':
-			valueToProcess = $('#selectInning option:selected').val();
-			break;
 		}
 		break;
 	case 'POPULATE-FF-PARTNERSHIP':
@@ -384,31 +379,28 @@ function processCricketProcedures(whatToProcess)
 		break;
 	case 'POPULATE-FF-MATCHSUMMARY': 
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#summaryScene').val() + ',' + $('#selectInning option:selected').val() ;
 			break;
-		case 'DOAD_IN_HOUSE_VIZ':
-			valueToProcess = $('#selectInning option:selected').val();
-			break;	
 		}
 		break;
 	case 'POPULATE-L3-BUG-DISMISSAL':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#bugdismissalScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
 			break;
 		}
 		break;	
 	case 'POPULATE-L3-BUG':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#bugScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
 			break;
 		}
 		break;	
 	case 'POPULATE-L3-HOWOUT':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#howoutScene').val() + ',' + $('#selectInning option:selected').val() + ',' + $('#selectStatsType option:selected').val() + ',' + $('#selectPlayers option:selected').val() ;
 			break;
 		}
@@ -429,21 +421,21 @@ function processCricketProcedures(whatToProcess)
 		break;
 	case 'POPULATE-L3-BUG-DB':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#bugdbScene').val() + ',' + $('#selectBugdb option:selected').val() ;
 			break;
 		}
 		break;
 	case 'POPULATE-L3-NAMESUPER':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#namesuperScene').val() + ',' + $('#selectNameSuper option:selected').val() ;
 			break;
 		}
 		break;
 	case 'POPULATE-L3-NAMESUPER-PLAYER':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 			valueToProcess = $('#namesuperplayerScene').val() + ',' + $('#selectTeam option:selected').val() + ',' + 
 				$('#selectCaptainWicketKeeper option:selected').val() + ',' + $('#selectPlayer option:selected').val() ;
 			break;
@@ -783,7 +775,7 @@ function processCricketProcedures(whatToProcess)
 							processCricketProcedures('ANIMATE-IN-COMPARISION');				
 							break;
 						case 'POPULATE-L3-BUG-DISMISSAL':
-							processCricketProcedures('ANIMATE-IN-BUG');				
+							processCricketProcedures('ANIMATE-IN-BUG-DISMISSAL');				
 							break;
 						case 'POPULATE-L3-SPLIT':
 							processCricketProcedures('ANIMATE-IN-SPLIT');				
@@ -1074,118 +1066,169 @@ function addItemsToList(whatToProcess, dataToProcess)
 			cellCount = cellCount + 1;
 			
 			switch(whatToProcess){
-			case'BUG-DISMISSAL-OPTIONS':	
+			case'BUG-DISMISSAL-OPTIONS':
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+					case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
+						select.setAttribute('onchange',"processUserSelection(this)");
 
-			    select.setAttribute('onchange',"processUserSelection(this)");
-
-				select = document.createElement('select');
-				select.id = 'selectStatsType';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'Batsman';
-				option.text = 'Batsman';
-				select.appendChild(option);
-				
-			    select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('select');
-				select.id = 'selectPlayers';
-				select.name = select.id;
-				
-				row.insertCell(cellCount).appendChild(select);
-
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'bugdismissalScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Bug_SingleLine.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				break;
+						select = document.createElement('select');
+						select.id = 'selectStatsType';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = 'Batsman';
+						option.text = 'Batsman';
+						select.appendChild(option);
+						
+					    select.setAttribute('onchange',"processUserSelection(this)");
+						row.insertCell(cellCount).appendChild(select);
+						
+						cellCount = cellCount + 1;
+						
+						select = document.createElement('select');
+						select.id = 'selectPlayers';
+						select.name = select.id;
+						
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						switch ($('#selected_broadcaster').val().toUpperCase()) {
+							case 'DOAD_IN_HOUSE_EVEREST': 
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'bugdismissalScene';
+								select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Bug_SingleLine.sum';
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+								
+								break;
+							case 'DOAD_IN_HOUSE_VIZ':
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'bugdismissalScene';
+								select.value = 'Default/APL/Bugs';
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+								
+								break;
+						}
+						break;	
+					}
+					break;
 			
-			case'BUG-OPTIONS':	
+			case'BUG-OPTIONS':
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+					case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
+						select.setAttribute('onchange',"processUserSelection(this)");
 
-			    select.setAttribute('onchange',"processUserSelection(this)");
+						select = document.createElement('select');
+						select.id = 'selectStatsType';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = 'Batsman';
+						option.text = 'Batsman';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'Bowler';
+						option.text = 'Bowler';
+						select.appendChild(option);
+						
+					    select.setAttribute('onchange',"processUserSelection(this)");
+						row.insertCell(cellCount).appendChild(select);
+						
+						cellCount = cellCount + 1;
+						
+						select = document.createElement('select');
+						select.id = 'selectPlayers';
+						select.name = select.id;
+						
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						switch ($('#selected_broadcaster').val().toUpperCase()) {
+							case 'DOAD_IN_HOUSE_EVEREST': 
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'bugScene';
+								select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Bug_SingleLine.sum';
 
-				select = document.createElement('select');
-				select.id = 'selectStatsType';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'Batsman';
-				option.text = 'Batsman';
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = 'Bowler';
-				option.text = 'Bowler';
-				select.appendChild(option);
-				
-			    select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('select');
-				select.id = 'selectPlayers';
-				select.name = select.id;
-				
-				row.insertCell(cellCount).appendChild(select);
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+								
+								break;
+							case 'DOAD_IN_HOUSE_VIZ':
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'bugScene';
+								select.value = 'Default/APL/Bugs';
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+								
+								break;
+						}
+						break;	
+					}
+					break;	
 
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'bugScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Bug_SingleLine.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				break;
-				
 			case'HOWOUT-OPTIONS': 
-			
-				select.setAttribute('onchange',"processUserSelection(this)");
-				
-				select = document.createElement('select');
-				select.id = 'selectStatsType';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'Batsman';
-				option.text = 'Batsman';
-				select.appendChild(option);
-				
-				select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('select');
-				select.id = 'selectPlayers';
-				select.name = select.id;
-				
-				row.insertCell(cellCount).appendChild(select);
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+					case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
+						select.setAttribute('onchange',"processUserSelection(this)");
 
-				cellCount = cellCount + 1;
+						select = document.createElement('select');
+						select.id = 'selectStatsType';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = 'Batsman';
+						option.text = 'Batsman';
+						select.appendChild(option);
+						
+					    select.setAttribute('onchange',"processUserSelection(this)");
+						row.insertCell(cellCount).appendChild(select);
+						
+						cellCount = cellCount + 1;
+						
+						select = document.createElement('select');
+						select.id = 'selectPlayers';
+						select.name = select.id;
+						
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						switch ($('#selected_broadcaster').val().toUpperCase()) {
+							case 'DOAD_IN_HOUSE_EVEREST': 
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'howoutScene';
+								select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/LT_Batsman_Out.sum';
+
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+								
+								break;
+							case 'DOAD_IN_HOUSE_VIZ':
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'howoutScene';
+								select.value = 'Default/APL/LT_PlayerHowOut';
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+								
+								break;
+						}
+						break;	
+					}
+					break;
 				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'howoutScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/LT_Batsman_Out.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				break;
 			case'BATSMANSTATS-OPTIONS':
 				select.setAttribute('onchange',"processUserSelection(this)");
 
@@ -1288,48 +1331,66 @@ function addItemsToList(whatToProcess, dataToProcess)
 			switch (whatToProcess) {
 			case 'SCORECARD-OPTIONS':
 				switch ($('#selected_broadcaster').val().toUpperCase()) {
-				case 'DOAD_IN_HOUSE_EVEREST': 
-					select = document.createElement('input');
-					select.type = "text";
-					select.id = 'battingScene';
-					select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Batting_Card.sum';
+				case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 					
-					row.insertCell(cellCount).appendChild(select);
-					cellCount = cellCount + 1;
-					 
+					switch ($('#selected_broadcaster').val().toUpperCase()) {
+						case 'DOAD_IN_HOUSE_EVEREST':
+							select = document.createElement('input');
+							select.type = "text";
+							select.id = 'battingScene';
+							select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Batting_Card.sum';
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1; 
+							break;
+						
+						case 'DOAD_IN_HOUSE_VIZ':
+							select = document.createElement('input');
+							select.type = "text";
+							select.id = 'battingScene';
+							select.value = '/Default/APL/BatBallSummary';
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1; 
+							break;
+					}
+					
 				    option.name = 'populate_scorecard_btn';
 				    option.value = 'Populate Scorecard';
 				    
-				    break;
-			    
-			    case 'DOAD_IN_HOUSE_VIZ':
-			    	option.name = 'populate_scorecard_btn';
-				    option.value = 'Populate Scorecard';
 				    break;
 				}	
 				break;
 				
 			case'BOWLINGCARD-OPTIONS':
-				
 				switch ($('#selected_broadcaster').val().toUpperCase()) {
-				case 'DOAD_IN_HOUSE_EVEREST': 
-					select = document.createElement('input');
-					select.type = "text";
-					select.id = 'bowlingScene';
-					select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/BowlingCard.sum';
+				case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 					
-					row.insertCell(cellCount).appendChild(select);
-					cellCount = cellCount + 1;
-					
+					switch ($('#selected_broadcaster').val().toUpperCase()) {
+						case 'DOAD_IN_HOUSE_EVEREST':
+							select = document.createElement('input');
+							select.type = "text";
+							select.id = 'bowlingScene';
+							select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/BowlingCard.sum';
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1; 
+							break;
+						
+						case 'DOAD_IN_HOUSE_VIZ':
+							select = document.createElement('input');
+							select.type = "text";
+							select.id = 'bowlingScene';
+							select.value = '/Default/APL/BatBallSummary';
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1; 
+							break;
+					}
 				    option.name = 'populate_bowlingcard_btn';
 				    option.value = 'Populate Bowlingcard';
-					break;
-				
-				case 'DOAD_IN_HOUSE_VIZ':
-			    	option.name = 'populate_bowlingcard_btn';
-				    option.value = 'Populate Bowlingcard';
 				    break;
-				}		    
+				}	
 				break;
 				
 			case'PARTNERSHIP-OPTIONS':
@@ -1347,24 +1408,33 @@ function addItemsToList(whatToProcess, dataToProcess)
 				
 			case'MATCHSUMMARY-OPTIONS':
 				switch ($('#selected_broadcaster').val().toUpperCase()) {
-				case 'DOAD_IN_HOUSE_EVEREST':
-					select = document.createElement('input');
-					select.type = "text";
-					select.id = 'summaryScene';
-					select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/Mumbai_Indians/Everes_Scenes/Scenes/MI_Summary.sum';
+				case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 					
-					row.insertCell(cellCount).appendChild(select);
-					cellCount = cellCount + 1;
-					
+					switch ($('#selected_broadcaster').val().toUpperCase()) {
+						case 'DOAD_IN_HOUSE_EVEREST':
+							select = document.createElement('input');
+							select.type = "text";
+							select.id = 'summaryScene';
+							select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/Mumbai_Indians/Everes_Scenes/Scenes/MI_Summary.sum';
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1; 
+							break;
+						
+						case 'DOAD_IN_HOUSE_VIZ':
+							select = document.createElement('input');
+							select.type = "text";
+							select.id = 'summaryScene';
+							select.value = '/Default/APL/BatBallSummary_OLD';
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1; 
+							break;
+					}
 				    option.name = 'populate_matchsummary_btn';
 				    option.value = 'Populate Matchsummary';
-				   	break;
-				
-				case 'DOAD_IN_HOUSE_VIZ':
-			    	option.name = 'populate_matchsummary_btn';
-				    option.value = 'Populate Matchsummary';
 				    break;
-				}
+				}	
 				break;
 				
 			case'TEAMSUMMARY-OPTIONS':
@@ -1443,7 +1513,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	case'NAMESUPER-OPTIONS': case 'NAMESUPER_PLAYER-OPTIONS':  case'PLAYERPROFILE-OPTIONS': case'L3PLAYERPROFILE-OPTIONS': case 'BUG_DB-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 
 			$('#select_graphic_options_div').empty();
 	
@@ -1464,106 +1534,139 @@ function addItemsToList(whatToProcess, dataToProcess)
 			switch(whatToProcess){
 				
 				case'NAMESUPER-OPTIONS':
-				
-				select = document.createElement('select');
-				select.style = 'width:130px';
-				select.id = 'selectNameSuper';
-				select.name = select.id;
-				
-				dataToProcess.forEach(function(ns,index,arr1){
-					option = document.createElement('option');
-					option.value = ns.namesuperId;
-					option.text = ns.firstname + ' ' + ns.surname ;
-					select.appendChild(option);
-				});
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'namesuperScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/LT_NameSuper.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				break;
+					switch ($('#selected_broadcaster').val().toUpperCase()) {
+					case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
+						select = document.createElement('select');
+						select.style = 'width:130px';
+						select.id = 'selectNameSuper';
+						select.name = select.id;
+						
+						dataToProcess.forEach(function(ns,index,arr1){
+							option = document.createElement('option');
+							option.value = ns.namesuperId;
+							option.text = ns.firstname + ' ' + ns.surname ;
+							select.appendChild(option);
+						});
+						
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						switch ($('#selected_broadcaster').val().toUpperCase()) {
+						case 'DOAD_IN_HOUSE_EVEREST': 
+							select = document.createElement('input');
+							select.type = "text";
+							select.id = 'namesuperScene';
+							select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/LT_NameSuper.sum';
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+							
+							break;
+							
+						case 'DOAD_IN_HOUSE_VIZ':
+							select = document.createElement('input');
+							select.type = "text";
+							select.id = 'namesuperScene';
+							select.value = '/Default/APL/LT_NameSuper';
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+							break;
+						}
+						break;
+					}
+					break;
 				
 			case 'NAMESUPER_PLAYER-OPTIONS':
-				
-				select = document.createElement('select');
-				select.id = 'selectTeam';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = dataToProcess.homeTeamId;
-				option.text = dataToProcess.homeTeam.shortname;
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = dataToProcess.awayTeamId;
-				option.text = dataToProcess.awayTeam.shortname;
-				select.appendChild(option);
-			
-				select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-
-				select = document.createElement('select');
-				select.style = 'width:100px';
-				select.id = 'selectCaptainWicketKeeper';
-				select.name = select.id;
-				
-				option = document.createElement('option');
-				option.value = 'Captain';
-				option.text = 'Captain';
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = 'Captain-WicketKeeper';
-				option.text = 'Captain-WicketKeeper';
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = 'Player';
-				option.text = 'Player';
-				select.appendChild(option);
-
-				option = document.createElement('option');
-				option.value = 'Player Of The Match';
-				option.text = 'Player Of The Match';
-				select.appendChild(option);
-				
-				option = document.createElement('option');
-				option.value = 'WicketKeeper';
-				option.text = 'WicketKeeper';
-				select.appendChild(option);
-				
-				select.setAttribute('onchange',"processUserSelection(this)");
-				row.insertCell(cellCount).appendChild(select);
-				
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('select');
-				select.style = 'width:100px';
-				select.id = 'selectPlayer';
-				select.name = select.id;
-				
-				row.insertCell(cellCount).appendChild(select);
-
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'namesuperplayerScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/LT_NameSuper.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+					case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
+						select = document.createElement('select');
+						select.id = 'selectTeam';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = dataToProcess.homeTeamId;
+						option.text = dataToProcess.homeTeam.shortname;
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = dataToProcess.awayTeamId;
+						option.text = dataToProcess.awayTeam.shortname;
+						select.appendChild(option);
+					
+						select.setAttribute('onchange',"processUserSelection(this)");
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+		
+						select = document.createElement('select');
+						select.style = 'width:100px';
+						select.id = 'selectCaptainWicketKeeper';
+						select.name = select.id;
+						
+						option = document.createElement('option');
+						option.value = 'Captain';
+						option.text = 'Captain';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'Captain-WicketKeeper';
+						option.text = 'Captain-WicketKeeper';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'Player';
+						option.text = 'Player';
+						select.appendChild(option);
+		
+						option = document.createElement('option');
+						option.value = 'Player Of The Match';
+						option.text = 'Player Of The Match';
+						select.appendChild(option);
+						
+						option = document.createElement('option');
+						option.value = 'WicketKeeper';
+						option.text = 'WicketKeeper';
+						select.appendChild(option);
+						
+						select.setAttribute('onchange',"processUserSelection(this)");
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						select = document.createElement('select');
+						select.style = 'width:100px';
+						select.id = 'selectPlayer';
+						select.name = select.id;
+						
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						switch ($('#selected_broadcaster').val().toUpperCase()) {
+							case 'DOAD_IN_HOUSE_EVEREST': 
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'namesuperplayerScene';
+								select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/LT_NameSuper.sum';
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+								
+								break;
+							
+							case 'DOAD_IN_HOUSE_VIZ':
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'namesuperplayerScene';
+								select.value = '/Default/APL/LT_NameSuper';
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+								
+								break;
+						}
+						break;
+				}
 				break;
-				
+					
 			case'PLAYERPROFILE-OPTIONS':
 				select = document.createElement('select');
 				select.id = 'selectTeams';
@@ -1731,32 +1834,47 @@ function addItemsToList(whatToProcess, dataToProcess)
 				break;
 				
 			case 'BUG_DB-OPTIONS':
-				
-				select = document.createElement('select');
-				select.style = 'width:130px';
-				select.id = 'selectBugdb';
-				select.name = select.id;
-				
-				dataToProcess.forEach(function(bug,index,arr1){
-					option = document.createElement('option');
-					option.value = bug.bugId;
-					option.text = bug.prompt;
-					select.appendChild(option);
-				});
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				select = document.createElement('input');
-				select.type = "text";
-				select.id = 'bugdbScene';
-				select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Bug_SingleLine.sum';
-				
-				row.insertCell(cellCount).appendChild(select);
-				cellCount = cellCount + 1;
-				
-				break;
-				
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+					case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
+						select = document.createElement('select');
+						select.style = 'width:130px';
+						select.id = 'selectBugdb';
+						select.name = select.id;
+						
+						dataToProcess.forEach(function(bug,index,arr1){
+							option = document.createElement('option');
+							option.value = bug.bugId;
+							option.text = bug.prompt;
+							select.appendChild(option);
+						});
+						
+						row.insertCell(cellCount).appendChild(select);
+						cellCount = cellCount + 1;
+						
+						switch ($('#selected_broadcaster').val().toUpperCase()) {
+							case 'DOAD_IN_HOUSE_EVEREST': 
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'bugdbScene';
+								select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Bug_SingleLine.sum';
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+						
+								break;
+							case 'DOAD_IN_HOUSE_VIZ':
+								select = document.createElement('input');
+								select.type = "text";
+								select.id = 'bugdbScene';
+								select.value = 'Default/APL/Bugs';
+								
+								row.insertCell(cellCount).appendChild(select);
+								cellCount = cellCount + 1;
+						
+								break;
+						}
+						break;
+				}
 				break;
 			}
 			
