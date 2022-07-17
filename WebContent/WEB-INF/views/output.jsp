@@ -48,35 +48,69 @@
 			    <label class="col-sm-4 col-form-label text-left">Broadcaster: ${session_selected_broadcaster} </label>
 			    <label class="col-sm-4 col-form-label text-left">Home Team: ${session_match.homeTeam.fullname} </label>
 			    <label class="col-sm-4 col-form-label text-left">Away Team: ${session_match.awayTeam.fullname} </label>
-			   
-  				<c:forEach var="inning" items="${session_match.inning}">
-  					<label class="col-sm-4 col-form-label text-left">Current Inning:${inning.inningNumber}</label>
-  					<label class="col-sm-4 col-form-label text-left">Total Runs:${inning.totalRuns} </label>
-  					<label class="col-sm-4 col-form-label text-left">Total Overs:${inning.totalOvers} </label>
+			    
+			  <div id="match_data_div" class="form-group row row-bottom-margin ml-2" style="margin-bottom:5px;">
+			  <c:forEach var="inning" items="${session_match.inning}">
+			  <c:if test="${(inning.inningNumber == 1)}">
+				<label id="inning1_number_lbl" class="col-sm-4 col-form-label text-left" >Current Inning: ${inning.inningNumber}</label>
+				<label id="inning1_totalruns_lbl" class="col-sm-4 col-form-label text-left">Total Runs: ${inning.totalRuns} </label>
+				<label id="inning1_totalovers_lbl" class="col-sm-4 col-form-label text-left">Total Overs: ${inning.totalOvers} </label>
+			  
+			  <c:forEach var="battingcard" items="${inning.battingCard}">
+				<c:if test="${(battingcard.onStrike == 'YES')}">
+					<label id="inning1_battingcard1_lbl" class="col-sm-4 col-form-label text-left">Batsman-OnStriker: ${battingcard.player.surname} </label>
+				</c:if>
+				<c:if test="${(battingcard.onStrike == 'NO')}">
+					<label id="inning1_battingcard2_lbl" class="col-sm-4 col-form-label text-left">Batsman-NonStriker: ${battingcard.player.surname} </label>
+				</c:if>
+			  </c:forEach>
   					
-  					<c:forEach var="battingcard" items="${inning.battingCard}">
-  						<c:if test="${(battingcard.onStrike == 'YES')}">
-							<label class="col-sm-4 col-form-label text-left">Batsman-OnStriker: ${battingcard.player.surname} </label>
+			  <c:forEach var="bowlingcard" items="${inning.bowlingCard}">
+				<c:choose>
+					<c:when test="${(bowlingcard.status == 'CURRENTBOWLER')}">
+						<label id="inning1_bowlingcard_lbl" class="col-sm-4 col-form-label text-left">Current Bowler: ${bowlingcard.player.surname}</label>
+					</c:when>
+					<c:otherwise>
+						<c:if test="${(bowlingcard.status == 'LASTBOWLER')}">
+							<label id="inning1_bowlingcard_lbl" class="col-sm-4 col-form-label text-left">Current Bowler: ${bowlingcard.player.surname}</label>
 						</c:if>
-						<c:if test="${(battingcard.onStrike == 'NO')}">
-							<label class="col-sm-4 col-form-label text-left">Batsman-NonStriker: ${battingcard.player.surname} </label>
-						</c:if>
-  					</c:forEach>
+					</c:otherwise>
+				</c:choose>	
+			  </c:forEach>
+			  </c:if>
+			<c:if test="${(inning.inningNumber == 2)}">
+				<label id="inning2_number_lbl" class="col-sm-4 col-form-label text-left" >Current Inning: ${inning.inningNumber}</label>
+				<label id="inning2_totalruns_lbl" class="col-sm-4 col-form-label text-left">Total Runs: ${inning.totalRuns} </label>
+				<label id="inning2_totalovers_lbl" class="col-sm-4 col-form-label text-left">Total Overs: ${inning.totalOvers} </label>
+			<c:forEach var="battingcard" items="${inning.battingCard}">
+				<c:if test="${(battingcard.onStrike == 'YES')}">
+					<label id="inning2_battingcard1_lbl" class="col-sm-4 col-form-label text-left">Batsman-OnStriker: ${battingcard.player.surname} </label>
+				</c:if>
+				<c:if test="${(battingcard.onStrike == 'NO')}">
+					<label id="inning2_battingcard2_lbl" class="col-sm-4 col-form-label text-left">Batsman-NonStriker: ${battingcard.player.surname} </label>
+				</c:if>
+			 </c:forEach>
   					
-  					<c:forEach var="bowlingcard" items="${inning.bowlingCard}">
-						<c:choose>
-							<c:when test="${(bowlingcard.status == 'CURRENTBOWLER')}">
-								<label class="col-sm-4 col-form-label text-left">Current Bowler:${bowlingcard.player.surname}</label>
-							</c:when>
-							<c:otherwise>
-								<c:if test="${(bowlingcard.status == 'LASTBOWLER')}">
-									<label class="col-sm-4 col-form-label text-left">Current Bowler:${bowlingcard.player.surname}</label>
-								</c:if>
-							</c:otherwise>
-							</c:choose>	
-  					</c:forEach>
-				</c:forEach>
+			<c:forEach var="bowlingcard" items="${inning.bowlingCard}">
+				<c:choose>
+					<c:when test="${(bowlingcard.status == 'CURRENTBOWLER')}">
+						<label id="inning2_bowlingcard_lbl" class="col-sm-4 col-form-label text-left">Current Bowler: ${bowlingcard.player.surname}</label>
+					</c:when>
+					<c:otherwise>
+						<c:if test="${(bowlingcard.status == 'LASTBOWLER')}">
+							<label id="inning2_bowlingcard_lbl" class="col-sm-4 col-form-label text-left">Current Bowler: ${bowlingcard.player.surname}</label>
+						</c:if>
+					</c:otherwise>
+				</c:choose>	
+		  </c:forEach>
+		  </c:if>
+			    	
+  			</c:forEach>
+			    </div>
+  				
 				<div class="left">
+				<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="infobar_top_graphic_btn" id="infobar_top_graphic_btn" onclick="processUserSelection(this)"> Infobar Top </button>
 				<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="infobar_bottom-left_graphic_btn" id="infobar_bottom-left_graphic_btn" onclick="processUserSelection(this)"> Infobar Bottom-Left </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"

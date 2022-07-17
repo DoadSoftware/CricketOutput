@@ -20,38 +20,31 @@ function initialiseForm(whatToProcess,dataToProcess)
 		processUserSelection($('#select_broadcaster'));
 		break;
 	case 'UPDATE-MATCH-ON-OUTPUT-FORM':
-	//dataToProcess.inning.forEach(function(inn,index,arr){
-	//	$('label[id=inning_totalruns_lbl], input#inning_totalruns_lbl').val(inn.totalRuns);
-		//inn.totalRuns;
-		//inn.totalOvers;
-		//$("label['Total Runs:']").val(inn.totalRuns);
-		//$('#captions_div').
+	dataToProcess.inning.forEach(function(inn,index,arr){
+		if(inn.inningNumber == 1){
+			document.getElementById('inning1_number_lbl').innerHTML = 'Current Inning: ' + parseInt(inn.inningNumber);
+			document.getElementById('inning1_totalruns_lbl').innerHTML = 'Total Runs: ' + parseInt(inn.totalRuns);
+			document.getElementById('inning1_totalovers_lbl').innerHTML = 'Total Overs: ' + parseInt(inn.totalOvers);
+			document.getElementById('inning1_battingcard1_lbl').innerHTML = 'Batsman-OnStriker: ' + inn.battingcard.player.surname;
+			document.getElementById('inning1_battingcard2_lbl').innerHTML = 'Batsman-NonStriker: ' + inn.battingcard.player.surname;
+			document.getElementById('inning1_bowlingcard_lbl').innerHTML = 'Current Bowler:' + bowlingcard.player.surname;	
+		}
+		if(inn.inningNumber == 2 ){
+			document.getElementById('inning2_number_lbl').innerHTML = 'Current Inning: ' + parseInt(inn.inningNumber);
+			document.getElementById('inning2_totalruns_lbl').innerHTML = 'Total Runs: ' + parseInt(inn.totalRuns);
+			document.getElementById('inning2_totalovers_lbl').innerHTML = 'Total Overs: ' + parseInt(inn.totalOvers);
+			document.getElementById('inning2_battingcard1_lbl').innerHTML = 'Batsman-OnStriker: ' + inn.battingcard.player.surname;
+			document.getElementById('inning2_battingcard2_lbl').innerHTML = 'Batsman-NonStriker: ' + inn.battingcard.player.surname;	
+			document.getElementById('inning2_bowlingcard_lbl').innerHTML = 'Current Bowler:' + bowlingcard.player.surname;	
+		}
 		
-		//alert(inn.totalRuns);
-			/*inn.battingCard.forEach(function(bc,bc_index,bc_arr){
-	            $('#selectPlayers').append(
-					$(document.createElement('option')).prop({
-	                value: bc.playerId,
-	                text: bc.player.full_name
-	            }))					
-			});
-					inn.bowlingCard.forEach(function(boc,boc_index,boc_arr){
-			            $('#selectPlayers').append(
-							$(document.createElement('option')).prop({
-			                value: boc.playerId,
-			                text: boc.player.full_name
-			            }))
-			            						
-					});*/
-		//});
-		//alert(dataToProcess.inning.totalRuns.val());
-		//dataToProcess.inning.totalRuns;
+		});
 		
 		break;
 	}
 }
 function processUserSelection(whichInput)
-{	
+{			
 	switch ($(whichInput).attr('name')) {
 		
 	case 'selectBottomStat':
@@ -75,7 +68,7 @@ function processUserSelection(whichInput)
 	case 'infobar_bottom-left_graphic_btn': case 'infobar_graphic_btn': case 'infobar_bottom-right_graphic_btn': case 'playerprofile_graphic_btn': 
 	case 'infobar_bottom_graphic_btn': case 'matchid_graphic_btn': case 'l3matchid_graphic_btn': case 'fallofwicket_graphic_btn':case 'playingxi_graphic_btn': case 'leaderboard_graphic_btn': 
 	case 'projected_graphic_btn': case 'target_graphic_btn': case 'teamsummary_graphic_btn': case 'playersummary_graphic_btn': case 'l3playerprofile_graphic_btn': 
-	case 'comparision_graphic_btn': case 'bug_dismissal_graphic_btn': case 'split_graphic_btn': case 'bug_db_graphic_btn':
+	case 'comparision_graphic_btn': case 'bug_dismissal_graphic_btn': case 'split_graphic_btn': case 'bug_db_graphic_btn': case 'infobar_top_graphic_btn':
 		$("#captions_div").hide();
 		switch ($(whichInput).attr('name')) {
 		case 'scorecard_graphic_btn':
@@ -117,6 +110,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'doubleteams_graphic_btn':
 			addItemsToList('DOUBLETEAMS-OPTIONS',null);
+			break;
+		case 'infobar_top_graphic_btn':
+			processCricketProcedures('TOP_GRAPHICS-OPTIONS');
 			break;
 		case 'infobar_bottom-left_graphic_btn':
 			processCricketProcedures('BOTTOMLEFT_GRAPHICS-OPTIONS');
@@ -177,7 +173,7 @@ function processUserSelection(whichInput)
 	case 'populate_infobar_bottom-left_btn': case 'populate_infobar_btn': case 'populate_infobar_bottom-right_btn': case 'populate_infobar_bottom_btn': case 'populate_matchid_btn': 
 	case 'populate_playingxi_btn': case 'populate_leaderboard_btn': case 'populate_projected_btn': case 'populate_target_btn': case 'populate_teamsummary_btn': case 'populate_playersummary_btn': 
 	case 'populate_l3playerprofile_btn': case 'populate_fow_btn': case 'populate_comparision_btn': case 'populate_infobar_prompt_btn': case 'populate_l3matchid_btn': case 'populate_bug_dismissal_btn':
-	case 'populate_split_btn': case 'populate_bug_db_btn':
+	case 'populate_split_btn': case 'populate_bug_db_btn': case 'populate_infobar_top_btn':
 		processWaitingButtonSpinner('START_WAIT_TIMER');
 		switch ($(whichInput).attr('name')) {
 		case 'populate_scorecard_btn':
@@ -218,6 +214,9 @@ function processUserSelection(whichInput)
 			break;
 		case 'populate_doubleteams_btn':
 			processCricketProcedures('POPULATE-FF-DOUBLETEAMS');
+			break;
+		case 'populate_infobar_top_btn':
+			processCricketProcedures('POPULATE-INFOBAR-TOP');
 			break;
 		case 'populate_infobar_bottom-left_btn':
 			processCricketProcedures('POPULATE-INFOBAR-BOTTOMLEFT');
@@ -286,7 +285,6 @@ function processUserSelection(whichInput)
 		case 'DOAD_IN_HOUSE_VIZ':
 			$('#vizPortNumber').attr('value','6100');
 			$('label[for=vizScene], input#vizScene').hide();
-			//$('#vizScene').attr('value','/Default/APL/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/BatBallSummary');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Bugs');
 			//$('#vizScene').attr('value','/Default/DOAD_In_House/Lt_HowOut');
@@ -449,6 +447,13 @@ function processCricketProcedures(whatToProcess)
 			break;
 		}
 		break;
+	case 'POPULATE-INFOBAR-TOP':
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_VIZ':
+			valueToProcess = $('#selectTopStat option:selected').val() ;
+			break;
+		}
+		break;
 	case 'POPULATE-INFOBAR-BOTTOMLEFT':
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
@@ -460,6 +465,10 @@ function processCricketProcedures(whatToProcess)
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
 		case 'DOAD_IN_HOUSE_EVEREST':
 			valueToProcess = $('#infobarScene').val() + ',' + $('#selectTopLeftStats option:selected').val() + ',' + $('#selectTopRightStats option:selected').val() + ',' + $('#selectBottomLeftStats option:selected').val() + ',' + $('#selectBottomRightStats option:selected').val() ;
+			
+			break;
+		case 'DOAD_IN_HOUSE_VIZ':
+			valueToProcess = $('#infobarScene').val() + ',' + $('#selectTopLeftStats option:selected').val() + ',' + $('#selectSection4 option:selected').val() + ',' + $('#selectSection5 option:selected').val() ;
 			
 			break;
 		}
@@ -591,7 +600,7 @@ function processCricketProcedures(whatToProcess)
 					//alert("match = " + $('#matchFileTimeStamp').val() + "Data = "+ data.matchFileTimeStamp)
 					if($('#matchFileTimeStamp').val() != data.matchFileTimeStamp) {
 						document.getElementById('matchFileTimeStamp').value = data.matchFileTimeStamp;
-						//initialiseForm("UPDATE-MATCH-ON-OUTPUT-FORM",data);
+						initialiseForm("UPDATE-MATCH-ON-OUTPUT-FORM",data);
 						
 					}
 				}
@@ -642,6 +651,10 @@ function processCricketProcedures(whatToProcess)
 			case 'PLAYERPROFILE_GRAPHICS-OPTIONS':
 				addItemsToList('PLAYERPROFILE-OPTIONS',data);
 				addItemsToList('POPULATE-PROFILE',data);
+				match_data = data;
+				break;
+			case 'TOP_GRAPHICS-OPTIONS':
+				addItemsToList('INFOBAR-TOP-OPTIONS',data);
 				match_data = data;
 				break;
 			case 'BOTTOMLEFT_GRAPHICS-OPTIONS':
@@ -1382,7 +1395,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 							select.type = "text";
 							select.id = 'bowlingScene';
 							select.value = '/Default/APL/BatBallSummary';
-							
+
 							row.insertCell(cellCount).appendChild(select);
 							cellCount = cellCount + 1; 
 							break;
@@ -1929,10 +1942,141 @@ function addItemsToList(whatToProcess, dataToProcess)
 		}
 		break;
 	
+	case'INFOBAR-TOP-OPTIONS':
+	
+		switch ($('#selected_broadcaster').val().toUpperCase()) {
+		case 'DOAD_IN_HOUSE_VIZ':
+
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+			
+			switch(whatToProcess){
+			case'INFOBAR-TOP-OPTIONS':
+				dataToProcess.inning.forEach(function(inn,index,arr){
+					if(inn.isCurrentInning == 'YES'){
+						if(inn.inningNumber == 1){
+							select = document.createElement('select');
+							select.id = 'selectTopStat';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'vs_bowling_team';
+							option.text = 'Vs Bowling Team';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'toss';
+							option.text = 'Toss';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'crr';
+							option.text = 'CRR';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'boundaries';
+							option.text = 'Boundaries';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'last_wicket';
+							option.text = 'Last_Wicket';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'partnership';
+							option.text = 'Partnership';
+							select.appendChild(option);
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+						}
+						else{
+							select = document.createElement('select');
+							select.id = 'selectTopStat';
+							select.name = select.id;
+							
+							option = document.createElement('option');
+							option.value = 'equation';
+							option.text = 'Equation';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'first_inning_score';
+							option.text = 'First Inning Score';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'crr_rrr';
+							option.text = 'Current And Required Run Rate';
+							select.appendChild(option);
+							
+							option = document.createElement('option');
+							option.value = 'boundaries';
+							option.text = 'Boundaries';
+							select.appendChild(option);
+							
+							row.insertCell(cellCount).appendChild(select);
+							cellCount = cellCount + 1;
+							
+						}
+					}
+				});
+				
+				break;		
+				}
+
+			option = document.createElement('input');
+		    option.type = 'button';
+		    
+			switch (whatToProcess) {
+			case'INFOBAR-TOP-OPTIONS':
+			    option.name = 'populate_infobar_top_btn';
+			    option.value = 'Change on Infobar';
+				break;
+			}
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+		}
+		break;
+	
 	case'INFOBAR-BOTTOMLEFT-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 
 			$('#select_graphic_options_div').empty();
 	
@@ -2042,7 +2186,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	case'INFOBAR-BOTTOMRIGHT-OPTIONS': 
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 
 			$('#select_graphic_options_div').empty();
 	
@@ -2062,101 +2206,167 @@ function addItemsToList(whatToProcess, dataToProcess)
 			
 			switch(whatToProcess){
 			case'INFOBAR-BOTTOMRIGHT-OPTIONS':
-				dataToProcess.inning.forEach(function(inn,index,arr){
-					if(inn.isCurrentInning == 'YES'){
-						
-						if(inn.inningNumber == 1){
-							if(inn.fallsOfWickets.length > 0){ 
-								select = document.createElement('select');
-								select.id = 'selectBottomRightStat';
-								select.name = select.id;
+				switch ($('#selected_broadcaster').val().toUpperCase()) {
+					case 'DOAD_IN_HOUSE_EVEREST':
+						dataToProcess.inning.forEach(function(inn,index,arr){
+							if(inn.isCurrentInning == 'YES'){
 								
-								option = document.createElement('option');
-								option.value = 'toss_winning';
-								option.text = 'Toss Winning';
-								select.appendChild(option);
-								
-								option = document.createElement('option');
-								option.value = 'last_wicket';
-								option.text = 'Last Wicket';
-								select.appendChild(option);
-								
-								row.insertCell(cellCount).appendChild(select);
-								cellCount = cellCount + 1;
+								if(inn.inningNumber == 1){
+									if(inn.fallsOfWickets.length > 0){ 
+										select = document.createElement('select');
+										select.id = 'selectBottomRightStat';
+										select.name = select.id;
+										
+										option = document.createElement('option');
+										option.value = 'toss_winning';
+										option.text = 'Toss Winning';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'last_wicket';
+										option.text = 'Last Wicket';
+										select.appendChild(option);
+										
+										row.insertCell(cellCount).appendChild(select);
+										cellCount = cellCount + 1;
+									}
+									else{
+										select = document.createElement('select');
+										select.id = 'selectBottomRightStat';
+										select.name = select.id;
+										
+										option = document.createElement('option');
+										option.value = 'toss_winning';
+										option.text = 'Toss Winning';
+										select.appendChild(option);
+										
+										
+										row.insertCell(cellCount).appendChild(select);
+										cellCount = cellCount + 1;
+									}
+								}
+								else{
+									if(inn.fallsOfWickets.length > 0){
+										select = document.createElement('select');
+										select.id = 'selectBottomRightStat';
+										select.name = select.id;
+										
+										option = document.createElement('option');
+										option.value = 'toss_winning';
+										option.text = 'Toss Winning';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'equation';
+										option.text = 'Equation';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'last_wicket';
+										option.text = 'Last Wicket';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'comparision';
+										option.text = 'Comparision';
+										select.appendChild(option);
+										
+										
+										row.insertCell(cellCount).appendChild(select);
+										cellCount = cellCount + 1;
+									}
+									else{
+										select = document.createElement('select');
+										select.id = 'selectBottomRightStat';
+										select.name = select.id;
+										
+										option = document.createElement('option');
+										option.value = 'toss_winning';
+										option.text = 'Toss Winning';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'equation';
+										option.text = 'Equation';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'comparision';
+										option.text = 'Comparision';
+										select.appendChild(option);
+										
+										row.insertCell(cellCount).appendChild(select);
+										cellCount = cellCount + 1;
+									}
+									
+								}
 							}
-							else{
-								select = document.createElement('select');
-								select.id = 'selectBottomRightStat';
-								select.name = select.id;
+						});
+						break;
+					case 'DOAD_IN_HOUSE_VIZ':
+						dataToProcess.inning.forEach(function(inn,index,arr){
+							if(inn.isCurrentInning == 'YES'){
 								
-								option = document.createElement('option');
-								option.value = 'toss_winning';
-								option.text = 'Toss Winning';
-								select.appendChild(option);
-								
-								
-								row.insertCell(cellCount).appendChild(select);
-								cellCount = cellCount + 1;
-							}
-						}
-						else{
-							if(inn.fallsOfWickets.length > 0){
-								select = document.createElement('select');
-								select.id = 'selectBottomRightStat';
-								select.name = select.id;
-								
-								option = document.createElement('option');
-								option.value = 'toss_winning';
-								option.text = 'Toss Winning';
-								select.appendChild(option);
-								
-								option = document.createElement('option');
-								option.value = 'equation';
-								option.text = 'Equation';
-								select.appendChild(option);
-								
-								option = document.createElement('option');
-								option.value = 'last_wicket';
-								option.text = 'Last Wicket';
-								select.appendChild(option);
-								
-								option = document.createElement('option');
-								option.value = 'comparision';
-								option.text = 'Comparision';
-								select.appendChild(option);
-								
-								
-								row.insertCell(cellCount).appendChild(select);
-								cellCount = cellCount + 1;
-							}
-							else{
-								select = document.createElement('select');
-								select.id = 'selectBottomRightStat';
-								select.name = select.id;
-								
-								option = document.createElement('option');
-								option.value = 'toss_winning';
-								option.text = 'Toss Winning';
-								select.appendChild(option);
-								
-								option = document.createElement('option');
-								option.value = 'equation';
-								option.text = 'Equation';
-								select.appendChild(option);
-								
-								option = document.createElement('option');
-								option.value = 'comparision';
-								option.text = 'Comparision';
-								select.appendChild(option);
-								
-								row.insertCell(cellCount).appendChild(select);
-								cellCount = cellCount + 1;
-							}
-							
-						}
-					}
-				});
-				
+								if(inn.inningNumber == 1){
+									select = document.createElement('select');
+										select.id = 'selectBottomRightStat';
+										select.name = select.id;
+										
+										option = document.createElement('option');
+										option.value = 'dot_ball';
+										option.text = 'Dot Ball';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'six_counter';
+										option.text = 'Six';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'four_counter';
+										option.text = 'Four';
+										select.appendChild(option);
+										
+										row.insertCell(cellCount).appendChild(select);
+										cellCount = cellCount + 1;
+									}
+									else{
+										select = document.createElement('select');
+										select.id = 'selectBottomRightStat';
+										select.name = select.id;
+										
+										option = document.createElement('option');
+										option.value = 'target';
+										option.text = 'Target';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'comparision';
+										option.text = 'Comparision';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'dot_ball';
+										option.text = 'Dot Ball';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'six_counter';
+										option.text = 'Six';
+										select.appendChild(option);
+										
+										option = document.createElement('option');
+										option.value = 'four_counter';
+										option.text = 'Four';
+										select.appendChild(option);
+										
+										row.insertCell(cellCount).appendChild(select);
+										cellCount = cellCount + 1;
+									}
+								}
+						});
+						break;
+				}
 				break;	
 					
 				}
@@ -2198,7 +2408,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 	case'INFOBAR-BOTTOM-OPTIONS': case 'INFOBAR-PROMPT-OPTIONS':
 	
 		switch ($('#selected_broadcaster').val().toUpperCase()) {
-		case 'DOAD_IN_HOUSE_EVEREST':
+		case 'DOAD_IN_HOUSE_EVEREST': case 'DOAD_IN_HOUSE_VIZ':
 
 			$('#select_graphic_options_div').empty();
 	
@@ -2376,7 +2586,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 			select = document.createElement('input');
 			select.type = "text";
 			select.id = 'infobarScene';
-			select.value = 'D:/DOAD_In_House_Everest/Everest_Cricket/EVEREST_APL2022/Scenes/Scorebug.sum';
+			select.value = '/Default/APL/ScoreBug';
 			
 			
 			row.insertCell(cellCount).appendChild(select);
@@ -2488,6 +2698,109 @@ function addItemsToList(whatToProcess, dataToProcess)
 					}
 				});
 				
+			option = document.createElement('input');
+		    option.type = 'button';
+		    option.name = 'populate_infobar_btn';
+			option.value = 'Populate Infobar';
+			
+		    option.id = option.name;
+		    option.setAttribute('onclick',"processUserSelection(this)");
+		    
+		    div = document.createElement('div');
+		    div.append(option);
+
+			option = document.createElement('input');
+			option.type = 'button';
+			option.name = 'cancel_graphics_btn';
+			option.id = option.name;
+			option.value = 'Cancel';
+			option.setAttribute('onclick','processUserSelection(this)');
+	
+		    div.append(option);
+		    
+		    row.insertCell(cellCount).appendChild(div);
+		    cellCount = cellCount + 1;
+		    
+			document.getElementById('select_graphic_options_div').style.display = '';
+
+			break;
+			
+		case 'DOAD_IN_HOUSE_VIZ':
+			
+			$('#select_graphic_options_div').empty();
+	
+			header_text = document.createElement('h6');
+			header_text.innerHTML = 'Select Graphic Options';
+			document.getElementById('select_graphic_options_div').appendChild(header_text);
+			
+			table = document.createElement('table');
+			table.setAttribute('class', 'table table-bordered');
+					
+			tbody = document.createElement('tbody');
+	
+			table.appendChild(tbody);
+			document.getElementById('select_graphic_options_div').appendChild(table);
+			
+			row = tbody.insertRow(tbody.rows.length);
+			
+			select = document.createElement('input');
+			select.type = "text";
+			select.id = 'infobarScene';
+			select.value = '/Default/APL/ScoreBug';
+			
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('select');
+			select.id = 'selectTopLeftStats';
+			select.name = select.id;
+			
+			
+			option = document.createElement('option');
+			option.value = 'batsman';
+			option.text = 'Batsman';
+			select.appendChild(option);
+			
+			
+			row.insertCell(cellCount).appendChild(select);
+			
+			cellCount = cellCount + 1;
+			
+			select = document.createElement('select');
+			select.id = 'selectSection4';
+			select.name = select.id;
+			
+			option = document.createElement('option');
+			option.value = 'bowler';
+			option.text = 'Bowler';
+			select.appendChild(option);
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;
+			
+			/*select = document.createElement('select');
+			select.id = 'selectSection5';
+			select.name = select.id;
+			
+			option = document.createElement('option');
+			option.value = 'This_Over';
+			option.text = 'This Over';
+			select.appendChild(option);
+			
+			option = document.createElement('option');
+			option.value = 'economy';
+			option.text = 'Economy';
+			select.appendChild(option);
+			
+			option = document.createElement('option');
+			option.value = 'bowling_end';
+			option.text = 'Bowling End';
+			select.appendChild(option);
+			
+			row.insertCell(cellCount).appendChild(select);
+			cellCount = cellCount + 1;*/
+			
 			option = document.createElement('input');
 		    option.type = 'button';
 		    option.name = 'populate_infobar_btn';
