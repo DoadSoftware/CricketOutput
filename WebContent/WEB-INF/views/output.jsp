@@ -133,13 +133,17 @@
 		 	    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="bug_dismissal_graphic_btn" id="bug_dismissal_graphic_btn" onclick="processUserSelection(this)"> Bug-Dismissal </button> 
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
-			  		name="bug_graphic_btn" id="bug_graphic_btn" onclick="processUserSelection(this)"> Bug Batsman/Bowler</button>
+			  		name="bug_graphic_btn" id="bug_graphic_btn" onclick="processUserSelection(this)"> Bug BatsmanScore</button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="bugbowler_graphic_btn" id="bugbowler_graphic_btn" onclick="processUserSelection(this)"> Bug BowlerFigure</button>
 			  		
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="bug_db_graphic_btn" id="bug_db_graphic_btn" onclick="processUserSelection(this)"> Bug </button>
 			  		
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
-			  		name="howout_graphic_btn" id="howout_graphic_btn" onclick="processUserSelection(this)"> How Out </button>
+			  		name="howout_graphic_btn" id="howout_graphic_btn" onclick="processUserSelection(this)"> LtHow Out </button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="howoutwithoutfielder_graphic_btn" id="howoutwithoutfielder_graphic_btn" onclick="processUserSelection(this)"> LtHow Out Without Fielder </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="batsmanstats_graphic_btn" id="batsmanstats_graphic_btn" onclick="processUserSelection(this)"> BatsmanStats </button>
 			  	
@@ -167,15 +171,23 @@
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="target_graphic_btn" id="target_graphic_btn" onclick="processUserSelection(this)"> Target </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="bugtarget_graphic_btn" id="bugtarget_graphic_btn" onclick="processUserSelection(this)"> Bug Target </button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="teamsummary_graphic_btn" id="teamsummary_graphic_btn" onclick="processUserSelection(this)"> Team Summary </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
-			  		name="playersummary_graphic_btn" id="playersummary_graphic_btn" onclick="processUserSelection(this)"> Player Summary </button>
+			  		name="playersummary_graphic_btn" id="playersummary_graphic_btn" onclick="processUserSelection(this)"> LtBatting Summary </button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="ltbowlerdetails_graphic_btn" id="ltbowlerdetails_graphic_btn" onclick="processUserSelection(this)"> LtBowler Details </button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="ltnexttobat_graphic_btn" id="ltnexttobat_graphic_btn" onclick="processUserSelection(this)"> LtNext To Bat </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="fallofwicket_graphic_btn" id="fallofwicket_graphic_btn" onclick="processUserSelection(this)"> FallOfWicket </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="comparision_graphic_btn" id="comparision_graphic_btn" onclick="processUserSelection(this)"> Comparision </button>
 			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 			  		name="split_graphic_btn" id="split_graphic_btn" onclick="processUserSelection(this)"> 30-50-Split </button>
+			  	<button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
+			  		name="ltpartnership_graphic_btn" id="ltpartnership_graphic_btn" onclick="processUserSelection(this)"> LTPartnership </button>
 			  	<button style="background-color:#f44336;color:#FEFEFE;;" class="btn btn-sm" type="button"
 			  		name="animateout_graphic_btn" id="animateout_graphic_btn" onclick="processUserSelection(this)"> AnimateOut </button>
 			  	<button style="background-color:#f44336;color:#FEFEFE;;" class="btn btn-sm" type="button"
